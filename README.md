@@ -1,2 +1,3 @@
 # MasterThesis
+# Author: Bartosz Gieras
  

@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Master Thesis</string>
+    <string name="button">Button</string>
+    <string name="button2">Button</string>
+    <string name="button3">Button</string>
+    <string name="welcome_to_my_app">Welcome to my App!</string>
 </resources>
