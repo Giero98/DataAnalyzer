@@ -9,8 +9,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-/**
- * View of the application after a successful combination via Wi-Fi
+/*
+  View of the application after a successful combination via Wi-Fi
  */
 public class MainActivity_WiFi extends AppCompatActivity {
 
