@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -22,8 +23,12 @@ import android.bluetooth.BluetoothAdapter;
  * Main view of the application
  */
 public class MainActivity extends AppCompatActivity {
-    //Constant used for check Bluetooth permission
-    private static final int REQUEST_BLUETOOTH_CONNECT_PERMISSION = 1;
+    //Variables used to match the permission response
+    final private int
+            REQUEST_BT_CONNECT = 0,
+            REQUEST_BT_SCAN = 1,
+            REQUEST_BT_ADVERTISE = 2,
+            REQUEST_BT_ACCESS_FINE_LOCATION = 3;
     BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     Button button_wifi, button_bt;
     TextView text1;
@@ -49,17 +54,7 @@ public class MainActivity extends AppCompatActivity {
         /*
           Bluetooth connection button
          */
-        button_bt.setOnClickListener(v -> {
-            if(checkSupportBt()) {
-                if (checkAPI() && checkBtConnect()) {
-                    permissionBtConnect();
-                } else {
-                    firstStepBt();
-                }
-            }
-            //Intent intent = new Intent(MainActivity.this, MainActivity_BT.class);
-            //startActivity(intent);
-        });
+        button_bt.setOnClickListener(v -> conditionalMethodsBt());
 
         /*
           Wi-Fi connection button
@@ -70,87 +65,178 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         });
     }
-    //Checking if the device supports Bluetooth
-    private boolean checkSupportBt()
-    {
-        if (bluetoothAdapter == null)
-        {
-            Toast.makeText(MainActivity.this, "Device doesn't support Bluetooth", Toast.LENGTH_SHORT).show();
-            return false;
+
+    //Checks if the API version is >=23
+    private boolean checkAPI() {
+
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.S;
+    }
+
+    //region checkBT
+
+    //Checks permissions to Bluetooth_Connect
+    private boolean checkBtConnect() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            return ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED;
         }
         else return true;
     }
-    //Checks if the API version is >=23
-    private boolean checkAPI()
-    {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
+
+    //Checks permissions to Bluetooth_Scan
+    private boolean checkBtScan() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            return ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED;
+        }
+        else return false;
     }
-    //Checks permissions to Bluetooth_Connect
-    private boolean checkBtConnect()
-    {
-        return ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED;
+
+    //Checks permissions to Bluetooth_Advertise
+    private boolean checkBtAdvertise() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            return ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_ADVERTISE) == PackageManager.PERMISSION_GRANTED;
+        }
+        else return false;
     }
+
+    //Checks permissions to Bluetooth_AccessFineLocation
+    private boolean checkBtAccessFineLocation() {
+            return ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    //endregion checkBT
+
+    //region permissionBT
+
     //Calling the action of granting permissions to Bluetooth_Connect
-    private void permissionBtConnect()
-    {
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH_CONNECT}, REQUEST_BLUETOOTH_CONNECT_PERMISSION);
+    private void permissionBtConnect() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH_CONNECT}, REQUEST_BT_CONNECT);
+        }
     }
+
+    //Calling the action of granting permissions to Bluetooth_Scan
+    private void permissionBtScan() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH_SCAN}, REQUEST_BT_SCAN);
+        }
+    }
+
+    //Calling the action of granting permissions to Bluetooth_Advertise
+    private void permissionBtAdvertise() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH_ADVERTISE}, REQUEST_BT_ADVERTISE);
+        }
+    }
+
+    //Calling the action of granting permissions to Bluetooth_AccessFineLocation
+    private void permissionBtAccessFineLocation() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_BT_ACCESS_FINE_LOCATION);
+        }
+    }
+
+    //endregion permissionBT
+
+    //region configureBT
+
+    //Launching the Bluetooth Activities
+    private void goToBt()
+    {
+        Intent intent = new Intent(MainActivity.this, MainActivity_BT.class);
+        startActivity(intent);
+    }
+
+    //A method composed of conditional functions that check Bluetooth support and permissions
+    private void conditionalMethodsBt()
+    {
+        if (checkSupportBt()) {
+            if (checkAPI()) {
+                if (!checkBtConnect()) {
+                    permissionBtConnect();
+                } else if (!checkBtScan()) {
+                    permissionBtScan();
+                } else if (!checkBtAdvertise()) {
+                    permissionBtAdvertise();
+                } else if (!checkBtAccessFineLocation()) {
+                    permissionBtAccessFineLocation();
+                } else {
+                    firstStepBt();
+                }
+            } else {
+                firstStepBt();
+            }
+        }
+    }
+
+    //Checking if the device supports Bluetooth
+    private boolean checkSupportBt() {
+        if (bluetoothAdapter == null) {
+            Toast.makeText(MainActivity.this, "Device doesn't support Bluetooth", Toast.LENGTH_SHORT).show();
+            return false;
+        } else return true;
+    }
+
+    //Turn on Bluetooth or go to Bluetooth Activities
+    private void firstStepBt() {
+        if (!bluetoothAdapter.isEnabled())
+            enableBt();
+        else
+            goToBt();
+    }
+
+    //Launching the Bluetooth enablement intent on the device
+    private void enableBt() {
+        Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+        ActivityEnableBt.launch(intent);
+    }
+    //Reactions to permission response received enableBt
+    ActivityResultLauncher<Intent> ActivityEnableBt = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    Toast.makeText(MainActivity.this, "Bluetooth started", Toast.LENGTH_SHORT).show();
+                    goToBt();
+                }
+                else
+                    Toast.makeText(MainActivity.this, "Bluetooth not enabled", Toast.LENGTH_SHORT).show();
+            });
+
+    //endregion configureBT
+
     //Reactions to permission response received
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_BLUETOOTH_CONNECT_PERMISSION) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "BLUETOOTH_CONNECT permission granted", Toast.LENGTH_SHORT).show();
-                firstStepBt();
-            } else {
-                Toast.makeText(this, "BLUETOOTH_CONNECT permission denied", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-    private void firstStepBt() {
-        if (!bluetoothAdapter.isEnabled())
-        {
-            enableBt();
-        }
-        else
-        {
-            detectBt();
-        }
-    }
-    private void enableBt()
-    {
-        Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-        ActivityEnableBt.launch(enableBtIntent);
-    }
-    //Reactions to permission response received enableBT
-    ActivityResultLauncher<Intent> ActivityEnableBt = registerForActivityResult(
-        new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if (result.getResultCode() == Activity.RESULT_OK)
-                {
-                    Toast.makeText(MainActivity.this, "Bluetooth started", Toast.LENGTH_SHORT).show();
-                    detectBt();
+        switch (requestCode) {
+            case REQUEST_BT_CONNECT:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(this, "BLUETOOTH_CONNECT permission granted", Toast.LENGTH_SHORT).show();
+                    conditionalMethodsBt();
                 }
                 else
-                {Toast.makeText(MainActivity.this, "Bluetooth not enabled", Toast.LENGTH_SHORT).show();}
-            });
-    private void detectBt()
-    {
-        Intent detectBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-        ActivityDetectBt.launch(detectBtIntent);
+                    Toast.makeText(this, "BLUETOOTH_CONNECT permission denied", Toast.LENGTH_SHORT).show();
+                break;
+            case REQUEST_BT_SCAN:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(this, "BLUETOOTH_SCAN permission granted", Toast.LENGTH_SHORT).show();
+                    conditionalMethodsBt();
+                }
+                else {Toast.makeText(this, "BLUETOOTH_SCAN permission denied", Toast.LENGTH_SHORT).show();}
+                break;
+            case REQUEST_BT_ADVERTISE:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(this, "BLUETOOTH_ADVERTISE permission granted", Toast.LENGTH_SHORT).show();
+                    conditionalMethodsBt();
+                }
+                else {Toast.makeText(this, "BLUETOOTH_ADVERTISE permission denied", Toast.LENGTH_SHORT).show();}
+                break;
+            case REQUEST_BT_ACCESS_FINE_LOCATION:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(this, "BLUETOOTH_ACCESS_FINE_LOCATION permission granted", Toast.LENGTH_SHORT).show();
+                    conditionalMethodsBt();
+                }
+                else {Toast.makeText(this, "BLUETOOTH_ACCESS_FINE_LOCATION permission denied", Toast.LENGTH_SHORT).show();}
+                break;
+        }
     }
-    //Reactions to permission response received detectBT
-    ActivityResultLauncher<Intent> ActivityDetectBt = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if (result.getResultCode() != 0)
-                {
-                    Toast.makeText(MainActivity.this, "Detection has been enabled", Toast.LENGTH_SHORT).show();
-                }
-                else
-                {
-                    Toast.makeText(MainActivity.this, "Detection has not been enabled", Toast.LENGTH_SHORT).show();
-                }
-            });
 }
