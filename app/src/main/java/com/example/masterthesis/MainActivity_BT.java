@@ -270,7 +270,7 @@ public class MainActivity_BT extends AppCompatActivity {
     //region Send Data as a Server
 
     private class ConnectedServerThread extends Thread {
-        private BluetoothSocket socket;
+        private final BluetoothSocket socket;
         private InputStream streamIn;
         private OutputStream streamOut;
 
