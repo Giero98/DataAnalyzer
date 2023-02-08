@@ -25,26 +25,30 @@
                 android:id="@+id/button4"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="Button" />
+                android:text="Button"
+                tools:ignore="HardcodedText" />
 
             <Button
                 android:id="@+id/button5"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="Button" />
+                android:text="Button"
+                tools:ignore="HardcodedText" />
 
             <Button
                 android:id="@+id/button6"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="Button" />
+                android:text="Button"
+                tools:ignore="HardcodedText" />
 
             <Button
                 android:id="@+id/button7"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:text="Button"
-                android:visibility="invisible"/>
+                android:visibility="invisible"
+                tools:ignore="HardcodedText" />
             <TextView
                 android:id="@+id/textView4"
                 android:layout_width="match_parent"
