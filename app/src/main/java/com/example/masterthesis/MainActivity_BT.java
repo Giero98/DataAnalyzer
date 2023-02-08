@@ -439,7 +439,6 @@ public class MainActivity_BT extends AppCompatActivity {
         {
             byte[] buffer = new byte[1024];
             int bytes;
-
             try {
                 bytes = inputStream.read(buffer);
                 // Send the obtained bytes to the UI activity.
