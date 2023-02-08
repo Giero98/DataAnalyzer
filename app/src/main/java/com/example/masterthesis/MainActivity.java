@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
             REQUEST_BT_SCAN = 1,
             REQUEST_BT_ADVERTISE = 2,
             REQUEST_BT_ACCESS_FINE_LOCATION = 3;
-    BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+    final BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     Button button_wifi, button_bt;
     TextView text1;
 
@@ -186,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
         ActivityEnableBt.launch(intent);
     }
     //Reactions to permission response received enableBt
-    ActivityResultLauncher<Intent> ActivityEnableBt = registerForActivityResult(
+    final ActivityResultLauncher<Intent> ActivityEnableBt = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == Activity.RESULT_OK) {
