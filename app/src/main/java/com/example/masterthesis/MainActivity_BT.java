@@ -55,7 +55,7 @@ public class MainActivity_BT extends AppCompatActivity {
     private final DecimalFormat decimalFormat = new DecimalFormat("0.00");
     private boolean dataSendFromClient = false, closeTread = false;
     private Intent fileToSend;
-    BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+    final BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     Button button_back, button_detect, button_foundDevice, button_sendData;
     TextView text,procent;
     ListView listView;
@@ -122,7 +122,7 @@ public class MainActivity_BT extends AppCompatActivity {
     }
 
     //Reactions to permission response received discoverableBt
-    ActivityResultLauncher<Intent> ActivityDiscoverableBt = registerForActivityResult(
+    final ActivityResultLauncher<Intent> ActivityDiscoverableBt = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() != 0)
@@ -370,6 +370,7 @@ public class MainActivity_BT extends AppCompatActivity {
             }
             return fileSize;
         }
+        @SuppressWarnings("UnusedAssignment")
         private String setSpeedSendUnit(double speedSend)
         {
             String sizeUnit = fileSizeUnit;
