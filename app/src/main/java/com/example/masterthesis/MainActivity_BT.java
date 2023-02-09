@@ -18,7 +18,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.OpenableColumns;
-import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -35,6 +36,7 @@ import java.io.OutputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -50,11 +52,11 @@ public class MainActivity_BT extends AppCompatActivity {
     //Variable used as the name of the Bluetooth server
     private static final String NAME = "MASTER_THESIS";
     //A name that identifies the Log and is used to filter logs in the log console
-    private static final String TAG_BT = "BT_ACTIVITY";
     private BluetoothSocket socketClient = null, socketServer = null;
     private final DecimalFormat decimalFormat = new DecimalFormat("0.00");
     private boolean dataSendFromClient = false, closeTread = false;
     private Intent fileToSend;
+    public MainActivity_Log.ListLog LOG = new MainActivity_Log.ListLog();
     final BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     Button button_back, button_detect, button_foundDevice, button_sendData;
     TextView text,procent;
@@ -84,6 +86,11 @@ public class MainActivity_BT extends AppCompatActivity {
         //The invoked thread listening for the connection attempt
         ConnectBtServerThread threadServer = new ConnectBtServerThread();
         threadServer.start();
+        long currentTimeMillis = System.currentTimeMillis();
+        Date currentDate = new Date(currentTimeMillis);
+        String descrpition = "Uruchomiono nasłuchiwanie servera";
+        LOG.addLog(currentDate,descrpition);
+
 
         //Button to detection by other devices
         button_detect.setOnClickListener(v -> discoverableBt());
@@ -199,7 +206,10 @@ public class MainActivity_BT extends AppCompatActivity {
             try {
                 socketClient = device.createRfcommSocketToServiceRecord(MY_UUID);
             } catch (IOException e) {
-                Log.e(TAG_BT, "Socket's create() method failed", e);
+                long currentTimeMillis = System.currentTimeMillis();
+                Date currentDate = new Date(currentTimeMillis);
+                String descrpition = "Socket's create() method failed";
+                LOG.addLog(currentDate,descrpition, e.getMessage());
             }
         }
 
@@ -232,7 +242,10 @@ public class MainActivity_BT extends AppCompatActivity {
             try {
                 socketClient.close();
             } catch (IOException e) {
-                Log.e(TAG_BT, "Could not close the client socket", e);
+                long currentTimeMillis = System.currentTimeMillis();
+                Date currentDate = new Date(currentTimeMillis);
+                String descrpition = "Could not close the client socket";
+                LOG.addLog(currentDate,descrpition, e.getMessage());
             }
         }
         @SuppressLint("MissingPermission")
@@ -404,7 +417,10 @@ public class MainActivity_BT extends AppCompatActivity {
             try {
                 serverSocket = bluetoothAdapter.listenUsingRfcommWithServiceRecord(NAME, MY_UUID);
             } catch (IOException e) {
-                Log.e(TAG_BT, "Socket's listen() method failed", e);
+                long currentTimeMillis = System.currentTimeMillis();
+                Date currentDate = new Date(currentTimeMillis);
+                String descrpition = "Socket's listen() method failed";
+                LOG.addLog(currentDate,descrpition, e.getMessage());
             }
         }
         //A method that is run when the start() method is called on an object representing a thread
@@ -415,7 +431,10 @@ public class MainActivity_BT extends AppCompatActivity {
                 try {
                     socketServer = serverSocket.accept();
                 } catch (IOException e) {
-                    Log.e(TAG_BT, "Socket's accept() method failed", e);
+                    long currentTimeMillis = System.currentTimeMillis();
+                    Date currentDate = new Date(currentTimeMillis);
+                    String descrpition = "Socket's accept() method failed";
+                    LOG.addLog(currentDate,descrpition, e.getMessage());
                     break;
                 }
                 if (socketServer != null) {
@@ -498,10 +517,16 @@ public class MainActivity_BT extends AppCompatActivity {
                             }
                             runOnUiThread(() -> Toast.makeText(MainActivity_BT.this, "Downloaded", Toast.LENGTH_SHORT).show());
                             fos.flush();
-                            Log.d(TAG_BT, "The file has been downloaded and saved");
+                            long currentTimeMillis = System.currentTimeMillis();
+                            Date currentDate = new Date(currentTimeMillis);
+                            String descrpition = "The file has been downloaded and saved";
+                            LOG.addLog(currentDate,descrpition);
                             confirmationMessage= "Confirmed";
                         } catch (IOException e) {
-                            Log.e(TAG_BT, "Error saving file: " + e.getMessage());
+                            long currentTimeMillis = System.currentTimeMillis();
+                            Date currentDate = new Date(currentTimeMillis);
+                            String descrpition = "Error saving file:";
+                            LOG.addLog(currentDate,descrpition, e.getMessage());
                             confirmationMessage= "NoneConfirmed";
                         } finally {
                             try {
@@ -509,7 +534,10 @@ public class MainActivity_BT extends AppCompatActivity {
                                     fos.close();
                                 }
                             } catch (IOException e) {
-                                Log.e(TAG_BT, "Error closing output stream: " + e.getMessage());
+                                long currentTimeMillis = System.currentTimeMillis();
+                                Date currentDate = new Date(currentTimeMillis);
+                                String descrpition = "Error closing output stream:";
+                                LOG.addLog(currentDate,descrpition, e.getMessage());
                             }
                         }
                         outputStream.write(confirmationMessage.getBytes());
@@ -604,5 +632,23 @@ public class MainActivity_BT extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         closeBtConnection();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        MenuItem showLog = menu.findItem(R.id.show_log);
+        showLog.setTitle("Show Log");
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.show_log) {
+            Intent intent = new Intent(this, MainActivity_Log.class);
+            startActivity(intent);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
