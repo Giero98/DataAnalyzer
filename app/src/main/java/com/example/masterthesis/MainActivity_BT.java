@@ -24,6 +24,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,38 +59,34 @@ public class MainActivity_BT extends AppCompatActivity {
     private Intent fileToSend;
     public MainActivity_Log.ListLog LOG = new MainActivity_Log.ListLog();
     final BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-    Button button_back, button_detect, button_foundDevice, button_sendData;
-    TextView text,procent;
-    ListView listView;
-
+    private Button button_sendData;
+    public TextView textView_connected, textView_inf, textView_percent;
+    private ListView listView;
+    private ProgressBar progressBar;
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_bt);
+        setTitle("Master Thesis - Bluetooth");
 
-        button_back = findViewById(R.id.button4);
-        button_detect = findViewById(R.id.button5);
-        button_foundDevice = findViewById(R.id.button6);
-        button_sendData = findViewById(R.id.button7);
-        text = findViewById(R.id.textView3);
-        procent = findViewById(R.id.textView4);
+        Button button_disconnect = findViewById(R.id.button_disconnect);
+        Button button_detect = findViewById(R.id.button_detect);
+        Button button_foundDevice = findViewById(R.id.button_foundDevice);
+        button_sendData = findViewById(R.id.button_sendData);
+        textView_connected = findViewById(R.id.textView_connected);
+        textView_inf = findViewById(R.id.textView_inf);
+        textView_percent = findViewById(R.id.textView_percent);
         listView = findViewById(R.id.ListView);
+        progressBar = findViewById(R.id.progressBar);
 
-        text.setText("Good Job!\n" +
-                "You are connected by Bluetooth.\n");
-        button_back.setText("Disconnect");
-        button_detect.setText("Start detected");
-        button_foundDevice.setText("Found device");
-        button_sendData.setText("Send Data");
+        textView_connected.setText("Not connected");
 
         //The invoked thread listening for the connection attempt
         ConnectBtServerThread threadServer = new ConnectBtServerThread();
         threadServer.start();
-        long currentTimeMillis = System.currentTimeMillis();
-        Date currentDate = new Date(currentTimeMillis);
-        String descrpition = "Uruchomiono nasłuchiwanie servera";
-        LOG.addLog(currentDate,descrpition);
+
+        LOG.addLog(new Date(System.currentTimeMillis()),"A server thread has started listening");
 
 
         //Button to detection by other devices
@@ -102,7 +99,7 @@ public class MainActivity_BT extends AppCompatActivity {
         button_sendData.setOnClickListener(v -> sendData());
 
         //Button to disconnect
-        button_back.setOnClickListener(v -> {
+        button_disconnect.setOnClickListener(v -> {
             closeBtConnection();
             Toast.makeText(MainActivity_BT.this, "Disconnect", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(MainActivity_BT.this, MainActivity.class);
@@ -117,6 +114,8 @@ public class MainActivity_BT extends AppCompatActivity {
             BluetoothDevice device = bluetoothAdapter.getRemoteDevice(deviceAddress);
             ConnectBtClientThread threadClient = new ConnectBtClientThread(device);
             threadClient.start();
+            threadServer.interrupt();
+            LOG.addLog(currentDate(),"The server thread has finished listening");
         });
     }
 
@@ -197,7 +196,7 @@ public class MainActivity_BT extends AppCompatActivity {
     private class ConnectBtClientThread extends Thread {
         private final BluetoothDevice device;
         private long fileSizeBytes;
-        private String fileSizeUnit = "Bytes";
+        public String fileSizeUnit = "Bytes";
 
         //ConnectBtClientThread class constructor
         @SuppressLint("MissingPermission")
@@ -206,10 +205,7 @@ public class MainActivity_BT extends AppCompatActivity {
             try {
                 socketClient = device.createRfcommSocketToServiceRecord(MY_UUID);
             } catch (IOException e) {
-                long currentTimeMillis = System.currentTimeMillis();
-                Date currentDate = new Date(currentTimeMillis);
-                String descrpition = "Socket's create() method failed";
-                LOG.addLog(currentDate,descrpition, e.getMessage());
+                LOG.addLog(currentDate(),"Socket's create() method failed", e.getMessage());
             }
         }
 
@@ -229,7 +225,7 @@ public class MainActivity_BT extends AppCompatActivity {
             // The connection attempt succeeded.
             //runOnUiThread() Used to run code on the main UI thread.
             runOnUiThread(() -> {
-                            text.setText("Connected as a client with " + device.getName());
+                            textView_connected.setText("Connected as a client with\n" + device.getName());
                             button_sendData.setVisibility(View.VISIBLE);});
             sendNameDevice();
             do {
@@ -242,10 +238,7 @@ public class MainActivity_BT extends AppCompatActivity {
             try {
                 socketClient.close();
             } catch (IOException e) {
-                long currentTimeMillis = System.currentTimeMillis();
-                Date currentDate = new Date(currentTimeMillis);
-                String descrpition = "Could not close the client socket";
-                LOG.addLog(currentDate,descrpition, e.getMessage());
+                LOG.addLog(currentDate(),"Could not close the client socket", e.getMessage());
             }
         }
         @SuppressLint("MissingPermission")
@@ -288,9 +281,9 @@ public class MainActivity_BT extends AppCompatActivity {
                     while ((bytesRead = fis.read(buffer)) > 0) {
                         outputStream.write(buffer, 0, bytesRead);
                         fullBytes+=bytesRead;
-                        double precent = ((fullBytes * 100.0) / fileSizeBytes);
-                        runOnUiThread(() -> procent.setText("Sent: " +
-                                decimalFormat.format(precent) + " %"));
+                        int percent = (int) (fullBytes * 100.0) / (int) fileSizeBytes;
+                        runOnUiThread(() -> textView_percent.setText("Sent: " + percent + " %"));
+                        progressBar.setProgress(percent);
                     }
                     outputStream.flush();
                     Arrays.fill(buffer, 0, buffer.length, (byte) 0);
@@ -318,7 +311,7 @@ public class MainActivity_BT extends AppCompatActivity {
                         double resultTime = (double) (endTime - startTime) / 1000; //ms to s
                         double speedSend = fileSize / resultTime;
                         String sizeUnit = setSpeedSendUnit(speedSend);
-                        runOnUiThread(() -> text.setText(text.getText() + "\nFile transfer time: " +
+                        runOnUiThread(() -> textView_inf.setText(textView_inf.getText() + "\nFile transfer time: " +
                                 decimalFormat.format(resultTime) + " s\nSize of the uploaded file: " +
                                 decimalFormat.format(fileSize) + " " + fileSizeUnit + "\nUpload speed is: " +
                                 decimalFormat.format(speedSend) + " " + sizeUnit + "/s"));
@@ -328,7 +321,7 @@ public class MainActivity_BT extends AppCompatActivity {
                     }
                     else if(confirmationMessage.equals("NoneConfirmed"))
                     {
-                        runOnUiThread(() -> text.setText(text.getText() + "\nFailed to save to the server"));
+                        runOnUiThread(() -> textView_inf.setText(textView_inf.getText() + "\nFailed to save to the server"));
                         Arrays.fill(confirmationBuffer, 0, confirmationBuffer.length, (byte) 0);
                         dataSendFromClient = false;
                         return;
@@ -357,7 +350,7 @@ public class MainActivity_BT extends AppCompatActivity {
                 }
             }
             String finalFileName = fileName;
-            runOnUiThread(() -> text.setText(text.getText() + "\nThe name of the uploaded file: " + finalFileName));
+            runOnUiThread(() -> textView_inf.setText("The name of the uploaded file: " + finalFileName));
             return finalFileName;
         }
         @SuppressLint("Range")
@@ -427,14 +420,11 @@ public class MainActivity_BT extends AppCompatActivity {
         @SuppressLint("HardwareIds")
         public void run() {
             // Keep listening until exception occurs or a socket is returned.
-            while (true) {
+            while (!isInterrupted()) {
                 try {
                     socketServer = serverSocket.accept();
                 } catch (IOException e) {
-                    long currentTimeMillis = System.currentTimeMillis();
-                    Date currentDate = new Date(currentTimeMillis);
-                    String descrpition = "Socket's accept() method failed";
-                    LOG.addLog(currentDate,descrpition, e.getMessage());
+                    LOG.addLog(currentDate(),"Socket's accept() method failed", e.getMessage());
                     break;
                 }
                 if (socketServer != null) {
@@ -443,12 +433,12 @@ public class MainActivity_BT extends AppCompatActivity {
                         InputStream inputStream = socketServer.getInputStream();
                         getData(inputStream);
                     } catch (IOException e) {
-                        throw new RuntimeException(e);
+                        LOG.addLog(currentDate(),"Error closing output stream:", e.getMessage());
                     }
                     try {
                         serverSocket.close();
                     } catch (IOException e) {
-                        throw new RuntimeException(e);
+                        LOG.addLog(currentDate(),"Error closing output stream:", e.getMessage());
                     }
                     break;
                 }
@@ -464,7 +454,7 @@ public class MainActivity_BT extends AppCompatActivity {
                 // Send the obtained bytes to the UI activity.
                 String incomingMessage = new String(buffer, 0, bytes);
                 //runOnUiThread() Used to run code on the main UI thread.
-                runOnUiThread(() -> text.setText("Connected as a server with " + incomingMessage));
+                runOnUiThread(() -> textView_connected.setText("Connected as a server with\n" + incomingMessage));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -487,12 +477,12 @@ public class MainActivity_BT extends AppCompatActivity {
                         String bufferSizeS = dataArray[3];
                         Arrays.fill(buffer, 0, buffer.length, (byte) 0);
 
-
-                        long filesizeee111 = 0;
+                        long filesizeee111;
                         try {
                             filesizeee111 = Long.parseLong(filesize);
                         } catch (NumberFormatException e) {
-                            System.out.println("Invalid format: " + filesize);
+                            LOG.addLog(currentDate(),"Invalid format", e.getMessage());
+                            break;
                         }
                         double filesizeee = conferteFileSize(filesizeee111,fileUnit);
 
@@ -507,57 +497,51 @@ public class MainActivity_BT extends AppCompatActivity {
                             while ((bytes = inputStream.read(bufferData)) > 0) {
                                 fos.write(bufferData, 0, bytes);
                                 fullBytes+=bytes;
-                                double precent = ((fullBytes * 100.0) / filesizeee111);
-                                runOnUiThread(() -> procent.setText("Download: " +
-                                        decimalFormat.format(precent) + " %"));
-                                if(decimalFormat.format(precent).equals("100,00")) {
+                                int precent = (int) (fullBytes * 100.0) / (int) filesizeee111;
+                                runOnUiThread(() -> textView_percent.setText("Download: " + precent + " %"));
+                                progressBar.setProgress(precent);
+                                if(precent == 100) {
                                     Arrays.fill(bufferData, 0, bufferData.length, (byte) 0);
                                     break;
                                 }
                             }
                             runOnUiThread(() -> Toast.makeText(MainActivity_BT.this, "Downloaded", Toast.LENGTH_SHORT).show());
                             fos.flush();
-                            long currentTimeMillis = System.currentTimeMillis();
-                            Date currentDate = new Date(currentTimeMillis);
-                            String descrpition = "The file has been downloaded and saved";
-                            LOG.addLog(currentDate,descrpition);
+                            LOG.addLog(new Date(System.currentTimeMillis()),"The file has been downloaded and saved");
                             confirmationMessage= "Confirmed";
                         } catch (IOException e) {
-                            long currentTimeMillis = System.currentTimeMillis();
-                            Date currentDate = new Date(currentTimeMillis);
-                            String descrpition = "Error saving file:";
-                            LOG.addLog(currentDate,descrpition, e.getMessage());
+                            LOG.addLog(new Date(System.currentTimeMillis()),"Error saving file:", e.getMessage());
                             confirmationMessage= "NoneConfirmed";
+                            outputStream.write(confirmationMessage.getBytes());
+                            outputStream.flush();
+                            break;
                         } finally {
                             try {
                                 if (fos != null) {
                                     fos.close();
                                 }
                             } catch (IOException e) {
-                                long currentTimeMillis = System.currentTimeMillis();
-                                Date currentDate = new Date(currentTimeMillis);
-                                String descrpition = "Error closing output stream:";
-                                LOG.addLog(currentDate,descrpition, e.getMessage());
+                                LOG.addLog(new Date(System.currentTimeMillis()),"Error closing output stream:", e.getMessage());
                             }
                         }
                         outputStream.write(confirmationMessage.getBytes());
                         outputStream.flush();
-                        runOnUiThread(() -> text.setText(text.getText() + "\nThe name of the received file: "+
+                        runOnUiThread(() -> textView_inf.setText("The name of the received file: "+
                                 fileName + "\nFile size: " +decimalFormat.format(filesizeee) + " " + fileUnit));
                     }
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    LOG.addLog(currentDate(),"Error closing output stream:", e.getMessage());
                 }
                 if(!socketServer.isConnected()) {
                     try {
-                        runOnUiThread(() -> text.setText(text.getText() + "\nDisconnected"));
+                        runOnUiThread(() -> textView_connected.setText("Disconnected"));
                         runOnUiThread(() -> Toast.makeText(MainActivity_BT.this, "Disconnected", Toast.LENGTH_SHORT).show());
                         inputStream.close();
                         outputStream.close();
                         socketServer.close();
                         break;
                     } catch (IOException ex) {
-                        throw new RuntimeException(ex);
+                        LOG.addLog(currentDate(),"Error closing output stream:", ex.getMessage());
                     }
                 }
                 if (closeTread)
@@ -614,7 +598,7 @@ public class MainActivity_BT extends AppCompatActivity {
                 try {
                     socketClient.close();
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    LOG.addLog(currentDate(),"Error closing output stream:", e.getMessage());
                 }
             }
         if(socketServer != null)
@@ -622,9 +606,14 @@ public class MainActivity_BT extends AppCompatActivity {
                 try {
                     socketServer.close();
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    LOG.addLog(currentDate(),"Error closing output stream:", e.getMessage());
                 }
             }
+    }
+
+    private Date currentDate()
+    {
+        return new Date(System.currentTimeMillis());
     }
 
     //The method that is run when the application is closed
@@ -651,4 +640,5 @@ public class MainActivity_BT extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
 }

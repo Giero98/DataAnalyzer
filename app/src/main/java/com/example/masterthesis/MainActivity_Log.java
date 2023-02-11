@@ -24,6 +24,7 @@ public class MainActivity_Log extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_log);
+        setTitle("Master Thesis - LOG");
 
         listViewLog = findViewById(R.id.ListViewLog);
 

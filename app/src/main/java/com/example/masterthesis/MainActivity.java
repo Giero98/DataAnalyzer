@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setTitle("Master Thesis - Menu");
 
         button_wifi = findViewById(R.id.button);
         button_bt = findViewById(R.id.button2);
@@ -239,8 +240,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
-        MenuItem show_Log = menu.findItem(R.id.show_log);
-        show_Log.setTitle("Show Log");
+        MenuItem showLog = menu.findItem(R.id.show_log);
+        showLog.setTitle("Show Log");
         return true;
     }
     @Override
