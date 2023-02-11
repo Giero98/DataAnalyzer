@@ -24,6 +24,7 @@ public class MainActivity_WiFi extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_wi_fi);
+        setTitle("Master Thesis - Wi-Fi");
 
         button_back = findViewById(R.id.button3);
         text1 = findViewById(R.id.textView2);

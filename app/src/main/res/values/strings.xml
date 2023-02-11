@@ -4,4 +4,8 @@
     <string name="button2">Button</string>
     <string name="button3">Button</string>
     <string name="welcome_to_my_app">Welcome to my App!</string>
+    <string name="button_disconnect">Disconnect</string>
+    <string name="button_detect">Start detected</string>
+    <string name="button_foundDevice">Found device</string>
+    <string name="button_sendData">Send Data</string>
 </resources>
