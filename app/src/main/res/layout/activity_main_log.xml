@@ -16,14 +16,20 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="@string/button_inf_log" />
+            android:text="@string/button_inf_log"
+            android:textStyle="bold"
+            tools:ignore="VisualLintButtonSize"
+            style="?android:attr/buttonBarButtonStyle" />
 
         <Button
             android:id="@+id/button_error_log"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="@string/button_error_log" />
+            android:text="@string/button_error_log"
+            android:textStyle="bold"
+            tools:ignore="VisualLintButtonSize"
+            style="?android:attr/buttonBarButtonStyle" />
 
     </LinearLayout>
 
