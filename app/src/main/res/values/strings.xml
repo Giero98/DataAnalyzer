@@ -8,4 +8,6 @@
     <string name="button_detect">Start detected</string>
     <string name="button_foundDevice">Found device</string>
     <string name="button_sendData">Send Data</string>
+    <string name="button_inf_log">Information Log</string>
+    <string name="button_error_log">Error Log</string>
 </resources>
