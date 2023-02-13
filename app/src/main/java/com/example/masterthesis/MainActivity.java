@@ -23,13 +23,10 @@ import android.bluetooth.BluetoothAdapter;
  * Main view of the application
  */
 public class MainActivity extends AppCompatActivity {
-    final BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setTitle("Master Thesis - Menu");
 
         Button button_wifi = findViewById(R.id.button_wifi);
         Button button_bt = findViewById(R.id.button_bt);
@@ -149,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
 
     //Checking if the device supports Bluetooth
     private boolean checkSupportBt() {
-        if (bluetoothAdapter == null) {
+        if (Constants.bluetoothAdapter == null) {
             Toast.makeText(MainActivity.this, "Device doesn't support Bluetooth", Toast.LENGTH_SHORT).show();
             return false;
         } else return true;
@@ -157,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
 
     //Turn on Bluetooth or go to Bluetooth Activities
     private void firstStepBt() {
-        if (!bluetoothAdapter.isEnabled())
+        if (!Constants.bluetoothAdapter.isEnabled())
             enableBt();
         else
             goToBt();
@@ -217,6 +214,8 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
     }
+
+    //Create a menu for your current activity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
@@ -224,6 +223,8 @@ public class MainActivity extends AppCompatActivity {
         showLog.setTitle("Show Log");
         return true;
     }
+
+    //Create interactions for selecting items from the menu
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();

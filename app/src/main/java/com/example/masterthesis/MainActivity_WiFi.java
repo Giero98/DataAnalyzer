@@ -24,7 +24,7 @@ public class MainActivity_WiFi extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_wi_fi);
-        setTitle("Master Thesis - Wi-Fi");
+        setTitle("Wi-Fi");
 
         button_back = findViewById(R.id.button3);
         text1 = findViewById(R.id.textView2);
@@ -43,6 +43,8 @@ public class MainActivity_WiFi extends AppCompatActivity {
             startActivity(intent);
         });
     }
+
+    //Create a menu for your current activity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
@@ -50,6 +52,8 @@ public class MainActivity_WiFi extends AppCompatActivity {
         showLog.setTitle("Show Log");
         return true;
     }
+
+    //Create interactions for selecting items from the menu
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
