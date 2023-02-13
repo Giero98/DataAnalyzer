@@ -2,23 +2,19 @@ package com.example.masterthesis;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Date;
 
 public class MainActivity_Log extends AppCompatActivity {
 
-    public static final ArrayList<String> listLog = new ArrayList<>();
-    public static ArrayAdapter<String> listAdapterLog;
-
-    public ListView listViewLog;
+    public static final ArrayList<String> listLog = new ArrayList<>(), listLogError = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,11 +22,24 @@ public class MainActivity_Log extends AppCompatActivity {
         setContentView(R.layout.activity_main_log);
         setTitle("Master Thesis - LOG");
 
-        listViewLog = findViewById(R.id.ListViewLog);
+        ListView listViewLog = findViewById(R.id.ListViewLog);
+        Button buttonInfLog = findViewById(R.id.button_inf_log);
+        Button buttonErrorLog = findViewById(R.id.button_error_log);
 
-        listAdapterLog = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listLog);
+        ArrayAdapter<String> listAdapterLog = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listLog);
+        ArrayAdapter<String> listAdapterLogError = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listLogError);
         listViewLog.setAdapter(listAdapterLog);
         listAdapterLog.notifyDataSetChanged();
+
+        buttonInfLog.setOnClickListener(v ->{
+            listViewLog.setAdapter(listAdapterLog);
+            listAdapterLog.notifyDataSetChanged();
+        });
+
+        buttonErrorLog.setOnClickListener(v->{
+            listViewLog.setAdapter(listAdapterLogError);
+            listAdapterLogError.notifyDataSetChanged();
+        });
     }
 
     public static class ListLog extends MainActivity_Log
@@ -42,7 +51,7 @@ public class MainActivity_Log extends AppCompatActivity {
 
         public void addLog(Date date, String description, String errorCode)
         {
-            listLog.add(date + "\n" + description + "\n" + errorCode);
+            listLogError.add(date + "\n" + description + "\n" + errorCode);
         }
         public void addLog(Date date, String description)
         {
