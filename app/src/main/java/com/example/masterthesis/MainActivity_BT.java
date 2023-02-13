@@ -34,39 +34,33 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.UUID;
 
 /**
  * View of the application after successful connection via Bluetooth
  */
 public class MainActivity_BT extends AppCompatActivity {
+
     //Variable containing the list of devices found
     private final ArrayList<String> discoveredDevices = new ArrayList<>();
+
     //Adapter connecting arrays with ListView
     private ArrayAdapter<String> listAdapter;
-    //A unique UUID that will be used as a common identifier for both devices
-    private static final UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-    //Variable used as the name of the Bluetooth server
-    private static final String NAME = "MASTER_THESIS";
+
     //A name that identifies the Log and is used to filter logs in the log console
     private BluetoothSocket socketClient = null, socketServer = null;
-    private final DecimalFormat decimalFormat = new DecimalFormat("0.00");
     private boolean dataSendFromClient = false;
     private Intent fileToSend;
-    public MainActivity_Log.ListLog LOG = new MainActivity_Log.ListLog();
+    private final MainActivity_Log.ListLog LOG = new MainActivity_Log.ListLog();
     final BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     private Button button_sendData, button_foundDevice, button_detect, button_disconnectBack;
-    public TextView textView_connected, textView_inf, textView_percent;
+    private TextView textView_connected, textView_inf, textView_percent;
     private ListView listView;
     private ProgressBar progressBar;
     private ConnectBtServerThread threadServer;
     private ConnectBtClientThread threadClient;
-
-    private final int REQUEST_CODE_SEND_DATA_FILE = 1;
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -203,7 +197,7 @@ public class MainActivity_BT extends AppCompatActivity {
         public ConnectBtClientThread(BluetoothDevice device) {
             LOG.addLog(new Date(System.currentTimeMillis()),"A client thread has started");
             try {
-                socketClient = device.createRfcommSocketToServiceRecord(MY_UUID);
+                socketClient = device.createRfcommSocketToServiceRecord(Constants.MY_UUID);
             } catch (IOException e) {
                 LOG.addLog(currentDate(),"Socket's create() method failed", e.getMessage());
                 return;
@@ -318,9 +312,9 @@ public class MainActivity_BT extends AppCompatActivity {
                                 double speedSend = fileSize / resultTime;
                                 String sizeUnit = setSpeedSendUnit(speedSend);
                                 runOnUiThread(() -> textView_inf.setText(textView_inf.getText() + "\nFile transfer time: " +
-                                        decimalFormat.format(resultTime) + " s\nSize of the uploaded file: " +
-                                        decimalFormat.format(fileSize) + " " + fileSizeUnit + "\nUpload speed is: " +
-                                        decimalFormat.format(speedSend) + " " + sizeUnit + "/s"));
+                                        Constants.decimalFormat.format(resultTime) + " s\nSize of the uploaded file: " +
+                                        Constants.decimalFormat.format(fileSize) + " " + fileSizeUnit + "\nUpload speed is: " +
+                                        Constants.decimalFormat.format(speedSend) + " " + sizeUnit + "/s"));
                                 Arrays.fill(confirmBuffer, 0, confirmBuffer.length, (byte) 0);
                                 dataSendFromClient = false;
                                 break;
@@ -431,7 +425,7 @@ public class MainActivity_BT extends AppCompatActivity {
         public ConnectBtServerThread() {
             LOG.addLog(new Date(System.currentTimeMillis()),"A server thread has started listening");
             try {
-                serverSocket = bluetoothAdapter.listenUsingRfcommWithServiceRecord(NAME, MY_UUID);
+                serverSocket = bluetoothAdapter.listenUsingRfcommWithServiceRecord(Constants.NAME, Constants.MY_UUID);
             } catch (IOException e) {
                 LOG.addLog(currentDate(),"Socket's listen() method failed", e.getMessage());
             }
@@ -545,7 +539,8 @@ public class MainActivity_BT extends AppCompatActivity {
                                 outputStream.flush();
                                 if(confirmMessage.equals("Confirmed")) {
                                     runOnUiThread(() -> textView_inf.setText("The name of the received file: " +
-                                            fileName + "\nFile size: " + decimalFormat.format(fileSize) + " " + fileUnit));
+                                            fileName + "\nFile size: " + Constants.decimalFormat.format(fileSize) +
+                                            " " + fileUnit));
                                 }
                                 else
                                 {
@@ -607,7 +602,7 @@ public class MainActivity_BT extends AppCompatActivity {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("*/*");
-        startActivityForResult(intent,REQUEST_CODE_SEND_DATA_FILE);
+        startActivityForResult(intent,Constants.REQUEST_BT_SEND_DATA_FILE);
     }
 
     //Reactions to permission response received openFile
@@ -615,7 +610,7 @@ public class MainActivity_BT extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_SEND_DATA_FILE && resultCode == RESULT_OK) {
+        if (requestCode == Constants.REQUEST_BT_SEND_DATA_FILE && resultCode == RESULT_OK) {
             fileToSend = data;
             dataSendFromClient = true;
         }

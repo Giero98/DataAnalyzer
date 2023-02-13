@@ -19,7 +19,7 @@
         android:id="@+id/button3"
         android:layout_width="232dp"
         android:layout_height="51dp"
-        android:text="@string/button"
+        android:text="@string/button_wifi"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
