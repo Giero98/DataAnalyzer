@@ -16,40 +16,55 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/button_disconnect"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="@string/button_disconnect"
-                app:icon="@drawable/ic_bt_disconect"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-            <Button
-                android:id="@+id/button_detect"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="@string/button_detect"
-                app:icon="@drawable/ic_bt_detected"/>
+                <Button
+                    android:id="@+id/button_disconnectBack"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/button_disconnectBack"
+                    app:icon="@drawable/ic_bt_disconect"/>
 
-            <Button
-                android:id="@+id/button_foundDevice"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="@string/button_foundDevice"
-                app:icon="@drawable/ic_bt_connected" />
+                <Button
+                    android:id="@+id/button_sendData"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/button_sendData"
+                    android:visibility="invisible"
+                    app:icon="@drawable/ic_bt_send_data" />
 
-            <Button
-                android:id="@+id/button_sendData"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="@string/button_sendData"
-                android:visibility="invisible"
-                app:icon="@drawable/ic_bt_send_data" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <Button
+                    android:id="@+id/button_foundDevice"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/button_foundDevice"
+                    app:icon="@drawable/ic_bt_connected" />
+
+                <Button
+                    android:id="@+id/button_detect"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/button_detect"
+                    app:icon="@drawable/ic_bt_detected"/>
+
+            </LinearLayout>
+
         </LinearLayout>
 
         <TextView
@@ -68,7 +83,7 @@
             android:id="@+id/textView_inf"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="15sp"/>
+            android:textSize="18sp"/>
 
         <ListView
             android:id="@+id/ListView"
