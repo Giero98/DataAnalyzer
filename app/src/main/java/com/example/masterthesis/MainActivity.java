@@ -8,7 +8,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -17,7 +16,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.bluetooth.BluetoothAdapter;
 
@@ -25,34 +23,13 @@ import android.bluetooth.BluetoothAdapter;
  * Main view of the application
  */
 public class MainActivity extends AppCompatActivity {
-    //Variables used to match the permission response
-    final private int
-            REQUEST_BT_CONNECT = 0,
-            REQUEST_BT_SCAN = 1,
-            REQUEST_BT_ADVERTISE = 2,
-            REQUEST_BT_ACCESS_FINE_LOCATION = 3;
-    final BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-    Button button_wifi, button_bt;
-    TextView text1;
-
-    @SuppressLint("SetTextI18n")/*
-          Used to eliminate the problem
-          "String Literal in` Settext` can not be translated. Use Android Resources Inspes. "
-          to set the text on Buttons and TextView
-     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setTitle("Master Thesis - Menu");
 
-        button_wifi = findViewById(R.id.button);
-        button_bt = findViewById(R.id.button2);
-        text1 = findViewById(R.id.textView);
-
-        text1.setText("Welcome to my App");
-        button_bt.setText("Connect by Bluetooth");
-        button_wifi.setText("Connect by Wi-Fi");
+        Button button_wifi = findViewById(R.id.button_wifi);
+        Button button_bt = findViewById(R.id.button_bt);
 
         //Bluetooth connection button
         button_bt.setOnClickListener(v -> conditionalMethodsBt());
@@ -109,28 +86,28 @@ public class MainActivity extends AppCompatActivity {
     //Calling the action of granting permissions to Bluetooth_Connect
     private void permissionBtConnect() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH_CONNECT}, REQUEST_BT_CONNECT);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH_CONNECT}, Constants.REQUEST_BT_CONNECT);
         }
     }
 
     //Calling the action of granting permissions to Bluetooth_Scan
     private void permissionBtScan() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH_SCAN}, REQUEST_BT_SCAN);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH_SCAN}, Constants.REQUEST_BT_SCAN);
         }
     }
 
     //Calling the action of granting permissions to Bluetooth_Advertise
     private void permissionBtAdvertise() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH_ADVERTISE}, REQUEST_BT_ADVERTISE);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH_ADVERTISE}, Constants.REQUEST_BT_ADVERTISE);
         }
     }
 
     //Calling the action of granting permissions to Bluetooth_AccessFineLocation
     private void permissionBtAccessFineLocation() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_BT_ACCESS_FINE_LOCATION);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, Constants.REQUEST_BT_ACCESS_FINE_LOCATION);
         }
     }
 
@@ -169,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
 
     //Checking if the device supports Bluetooth
     private boolean checkSupportBt() {
-        if (bluetoothAdapter == null) {
+        if (Constants.bluetoothAdapter == null) {
             Toast.makeText(MainActivity.this, "Device doesn't support Bluetooth", Toast.LENGTH_SHORT).show();
             return false;
         } else return true;
@@ -177,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
 
     //Turn on Bluetooth or go to Bluetooth Activities
     private void firstStepBt() {
-        if (!bluetoothAdapter.isEnabled())
+        if (!Constants.bluetoothAdapter.isEnabled())
             enableBt();
         else
             goToBt();
@@ -207,28 +184,28 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
-            case REQUEST_BT_CONNECT:
+            case Constants.REQUEST_BT_CONNECT:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Toast.makeText(this, "BLUETOOTH_CONNECT permission granted", Toast.LENGTH_SHORT).show();
                     conditionalMethodsBt();
                 }
                 else Toast.makeText(this, "BLUETOOTH_CONNECT permission denied", Toast.LENGTH_SHORT).show();
                 break;
-            case REQUEST_BT_SCAN:
+            case Constants.REQUEST_BT_SCAN:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Toast.makeText(this, "BLUETOOTH_SCAN permission granted", Toast.LENGTH_SHORT).show();
                     conditionalMethodsBt();
                 }
                 else Toast.makeText(this, "BLUETOOTH_SCAN permission denied", Toast.LENGTH_SHORT).show();
                 break;
-            case REQUEST_BT_ADVERTISE:
+            case Constants.REQUEST_BT_ADVERTISE:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Toast.makeText(this, "BLUETOOTH_ADVERTISE permission granted", Toast.LENGTH_SHORT).show();
                     conditionalMethodsBt();
                 }
                 else Toast.makeText(this, "BLUETOOTH_ADVERTISE permission denied", Toast.LENGTH_SHORT).show();
                 break;
-            case REQUEST_BT_ACCESS_FINE_LOCATION:
+            case Constants.REQUEST_BT_ACCESS_FINE_LOCATION:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Toast.makeText(this, "BLUETOOTH_ACCESS_FINE_LOCATION permission granted", Toast.LENGTH_SHORT).show();
                     conditionalMethodsBt();
@@ -237,6 +214,8 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
     }
+
+    //Create a menu for your current activity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
@@ -244,6 +223,8 @@ public class MainActivity extends AppCompatActivity {
         showLog.setTitle("Show Log");
         return true;
     }
+
+    //Create interactions for selecting items from the menu
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();

@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">Master Thesis</string>
-    <string name="button">Button</string>
-    <string name="button2">Button</string>
+    <string name="button_wifi">Connect by Wi-Fi</string>
+    <string name="button_bt">Connect by Bluetooth</string>
     <string name="button3">Button</string>
-    <string name="welcome_to_my_app">Welcome to my App!</string>
+    <string name="first_text">Welcome to my App!</string>
     <string name="button_disconnectBack">Back</string>
     <string name="button_detect">Start detected</string>
     <string name="button_foundDevice">Found device</string>
