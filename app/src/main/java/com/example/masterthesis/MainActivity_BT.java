@@ -114,7 +114,6 @@ public class MainActivity_BT extends AppCompatActivity {
             threadClient = new ConnectBtClientThread(device);
             threadClient.start();
             threadServer.interrupt();
-            LOG.addLog(LOG.currentDate(),"The server thread has finished listening");
         });
     }
 
@@ -224,7 +223,7 @@ public class MainActivity_BT extends AppCompatActivity {
                 closeSocketClient();
                 return;
             }
-            // The connection attempt succeeded.
+            LOG.addLog(LOG.currentDate(),"The connection attempt succeeded");
             //runOnUiThread() Used to run code on the main UI thread.
             runOnUiThread(() -> {
                 textView_connected.setText("Connected as a client with\n" + deviceName);
@@ -235,7 +234,7 @@ public class MainActivity_BT extends AppCompatActivity {
                 listView.setVisibility(View.INVISIBLE);});
             if(sendNameDevice()) {
                 //keep looping until the thread is stopped.
-                while (!threadClient.isInterrupted()) {
+                while (!interrupted()) {
                     if (dataSendFromClient)
                         sendData();
                     if(!socketClient.isConnected()) {
@@ -244,13 +243,13 @@ public class MainActivity_BT extends AppCompatActivity {
                         break;
                     }
                 }
-                LOG.addLog(LOG.currentDate(),"The client thread has been closed");
             }
         }
         // Closes the client socket and causes the thread to finish.
         private void closeSocketClient() {
             try {
                 socketClient.close();
+                LOG.addLog(LOG.currentDate(),"Client socket closed");
             } catch (IOException e) {
                 LOG.addLog(LOG.currentDate(),"Could not close the client socket", e.getMessage());
             }
@@ -265,6 +264,7 @@ public class MainActivity_BT extends AppCompatActivity {
                 try {
                     outputStream.write(Constants.bluetoothAdapter.getName().getBytes());
                     outputStream.flush(); //flush() is used to push out all written bytes
+                    LOG.addLog(LOG.currentDate(),"Device name sent");
                     return true;
                 }
                 catch (IOException e) {
@@ -293,6 +293,7 @@ public class MainActivity_BT extends AppCompatActivity {
                 String fileData = fileName + ";" + fileSizeUnit + ";" + fileSizeBytes + ";" + bufferSize;
                 outputStream.write(fileData.getBytes());
                 outputStream.flush();
+                LOG.addLog(LOG.currentDate(),"Sending file information");
 
                 //start counting the transfer time
                 long startTime = System.currentTimeMillis();
@@ -311,6 +312,7 @@ public class MainActivity_BT extends AppCompatActivity {
                         progressBar.setProgress(percent);
                     }
                     outputStream.flush();
+                    LOG.addLog(LOG.currentDate(),"Data file sent");
                     Arrays.fill(buffer, 0, buffer.length, (byte) 0); //clearing the buffer
 
                     try {
@@ -337,6 +339,7 @@ public class MainActivity_BT extends AppCompatActivity {
                                 dataSendFromClient = false;
                                 break;
                             } else if (confirmMessage.equals("NoneConfirmed")) {
+                                LOG.addLog(LOG.currentDate(),"Failed to save to the server");
                                 runOnUiThread(() -> textView_inf.setText(textView_inf.getText() + "\nFailed to save to the server"));
                                 Arrays.fill(confirmBuffer, 0, confirmBuffer.length, (byte) 0);
                                 dataSendFromClient = false;
@@ -354,6 +357,7 @@ public class MainActivity_BT extends AppCompatActivity {
                     try {
                         if (file != null) {
                             file.close();
+                            LOG.addLog(LOG.currentDate(),"Stream to file closed");
                         }
                     } catch (IOException e) {
                         LOG.addLog(LOG.currentDate(),"Failed to close stream to file",e.getMessage());
@@ -467,7 +471,7 @@ public class MainActivity_BT extends AppCompatActivity {
                 LOG.addLog(LOG.currentDate(),"Socket's accept() method failed", e.getMessage());
             }
             if (socketServer != null) {
-                // A connection was accepted
+                LOG.addLog(LOG.currentDate(),"The connection attempt succeeded");
                 try {
                     InputStream inputStream = socketServer.getInputStream();
                     getData(inputStream);
@@ -519,7 +523,7 @@ public class MainActivity_BT extends AppCompatActivity {
                     OutputStream outputStream = socketServer.getOutputStream();
 
                     //The loop will be sent until it is stopped
-                    while(!isInterrupted()) {
+                    while(!interrupted()) {
                         try {
                             bytes = inputStream.read(buffer);
                             if (bytes > 0) {
@@ -531,12 +535,14 @@ public class MainActivity_BT extends AppCompatActivity {
                                 String fileUnit = dataArray[1];
                                 String fileSizeString = dataArray[2];
                                 String bufferSize = dataArray[3];
+                                LOG.addLog(LOG.currentDate(),"File information is being retrieved");
                                 Arrays.fill(buffer, 0, buffer.length, (byte) 0);
 
                                 double fileSize = conversionFileSize(Long.parseLong(fileSizeString),fileUnit);
                                 String confirmMessage;
                                 FileOutputStream fileToSave = null;
                                 File file = setFilePlace();
+                                LOG.addLog(LOG.currentDate(),"The file name has been set");
 
                                 try {
                                     fileToSave = new FileOutputStream(file);
@@ -555,8 +561,8 @@ public class MainActivity_BT extends AppCompatActivity {
                                             break;
                                         }
                                     }
-                                    runOnUiThread(() -> Toast.makeText(MainActivity_BT.this, "Downloaded File", Toast.LENGTH_SHORT).show());
                                     fileToSave.flush();
+                                    runOnUiThread(() -> Toast.makeText(MainActivity_BT.this, "Downloaded File", Toast.LENGTH_SHORT).show());
                                     LOG.addLog(new Date(System.currentTimeMillis()),"The file has been downloaded and saved");
                                     confirmMessage= "Confirmed";
                                 } catch (IOException e) {
@@ -565,7 +571,8 @@ public class MainActivity_BT extends AppCompatActivity {
                                 } finally {
                                     try {
                                         if (fileToSave != null) {
-                                            fileToSave.close(); //closing stream to file
+                                            fileToSave.close();
+                                            LOG.addLog(LOG.currentDate(),"Stream to file closed");
                                         }
                                     } catch (IOException e) {
                                         LOG.addLog(LOG.currentDate(),"Error closing output stream:", e.getMessage());
@@ -574,6 +581,7 @@ public class MainActivity_BT extends AppCompatActivity {
                                 //sending response to download and save file
                                 outputStream.write(confirmMessage.getBytes());
                                 outputStream.flush();
+                                LOG.addLog(LOG.currentDate(),"Sending response to download and save file");
 
                                 if(confirmMessage.equals("Confirmed")) {
                                     runOnUiThread(() -> textView_inf.setText("The name of the received file: " +
@@ -654,6 +662,7 @@ public class MainActivity_BT extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == Constants.REQUEST_BT_SEND_DATA_FILE && resultCode == RESULT_OK) {
+            LOG.addLog(LOG.currentDate(),"You have selected a file to upload");
             fileToSend = data;
             dataSendFromClient = true;
         }
@@ -666,12 +675,12 @@ public class MainActivity_BT extends AppCompatActivity {
         if(threadClient != null)
             if(threadClient.isAlive()) {
                 threadClient.interrupt();
-                LOG.addLog(LOG.currentDate(),"Thread client was closed");
+                LOG.addLog(LOG.currentDate(),"Thread client was stopped");
             }
         if(threadServer != null)
             if(threadServer.isAlive()) {
                 threadServer.interrupt();
-                LOG.addLog(LOG.currentDate(),"Thread server was closed");
+                LOG.addLog(LOG.currentDate(),"Thread server was stopped");
             }
         if(receiver.isOrderedBroadcast()) {
             unregisterReceiver(receiver);
