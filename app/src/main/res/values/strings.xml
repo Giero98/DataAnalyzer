@@ -1,13 +1,29 @@
 <resources>
     <string name="app_name">Master Thesis</string>
-    <string name="button_wifi">Connect by Wi-Fi</string>
-    <string name="button_bt">Connect by Bluetooth</string>
-    <string name="button3">Button</string>
     <string name="first_text">Welcome to my App!</string>
-    <string name="button_disconnectBack">Back</string>
-    <string name="button_detect">Start detected</string>
-    <string name="button_foundDevice">Found device</string>
-    <string name="button_sendData">Send Data</string>
-    <string name="button_inf_log">Information Log</string>
-    <string name="button_error_log">Error Log</string>
+    <string name="button_wifi">CONNECT BY WI-FI</string>
+    <string name="button_bt">CONNECT BY BLUETOOTH</string>
+    <string name="button3">BUTTON</string>
+    <string name="button_disconnectBack">BACK</string>
+    <string name="button_detect">START DETECTED</string>
+    <string name="button_foundDevice">FOUND DEVICE</string>
+    <string name="button_sendData">SEND DATA</string>
+    <string name="button_inf_log">INFORMATION LOG</string>
+    <string name="button_error_log">ERROR LOG</string>
+
+    <string name="buffer_size">Buffer Size:</string>
+    <string-array name="buffer_size_array">
+        <item>4KB</item>
+        <item>16KB</item>
+        <item>32KB</item>
+        <item>10% of file</item>
+    </string-array>
+
+    <string name="number_of_files_to_send">Number of files to send:</string>
+    <string-array name="number_of_files_to_send_array">
+        <item>1</item>
+        <item>3</item>
+        <item>5</item>
+        <item>10</item>
+    </string-array>
 </resources>
