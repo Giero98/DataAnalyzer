@@ -10,20 +10,18 @@
     <string name="button_sendData">SEND DATA</string>
     <string name="button_inf_log">INFORMATION LOG</string>
     <string name="button_error_log">ERROR LOG</string>
-
+    <string name="multiple_file">How many times to upload the file?</string>
+    <string name="default_multiple_file">1</string>
+    
     <string name="buffer_size">Buffer Size:</string>
     <string-array name="buffer_size_array">
         <item>4KB</item>
+        <item>8KB</item>
         <item>16KB</item>
         <item>32KB</item>
+        <item>64KB</item>
+        <item>128KB</item>
+        <item>256KB</item>
         <item>10% of file</item>
-    </string-array>
-
-    <string name="number_of_files_to_send">Number of files to send:</string>
-    <string-array name="number_of_files_to_send_array">
-        <item>1</item>
-        <item>3</item>
-        <item>5</item>
-        <item>10</item>
     </string-array>
 </resources>
