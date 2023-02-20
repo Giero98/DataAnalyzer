@@ -19,10 +19,15 @@ import android.widget.Button;
 import android.widget.Toast;
 import android.bluetooth.BluetoothAdapter;
 
+
 /**
  * Main view of the application
  */
 public class MainActivity extends AppCompatActivity {
+
+    //Log class reference
+    private final MainActivity_Log.ListLog LOG = new MainActivity_Log.ListLog();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -186,31 +191,31 @@ public class MainActivity extends AppCompatActivity {
         switch (requestCode) {
             case Constants.REQUEST_BT_CONNECT:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(this, "BLUETOOTH_CONNECT permission granted", Toast.LENGTH_SHORT).show();
+                    LOG.addLog(LOG.currentDate(),"BLUETOOTH_CONNECT permission granted");
                     conditionalMethodsBt();
                 }
-                else Toast.makeText(this, "BLUETOOTH_CONNECT permission denied", Toast.LENGTH_SHORT).show();
+                else LOG.addLog(LOG.currentDate(),"BLUETOOTH_CONNECT permission denied");
                 break;
             case Constants.REQUEST_BT_SCAN:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(this, "BLUETOOTH_SCAN permission granted", Toast.LENGTH_SHORT).show();
+                    LOG.addLog(LOG.currentDate(),"BLUETOOTH_SCAN permission granted");
                     conditionalMethodsBt();
                 }
-                else Toast.makeText(this, "BLUETOOTH_SCAN permission denied", Toast.LENGTH_SHORT).show();
+                else LOG.addLog(LOG.currentDate(),"BLUETOOTH_SCAN permission denied");
                 break;
             case Constants.REQUEST_BT_ADVERTISE:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(this, "BLUETOOTH_ADVERTISE permission granted", Toast.LENGTH_SHORT).show();
+                    LOG.addLog(LOG.currentDate(),"BLUETOOTH_ADVERTISE permission granted");
                     conditionalMethodsBt();
                 }
-                else Toast.makeText(this, "BLUETOOTH_ADVERTISE permission denied", Toast.LENGTH_SHORT).show();
+                else LOG.addLog(LOG.currentDate(),"BLUETOOTH_ADVERTISE permission denied");
                 break;
             case Constants.REQUEST_BT_ACCESS_FINE_LOCATION:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(this, "BLUETOOTH_ACCESS_FINE_LOCATION permission granted", Toast.LENGTH_SHORT).show();
+                    LOG.addLog(LOG.currentDate(),"BLUETOOTH_ACCESS_FINE_LOCATION permission granted");
                     conditionalMethodsBt();
                 }
-                else Toast.makeText(this, "BLUETOOTH_ACCESS_FINE_LOCATION permission denied", Toast.LENGTH_SHORT).show();
+                else LOG.addLog(LOG.currentDate(),"BLUETOOTH_ACCESS_FINE_LOCATION permission denied");
                 break;
         }
     }
