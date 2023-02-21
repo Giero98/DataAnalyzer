@@ -9,10 +9,10 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.OpenableColumns;
+import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,9 +28,9 @@ import java.util.Date;
 public class ConnectBtClientThread extends Thread {
 
 
-    public Button button_sendData, button_foundDevice, button_detect, button_disconnectBack;
+    public Button button_chooseFile, button_foundDevice, button_detect, button_disconnectBack,
+            button_saveMeasurementData, button_graph;
     public TextView textView_connected, textView_inf, textView_percent;
-    public ListView listView;
     public LinearLayout linearSpinner;
     public ProgressBar progressBar;
 
@@ -63,15 +63,16 @@ public class ConnectBtClientThread extends Thread {
         textView_connected = ((Activity) BT).findViewById(R.id.textView_connected);
         textView_inf = ((Activity) BT).findViewById(R.id.textView_inf);
         textView_percent = ((Activity) BT).findViewById(R.id.textView_percent);
-        button_sendData = ((Activity) BT).findViewById(R.id.button_sendData);
+        button_chooseFile = ((Activity) BT).findViewById(R.id.button_chooseFile);
         button_foundDevice = ((Activity) BT).findViewById(R.id.button_foundDevice);
         button_detect = ((Activity) BT).findViewById(R.id.button_detect);
         button_disconnectBack = ((Activity) BT).findViewById(R.id.button_disconnectBack);
-        listView = ((Activity) BT).findViewById(R.id.ListView);
+        button_saveMeasurementData = ((Activity) BT).findViewById(R.id.button_saveMeasurementData);
+        button_graph = ((Activity) BT).findViewById(R.id.button_graph);
         linearSpinner = ((Activity) BT).findViewById(R.id.linearSpinner);
         progressBar = ((Activity) BT).findViewById(R.id.progressBar);
 
-
+        textView_inf.setMovementMethod(new ScrollingMovementMethod());
     }
 
     //A method that is run when the start() method is called on an object representing a thread
@@ -103,11 +104,10 @@ public class ConnectBtClientThread extends Thread {
         //runOnUiThread() Used to run code on the main UI thread.
         ((Activity) BT).runOnUiThread(() -> {
             textView_connected.setText("Connected as a client with\n" + deviceName);
-            button_sendData.setVisibility(View.VISIBLE);
-            button_foundDevice.setText(Constants.buttonSaveMeasurementData);
+            button_chooseFile.setVisibility(View.VISIBLE);
+            button_foundDevice.setVisibility(View.INVISIBLE);
             button_detect.setVisibility(View.INVISIBLE);
             button_disconnectBack.setText("Disconnect");
-            listView.setVisibility(View.INVISIBLE);
             linearSpinner.setVisibility(View.VISIBLE);});
         if(sendNameDevice()) {
             //keep looping until the thread is stopped.
@@ -180,19 +180,18 @@ public class ConnectBtClientThread extends Thread {
             LOG.addLog(LOG.currentDate(), "Sending file information");
             FileInputStream file = null;
             InputStream inputStream = socketClient.getInputStream();
+            long fullBytes = 0;
             for(int repeat = 0 ; repeat < multipleFile; repeat++)
             {
                 //start counting the transfer time
                 long startTime = System.currentTimeMillis();
-                long fullBytes = 0;
                 try {
                     file = (FileInputStream) BT.getContentResolver().openInputStream(uri);
                     //A loop that sends a file and displays the progress percentage
                     while ((bytesRead = file.read(buffer)) > 0) {
                         outputStream.write(buffer, 0, bytesRead);
                         fullBytes += bytesRead;
-                        int percent = ((int) (fullBytes * 100.0) / (int) fileSizeBytes) /
-                                (multipleFile - repeat);
+                        int percent = ((int) (fullBytes * 100.0) / (int) fileSizeBytes) / multipleFile;
                         ((Activity) BT).runOnUiThread(() -> textView_percent.setText("Sent: " + percent + " %"));
                         progressBar.setProgress(percent);
                     }
@@ -216,8 +215,7 @@ public class ConnectBtClientThread extends Thread {
                                 double speedSend = fileSize / resultTime;
                                 String sizeUnit = setSpeedSendUnit(speedSend);
                                 ((Activity) BT).runOnUiThread(() -> textView_inf.setText(textView_inf.getText() + "\nFile transfer time: " +
-                                        Constants.decimalFormat.format(resultTime) + " s\nSize of the uploaded file: " +
-                                        Constants.decimalFormat.format(fileSize) + " " + fileSizeUnit + "\nUpload speed is: " +
+                                        Constants.decimalFormat.format(resultTime) + "\nUpload speed is: " +
                                         Constants.decimalFormat.format(speedSend) + " " + sizeUnit + "/s"));
                                 Arrays.fill(confirmBuffer, 0, confirmBuffer.length, (byte) 0);
                                 dataSendFromClient = false;
@@ -237,7 +235,11 @@ public class ConnectBtClientThread extends Thread {
                     LOG.addLog(LOG.currentDate(), "Failed to send file", e.getMessage());
                 }
             }
-            ((Activity) BT).runOnUiThread(() -> Toast.makeText(BT, "File sent", Toast.LENGTH_SHORT).show());
+            ((Activity) BT).runOnUiThread(() -> {
+                Toast.makeText(BT, "File sent", Toast.LENGTH_SHORT).show();
+                button_saveMeasurementData.setVisibility(View.VISIBLE);
+                button_graph.setVisibility(View.VISIBLE);
+            });
             try {
                 if (file != null) {
                     file.close();
@@ -255,7 +257,7 @@ public class ConnectBtClientThread extends Thread {
 
     //method where the filename is retrieved
     @SuppressLint({"Range", "SetTextI18n"})
-    private String getFileName(Uri uri)
+    public String getFileName(Uri uri)
     {
         String fileName = null;
         if (uri.getScheme().equals("content")) {
@@ -271,14 +273,12 @@ public class ConnectBtClientThread extends Thread {
                 fileName = fileName.substring(cut + 1);
             }
         }
-        String finalFileName = fileName;
-        ((Activity) BT).runOnUiThread(() -> textView_inf.setText("The name of the uploaded file: " + finalFileName));
-        return finalFileName;
+        return fileName;
     }
 
     //method where the file size is taken and then converted to the appropriate size
     @SuppressLint("Range")
-    private double getFileSize(Uri uri)
+    public double getFileSize(Uri uri)
     {
         File file = new File(uri.getPath());
         double fileSize = 0;
@@ -299,6 +299,11 @@ public class ConnectBtClientThread extends Thread {
             }
         }
         return fileSize;
+    }
+
+    public String getFileSizeUnit()
+    {
+        return fileSizeUnit;
     }
 
     //method where the size of the variable data transfer rate is converted
