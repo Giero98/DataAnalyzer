@@ -2,6 +2,7 @@ package com.example.masterthesis;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
@@ -15,11 +16,13 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ListView;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,10 +46,13 @@ public class MainActivity_BT extends AppCompatActivity {
 
     //Log class reference
     public final MainActivity_Log.ListLog LOG = new MainActivity_Log.ListLog();
-    public ListView listView;
     private ConnectBtServerThread threadServer;
     public ConnectBtClientThread threadClient;
     private EditText multiple_file;
+
+    private Button button_sendData;
+    private TextView textView_inf;
+    private Intent fileToSend;
     @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,12 +63,15 @@ public class MainActivity_BT extends AppCompatActivity {
         Button  button_disconnectBack = findViewById(R.id.button_disconnectBack),
                 button_detect = findViewById(R.id.button_detect),
                 button_foundDevice = findViewById(R.id.button_foundDevice),
-                button_sendData = findViewById(R.id.button_sendData);
+                button_chooseFile = findViewById(R.id.button_chooseFile),
+                button_saveMeasurementData = findViewById(R.id.button_saveMeasurementData),
+                button_graph = findViewById(R.id.button_graph);
+        button_sendData = findViewById(R.id.button_sendData);
         ImageButton button_upMultipleFile = findViewById(R.id.button_upMultipleFile),
                     button_downMultipleFile = findViewById(R.id.button_downMultipleFile);
         TextView textView_connected = findViewById(R.id.textView_connected);
+        textView_inf = findViewById(R.id.textView_inf);
         multiple_file = findViewById(R.id.multiple_file);
-        listView = findViewById(R.id.ListView);
 
         startSpinner();
 
@@ -76,12 +85,10 @@ public class MainActivity_BT extends AppCompatActivity {
         button_detect.setOnClickListener(v -> discoverableBt());
 
         //Button to find device
-        button_foundDevice.setOnClickListener((v -> {
-            if(button_foundDevice.getText().equals(Constants.buttonFoundDevice))
-                foundDeviceBt();
-            else if (button_foundDevice.getText().equals(Constants.buttonSaveMeasurementData))
-                saveMeasurementData();
-        }));
+        button_foundDevice.setOnClickListener(v -> foundDeviceBt());
+
+        //Button to choose a file
+        button_chooseFile.setOnClickListener(v -> chooseFile());
 
         multiple_file.setOnClickListener(v -> {
             try {
@@ -117,24 +124,21 @@ public class MainActivity_BT extends AppCompatActivity {
         });
 
         //Button to send data
-        button_sendData.setOnClickListener(v -> sendDataFile());
+        button_sendData.setOnClickListener(v ->
+                ConnectBtClientThread.dataSendFromClient(true, fileToSend,
+                    Integer.parseInt(multiple_file.getText().toString())));
+
+        //Button to save Measurement Data
+        button_saveMeasurementData.setOnClickListener(v -> saveMeasurementData());
+
+        //Button to view a graph of the data
+        button_graph.setOnClickListener(v -> {});
 
         //Button to disconnect or back
         button_disconnectBack.setOnClickListener(v -> {
             closeBtConnection();
             Intent intent = new Intent(MainActivity_BT.this, MainActivity.class);
             startActivity(intent);
-        });
-
-        //Select a found device for Bluetooth connection
-        listView.setOnItemClickListener((parent, view, position, id) -> {
-            String deviceInfo = (String) listView.getItemAtPosition(position);
-            //deviceAddress holds the 17 characters from the end of the deviceInfo string
-            String deviceAddress = deviceInfo.substring(deviceInfo.length() - 17);
-            BluetoothDevice device = Constants.bluetoothAdapter.getRemoteDevice(deviceAddress);
-            threadClient = new ConnectBtClientThread(this, device, socketClient, LOG);
-            threadClient.start();
-            threadServer.interrupt();
         });
     }
 
@@ -167,6 +171,7 @@ public class MainActivity_BT extends AppCompatActivity {
         listDiscoverableDevices();
         intentActionFound();
         intentActionAclDisconnected();
+        availableDevicesWindow();
     }
 
     //configuration of the list of discoverable devices
@@ -174,7 +179,6 @@ public class MainActivity_BT extends AppCompatActivity {
     {
         listAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, discoveredDevices);
         listAdapter.clear();
-        listView.setAdapter(listAdapter);
     }
 
     //launching the intention to detect a new Bluetooth device
@@ -207,6 +211,43 @@ public class MainActivity_BT extends AppCompatActivity {
         }
     };
 
+    //Select a found device for Bluetooth connection
+    private void availableDevicesWindow()
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        @SuppressLint("InflateParams")
+        View titleView = getLayoutInflater().inflate(R.layout.dialog_title, null);
+        builder.setCustomTitle(titleView);
+        builder.setTitle("Select a device");
+
+
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+
+        builder.setAdapter(listAdapter, (dialog, which) -> {
+            String deviceInfo = listAdapter.getItem(which);
+            //deviceAddress holds the 17 characters from the end of the deviceInfo string
+            String deviceAddress = deviceInfo.substring(deviceInfo.length() - 17);
+            BluetoothDevice device = Constants.bluetoothAdapter.getRemoteDevice(deviceAddress);
+            threadClient = new ConnectBtClientThread(this, device, socketClient, LOG);
+            threadClient.start();
+            threadServer.interrupt();
+        });
+
+        // create and show the alert dialog
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+
+        // Getting ProgressBar, ImageView from View
+        ProgressBar progressBar = titleView.findViewById(R.id.progressBar_search);
+        ImageView imageView = (ImageView) titleView.findViewById(R.id.imageView_done);
+        // Delaying an element's visibility change using the postDelayed() method
+        progressBar.postDelayed(() -> {
+            progressBar.setVisibility(View.GONE);
+            imageView.setVisibility(View.VISIBLE);
+        }, Constants.timeSearch);
+    }
+
     //endregion Searching for BT devices
 
     //region Recording of measurement data
@@ -218,7 +259,7 @@ public class MainActivity_BT extends AppCompatActivity {
     //endregion Recording of measurement data
 
     //The method where the intent to select the file to be sent is triggered
-    private void sendDataFile() {
+    private void chooseFile() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("*/*");
@@ -226,14 +267,20 @@ public class MainActivity_BT extends AppCompatActivity {
     }
 
     //Reactions to permission response received openFile
-    @SuppressLint("MissingPermission")
+    @SuppressLint({"MissingPermission", "SetTextI18n"})
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == Constants.REQUEST_BT_SEND_DATA_FILE && resultCode == RESULT_OK) {
             LOG.addLog(LOG.currentDate(),"You have selected a file to upload");
-            ConnectBtClientThread.dataSendFromClient(true, data,
-                    Integer.parseInt(multiple_file.getText().toString()));
+            button_sendData.setVisibility(View.VISIBLE);
+            fileToSend = data;
+            Double fileSize = threadClient.getFileSize(fileToSend.getData());
+            String  fileName = threadClient.getFileName(fileToSend.getData()),
+                    fileSizeUnit = threadClient.getFileSizeUnit();
+            textView_inf.setText("The name of the uploaded file: " + fileName);
+            textView_inf.setText(textView_inf.getText() + "\nFile size: " +
+                    Constants.decimalFormat.format(fileSize) + " " + fileSizeUnit);
         }
     }
 

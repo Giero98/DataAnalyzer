@@ -18,9 +18,8 @@ public interface Constants {
     int     confirmBufferBytes = 100,
             getBufferFirstInfOfFile = 1024;
 
-    //Button options
-    String  buttonFoundDevice = "FOUND DEVICE",
-            buttonSaveMeasurementData = "SAVE THE ANALYSIS DATA";
+    //Time to search for Bluetooth devices
+    int timeSearch = 12000; //ms
 
     //A unique UUID that will be used as a common identifier for both devices in Bluetooth
     //generated thanks to the website https://www.uuidgenerator.net/

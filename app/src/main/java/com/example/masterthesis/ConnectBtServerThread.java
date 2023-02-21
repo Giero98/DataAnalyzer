@@ -6,10 +6,10 @@ import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.os.Environment;
+import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,9 +24,8 @@ import java.util.Date;
 
 public class ConnectBtServerThread extends Thread {
 
-    public Button button_sendData, button_foundDevice, button_detect, button_disconnectBack;
+    public Button button_foundDevice, button_detect, button_disconnectBack;
     public TextView textView_connected, textView_inf, textView_percent;
-    public ListView listView;
     public LinearLayout linearSpinner;
     public ProgressBar progressBar;
 
@@ -49,14 +48,13 @@ public class ConnectBtServerThread extends Thread {
         textView_connected = ((Activity) BT).findViewById(R.id.textView_connected);
         textView_inf = ((Activity) BT).findViewById(R.id.textView_inf);
         textView_percent = ((Activity) BT).findViewById(R.id.textView_percent);
-        button_sendData = ((Activity) BT).findViewById(R.id.button_sendData);
         button_foundDevice = ((Activity) BT).findViewById(R.id.button_foundDevice);
         button_detect = ((Activity) BT).findViewById(R.id.button_detect);
         button_disconnectBack = ((Activity) BT).findViewById(R.id.button_disconnectBack);
-        listView = ((Activity) BT).findViewById(R.id.ListView);
         linearSpinner = ((Activity) BT).findViewById(R.id.linearSpinner);
         progressBar = ((Activity) BT).findViewById(R.id.progressBar);
 
+        textView_inf.setMovementMethod(new ScrollingMovementMethod());
     }
     //A method that is run when the start() method is called on an object representing a thread
     @SuppressLint({"SetTextI18n", "MissingPermission"})
@@ -120,8 +118,7 @@ public class ConnectBtServerThread extends Thread {
                 textView_connected.setText("Connected as a server with\n" + incomingMessage);
                 button_foundDevice.setVisibility(View.INVISIBLE);
                 button_detect.setVisibility(View.INVISIBLE);
-                button_disconnectBack.setVisibility(View.INVISIBLE);
-                listView.setVisibility(View.INVISIBLE);});
+                button_disconnectBack.setVisibility(View.INVISIBLE);});
             Arrays.fill(buffer, 0, buffer.length, (byte) 0);
 
             try {
