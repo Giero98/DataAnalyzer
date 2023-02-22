@@ -8,6 +8,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGatt;
+import android.bluetooth.BluetoothGattCallback;
+import android.bluetooth.BluetoothProfile;
 import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -51,7 +54,7 @@ public class MainActivity_BT extends AppCompatActivity {
     private EditText multiple_file;
 
     private Button button_sendData;
-    private TextView textView_inf;
+    private TextView textView_inf, textView_deviceRssi;
     private Intent fileToSend;
     @SuppressLint("SetTextI18n")
     @Override
@@ -71,6 +74,7 @@ public class MainActivity_BT extends AppCompatActivity {
                     button_downMultipleFile = findViewById(R.id.button_downMultipleFile);
         TextView textView_connected = findViewById(R.id.textView_connected);
         textView_inf = findViewById(R.id.textView_inf);
+        textView_deviceRssi = findViewById(R.id.textView_deviceRssi);
         multiple_file = findViewById(R.id.multiple_file);
 
         startSpinner();
@@ -212,6 +216,7 @@ public class MainActivity_BT extends AppCompatActivity {
     };
 
     //Select a found device for Bluetooth connection
+    @SuppressLint({"SetTextI18n", "MissingPermission"})
     private void availableDevicesWindow()
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -231,12 +236,15 @@ public class MainActivity_BT extends AppCompatActivity {
             threadClient = new ConnectBtClientThread(this, device, socketClient, LOG);
             threadClient.start();
             threadServer.interrupt();
+
+            device.connectGatt(this, false, mGattCallback);
+            TextView textView_deviceDistanceText = findViewById(R.id.textView_deviceRssiText);
+            textView_deviceDistanceText.setVisibility(View.VISIBLE);
         });
 
         // create and show the alert dialog
         AlertDialog dialog = builder.create();
         dialog.show();
-
 
         // Getting ProgressBar, ImageView from View
         ProgressBar progressBar = titleView.findViewById(R.id.progressBar_search);
@@ -247,6 +255,41 @@ public class MainActivity_BT extends AppCompatActivity {
             imageView.setVisibility(View.VISIBLE);
         }, Constants.timeSearch);
     }
+
+    // definicja BluetoothGattCallback dla odbierania powiadomień o zmianach wartości RSSI
+    private final BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {
+        @SuppressLint("MissingPermission")
+        @Override
+        public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
+            // obsługa zmiany stanu połączenia
+            if (newState == BluetoothProfile.STATE_CONNECTED) {
+                // połączenie zostało nawiązane, odczytaj wartość RSSI
+                new Thread(() -> {
+                    while(true) {
+                        gatt.readRemoteRssi();
+                        try {
+                            Thread.sleep(100); // czekaj 1 milisekundę
+                        } catch (InterruptedException e) {
+                            LOG.addLog(LOG.currentDate(),"RSSI thread hold error",e.getMessage());
+                        }
+                    }
+                }).start();
+            }
+        }
+
+        @SuppressLint("SetTextI18n")
+        @Override
+        public void onReadRemoteRssi(BluetoothGatt gatt, int rssi, int status) {
+            // obsługa odczytu wartości RSSI
+            if (status == BluetoothGatt.GATT_SUCCESS) {
+                // odczytano wartość RSSI, zapisz ją i wykonaj odpowiednie akcje
+                runOnUiThread(() ->textView_deviceRssi.setText(Integer.toString(rssi)));
+            } else {
+                // wystąpił błąd podczas odczytu wartości RSSI
+                LOG.addLog(LOG.currentDate(),"wystąpił błąd podczas odczytu wartości RSSI");
+            }
+        }
+    };
 
     //endregion Searching for BT devices
 

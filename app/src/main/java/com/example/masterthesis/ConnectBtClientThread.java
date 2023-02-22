@@ -59,7 +59,6 @@ public class ConnectBtClientThread extends Thread {
         this.socketClient = socketClient;
         this.LOG = LOG;
 
-
         textView_connected = ((Activity) BT).findViewById(R.id.textView_connected);
         textView_inf = ((Activity) BT).findViewById(R.id.textView_inf);
         textView_percent = ((Activity) BT).findViewById(R.id.textView_percent);
@@ -109,6 +108,7 @@ public class ConnectBtClientThread extends Thread {
             button_detect.setVisibility(View.INVISIBLE);
             button_disconnectBack.setText("Disconnect");
             linearSpinner.setVisibility(View.VISIBLE);});
+
         if(sendNameDevice()) {
             //keep looping until the thread is stopped.
             while (!interrupted()) {
@@ -139,7 +139,9 @@ public class ConnectBtClientThread extends Thread {
         try {
             outputStream = socketClient.getOutputStream();
             try {
-                outputStream.write(Constants.bluetoothAdapter.getName().getBytes());
+                @SuppressLint("HardwareIds")
+                String deviceInfo = Constants.bluetoothAdapter.getName();
+                outputStream.write(deviceInfo.getBytes());
                 outputStream.flush(); //flush() is used to push out all written bytes
                 LOG.addLog(LOG.currentDate(),"Device name sent");
                 return true;
