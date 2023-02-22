@@ -17,14 +17,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textSize="18sp"/>
+            android:textSize="18sp"
+            tools:ignore="InefficientWeight" />
 
         <TextView
-            android:id="@+id/textView_deviceDistance"
+            android:id="@+id/textView_deviceRssiText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Distance\nX m"
-            android:gravity="center"
+            android:text="@string/device_rssi_text"
+            android:visibility="invisible"
+            tools:ignore="VisualLintBounds" />
+
+        <TextView
+            android:id="@+id/textView_deviceRssi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             tools:ignore="VisualLintBounds" />
 
     </LinearLayout>
@@ -72,7 +79,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:paddingLeft="10dp">
+            android:paddingStart="10dp"
+            tools:ignore="RtlSymmetry">
 
             <Button
                 android:id="@+id/button_chooseFile"

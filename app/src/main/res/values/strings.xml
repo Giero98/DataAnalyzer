@@ -16,6 +16,7 @@
     <string name="multiple_file">How many times to upload the file?</string>
     <string name="discover_device">Select a device</string>
     <string name="default_multiple_file">1</string>
+    <string name="device_rssi_text">RSSI: </string>
     
     <string name="buffer_size">Buffer Size:</string>
     <string-array name="buffer_size_array">

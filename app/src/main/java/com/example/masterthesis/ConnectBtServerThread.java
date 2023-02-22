@@ -104,7 +104,7 @@ public class ConnectBtServerThread extends Thread {
     }
 
     //The method where the file is downloaded and saved
-    @SuppressLint("SetTextI18n")
+    @SuppressLint({"SetTextI18n", "MissingPermission"})
     private void getData(InputStream inputStream)
     {
         byte[] buffer = new byte[Constants.getBufferFirstInfOfFile];
@@ -112,10 +112,10 @@ public class ConnectBtServerThread extends Thread {
 
         try {
             bytes = inputStream.read(buffer);
-            String incomingMessage = new String(buffer, 0, bytes);
+            String deviceName = new String(buffer, 0, bytes);
             //runOnUiThread() Used to run code on the main UI thread.
             ((Activity) BT).runOnUiThread(() -> {
-                textView_connected.setText("Connected as a server with\n" + incomingMessage);
+                textView_connected.setText("Connected as a server with\n" + deviceName);
                 button_foundDevice.setVisibility(View.INVISIBLE);
                 button_detect.setVisibility(View.INVISIBLE);
                 button_disconnectBack.setVisibility(View.INVISIBLE);});
@@ -132,12 +132,12 @@ public class ConnectBtServerThread extends Thread {
 
                             //File information is being retrieved
                             String fileFirstData = new String(buffer, 0, bytes);
-                            String[] dataArray = fileFirstData.split(";");
-                            fileName = dataArray[0];
-                            String fileUnit = dataArray[1];
-                            String fileSizeString = dataArray[2];
-                            String bufferSize = dataArray[3];
-                            String multipleFile = dataArray[4];
+                            String[] dataArrayFileFirstData = fileFirstData.split(";");
+                            fileName = dataArrayFileFirstData[0];
+                            String fileUnit = dataArrayFileFirstData[1];
+                            String fileSizeString = dataArrayFileFirstData[2];
+                            String bufferSize = dataArrayFileFirstData[3];
+                            String multipleFile = dataArrayFileFirstData[4];
                             LOG.addLog(LOG.currentDate(), "File information is being retrieved");
                             Arrays.fill(buffer, 0, buffer.length, (byte) 0);
 
