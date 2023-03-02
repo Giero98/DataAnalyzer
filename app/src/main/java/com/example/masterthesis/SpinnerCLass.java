@@ -6,10 +6,12 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
+import com.example.masterthesis.bluetooh.MainActivity_BT;
+
 /**
  * A class that is responsible for creating a spinner and reacting to value changes
  */
-public class SpinnerCLass extends MainActivity_BT{
+public class SpinnerCLass extends MainActivity_BT {
     private final Context context;
     private final Spinner spinnerBufferSize;
     public static int bufferSize;

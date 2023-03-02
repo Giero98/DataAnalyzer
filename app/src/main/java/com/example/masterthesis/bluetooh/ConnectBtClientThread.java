@@ -1,4 +1,4 @@
-package com.example.masterthesis;
+package com.example.masterthesis.bluetooh;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -8,20 +8,32 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Environment;
 import android.provider.OpenableColumns;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
+
+import com.example.masterthesis.Constants;
+import com.example.masterthesis.MainActivity_Log;
+import com.example.masterthesis.R;
+import com.example.masterthesis.SpinnerCLass;
+
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 
@@ -30,13 +42,14 @@ public class ConnectBtClientThread extends Thread {
 
     public Button button_chooseFile, button_foundDevice, button_detect, button_disconnectBack,
             button_saveMeasurementData, button_graph;
-    public TextView textView_connected, textView_inf, textView_percent;
+    public TextView textView_connected, textView_inf, textView_percent, textView_deviceRssi;
     public LinearLayout linearSpinner;
     public ProgressBar progressBar;
 
     //A variable stating whether the file has been selected for upload
     public static boolean dataSendFromClient = false;
-    private final Context BT;
+    @SuppressLint("StaticFieldLeak")
+    private static Context BT;
     private BluetoothSocket socketClient;
     public static BluetoothSocket socketClientStatic;
     public BluetoothDevice device;
@@ -46,22 +59,25 @@ public class ConnectBtClientThread extends Thread {
     public static int multipleFile;
 
     //Log class reference
-    public final MainActivity_Log.ListLog LOG;
+    public static MainActivity_Log.ListLog LOG;
     private long fileSizeBytes; //file size in bytes
     private String fileSizeUnit = "Bytes" , deviceName;
     private OutputStream outputStream;
+    public static ArrayList<String> measurementDataList = new ArrayList<>();
+    public static String dataFileName;
 
     //ConnectBtClientThread class constructor
     public ConnectBtClientThread(Context BT, BluetoothDevice device, BluetoothSocket socketClient,
                                  MainActivity_Log.ListLog LOG) {
-        this.BT = BT;
+        ConnectBtClientThread.BT = BT;
         this.device = device;
         this.socketClient = socketClient;
-        this.LOG = LOG;
+        ConnectBtClientThread.LOG = LOG;
 
         textView_connected = ((Activity) BT).findViewById(R.id.textView_connected);
         textView_inf = ((Activity) BT).findViewById(R.id.textView_inf);
         textView_percent = ((Activity) BT).findViewById(R.id.textView_percent);
+        textView_deviceRssi = ((Activity) BT).findViewById(R.id.textView_deviceRssi);
         button_chooseFile = ((Activity) BT).findViewById(R.id.button_chooseFile);
         button_foundDevice = ((Activity) BT).findViewById(R.id.button_foundDevice);
         button_detect = ((Activity) BT).findViewById(R.id.button_detect);
@@ -174,9 +190,23 @@ public class ConnectBtClientThread extends Thread {
 
         String fileName = getFileName(uri);
         try {
+            String titleList = "File upload number" + "," +
+                    "File size in bytes" + "," +
+                    "File size in " + fileSizeUnit + "," +
+                    "Quality range" + "," +
+                    "Sending time [s]" + "," +
+                    "Upload speed [" + fileSizeUnit + "/s]";
+
+            //Save the file data to the list
+            measurementDataList.add(fileName);
+            measurementDataList.add(titleList);
+
             //Sending file information
-            String fileData = fileName + ";" + fileSizeUnit + ";" + fileSizeBytes + ";"
-                            + bufferSize + ";" + multipleFile;
+            String fileData = fileName + ";" +
+                              fileSizeUnit + ";" +
+                              fileSizeBytes + ";" +
+                              bufferSize + ";" +
+                              multipleFile;
             outputStream.write(fileData.getBytes());
             outputStream.flush();
             LOG.addLog(LOG.currentDate(), "Sending file information");
@@ -216,11 +246,24 @@ public class ConnectBtClientThread extends Thread {
                                 double resultTime = (double) (endTime - startTime) / 1000; //time change ms to s
                                 double speedSend = fileSize / resultTime;
                                 String sizeUnit = setSpeedSendUnit(speedSend);
-                                ((Activity) BT).runOnUiThread(() -> textView_inf.setText(textView_inf.getText() + "\nFile transfer time: " +
-                                        Constants.decimalFormat.format(resultTime) + "\nUpload speed is: " +
-                                        Constants.decimalFormat.format(speedSend) + " " + sizeUnit + "/s"));
+                                int finalRepeat = repeat;
+                                ((Activity) BT).runOnUiThread(() -> textView_inf.setText(textView_inf.getText() +
+                                                "\nFile upload number: " +
+                                                (finalRepeat + 1) +
+                                                "\nFile transfer time: " +
+                                                Constants.decimalFormat.format(resultTime).replace(",", ".") + " s" +
+                                                "\nUpload speed is: " +
+                                                Constants.decimalFormat.format(speedSend).replace(",", ".") +
+                                                " " + sizeUnit + "/s"));
                                 Arrays.fill(confirmBuffer, 0, confirmBuffer.length, (byte) 0);
                                 dataSendFromClient = false;
+
+                                measurementDataList.add((repeat + 1) + "," +
+                                        fileSizeBytes + "," +
+                                        Constants.decimalFormat.format(fileSize).replace(",", ".") + "," +
+                                        textView_deviceRssi.getText() + "," +
+                                        Constants.decimalFormat.format(resultTime).replace(",", ".") + "," +
+                                        Constants.decimalFormat.format(speedSend).replace(",", "."));
                                 break;
                             } else if (confirmMessage.equals("NoneConfirmed")) {
                                 LOG.addLog(LOG.currentDate(), "Failed to save to the server");
@@ -340,5 +383,59 @@ public class ConnectBtClientThread extends Thread {
     public static BluetoothSocket getSocketClient()
     {
         return socketClientStatic;
+    }
+
+    public static ArrayList<String> getMeasurementDataList(){ return measurementDataList; }
+    
+    public static void saveMeasurementData(){
+
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(BT);
+        builder.setTitle("Enter the name of the measurement data file");
+
+        // Utwórz EditText
+        final EditText editText = new EditText(BT);
+
+        // Dodaj EditText do Alert Dialogu
+        builder.setView(editText);
+
+        // Wywołaj metodę requestFocus() na EditText
+        editText.requestFocus();
+
+        // Dodaj przyciski
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+        builder.setPositiveButton("OK", (dialog, which) -> {
+                    dataFileName = String.valueOf(editText.getText());
+
+                    if(!dataFileName.isEmpty()) {
+                        File file = new File(
+                                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
+                                dataFileName + ".csv");
+                        try {
+                            FileOutputStream fos = new FileOutputStream(file);
+                            OutputStreamWriter osw = new OutputStreamWriter(fos);
+
+                            // zapisz dane z ArrayList do pliku w formacie CSV
+                            for (String data : measurementDataList) {
+                                osw.write(data);
+                                osw.write("\n"); // przejdź do nowej linii po każdym wpisie
+                            }
+
+                            osw.close();
+                            fos.close();
+
+                            if (!measurementDataList.isEmpty()) {
+                                measurementDataList.clear();
+                            }
+                        } catch (IOException e) {
+                            LOG.addLog(LOG.currentDate(), "", e.getMessage());
+                        }
+                    }
+                    else{
+                        ((Activity) BT).runOnUiThread(() -> Toast.makeText(BT,
+                                "Enter the name of the file to save", Toast.LENGTH_SHORT).show());
+                    }
+        });
+        builder.show();
     }
 }

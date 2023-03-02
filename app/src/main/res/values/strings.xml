@@ -4,7 +4,7 @@
     <string name="button_wifi">CONNECT BY WI-FI</string>
     <string name="button_bt">CONNECT BY BLUETOOTH</string>
     <string name="button3">BUTTON</string>
-    <string name="button_disconnectBack">BACK</string>
+    <string name="button_back">BACK</string>
     <string name="button_detect">START DETECTED</string>
     <string name="button_foundDevice">FOUND DEVICE</string>
     <string name="button_sendData">SEND DATA</string>
@@ -17,7 +17,11 @@
     <string name="discover_device">Select a device</string>
     <string name="default_multiple_file">1</string>
     <string name="device_rssi_text">RSSI: </string>
-    
+    <string name="graph_quality_range">Quality range</string>
+    <string name="graph_sending_time">Sending time</string>
+    <string name="graph_upload_speed">Upload speed</string>
+    <string name="graph_text">Choose which chart you want to display</string>
+
     <string name="buffer_size">Buffer Size:</string>
     <string-array name="buffer_size_array">
         <item>4KB</item>
@@ -29,4 +33,13 @@
         <item>256KB</item>
         <item>10% of file</item>
     </string-array>
+    <string name="title_activity_graph">Graph</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 </resources>

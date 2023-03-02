@@ -1,9 +1,4 @@
-package com.example.masterthesis;
-
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
+package com.example.masterthesis.bluetooh;
 
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
@@ -28,6 +23,18 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.masterthesis.Constants;
+import com.example.masterthesis.Graph;
+import com.example.masterthesis.MainActivity;
+import com.example.masterthesis.MainActivity_Log;
+import com.example.masterthesis.R;
+import com.example.masterthesis.SpinnerCLass;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -136,7 +143,7 @@ public class MainActivity_BT extends AppCompatActivity {
         button_saveMeasurementData.setOnClickListener(v -> saveMeasurementData());
 
         //Button to view a graph of the data
-        button_graph.setOnClickListener(v -> {});
+        button_graph.setOnClickListener(v -> drawGraph());
 
         //Button to disconnect or back
         button_disconnectBack.setOnClickListener(v -> {
@@ -248,7 +255,7 @@ public class MainActivity_BT extends AppCompatActivity {
 
         // Getting ProgressBar, ImageView from View
         ProgressBar progressBar = titleView.findViewById(R.id.progressBar_search);
-        ImageView imageView = (ImageView) titleView.findViewById(R.id.imageView_done);
+        ImageView imageView = titleView.findViewById(R.id.imageView_done);
         // Delaying an element's visibility change using the postDelayed() method
         progressBar.postDelayed(() -> {
             progressBar.setVisibility(View.GONE);
@@ -268,10 +275,12 @@ public class MainActivity_BT extends AppCompatActivity {
                     while(true) {
                         gatt.readRemoteRssi();
                         try {
-                            Thread.sleep(100); // czekaj 1 milisekundę
+                            Thread.sleep(500); // czekaj 5 milisekundę
                         } catch (InterruptedException e) {
                             LOG.addLog(LOG.currentDate(),"RSSI thread hold error",e.getMessage());
                         }
+                        if(!ConnectBtClientThread.getSocketClient().isConnected())
+                            break;
                     }
                 }).start();
             }
@@ -296,10 +305,16 @@ public class MainActivity_BT extends AppCompatActivity {
     //region Recording of measurement data
 
     private void saveMeasurementData(){
-
+        ConnectBtClientThread.saveMeasurementData();
     }
 
     //endregion Recording of measurement data
+
+
+    private void drawGraph(){
+        Intent intent = new Intent(this, Graph.class);
+        startActivity(intent);
+    }
 
     //The method where the intent to select the file to be sent is triggered
     private void chooseFile() {
@@ -322,8 +337,10 @@ public class MainActivity_BT extends AppCompatActivity {
             String  fileName = threadClient.getFileName(fileToSend.getData()),
                     fileSizeUnit = threadClient.getFileSizeUnit();
             textView_inf.setText("The name of the uploaded file: " + fileName);
-            textView_inf.setText(textView_inf.getText() + "\nFile size: " +
-                    Constants.decimalFormat.format(fileSize) + " " + fileSizeUnit);
+            textView_inf.setText(textView_inf.getText() +
+                    "\nFile size: " +
+                    Constants.decimalFormat.format(fileSize).replace(",", ".") +
+                    " " + fileSizeUnit);
         }
     }
 

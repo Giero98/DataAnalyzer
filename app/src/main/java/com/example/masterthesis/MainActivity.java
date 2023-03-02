@@ -19,6 +19,9 @@ import android.widget.Button;
 import android.widget.Toast;
 import android.bluetooth.BluetoothAdapter;
 
+import com.example.masterthesis.bluetooh.MainActivity_BT;
+import com.example.masterthesis.wifi.MainActivity_WiFi;
+
 
 /**
  * Main view of the application

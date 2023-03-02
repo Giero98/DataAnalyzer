@@ -1,4 +1,4 @@
-package com.example.masterthesis;
+package com.example.masterthesis.bluetooh;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -13,6 +13,10 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.masterthesis.Constants;
+import com.example.masterthesis.MainActivity_Log;
+import com.example.masterthesis.R;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -116,6 +120,8 @@ public class ConnectBtServerThread extends Thread {
             //runOnUiThread() Used to run code on the main UI thread.
             ((Activity) BT).runOnUiThread(() -> {
                 textView_connected.setText("Connected as a server with\n" + deviceName);
+                textView_percent.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.VISIBLE);
                 button_foundDevice.setVisibility(View.INVISIBLE);
                 button_detect.setVisibility(View.INVISIBLE);
                 button_disconnectBack.setVisibility(View.INVISIBLE);});
@@ -191,7 +197,9 @@ public class ConnectBtServerThread extends Thread {
 
                                 if (confirmMessage.equals("Confirmed")) {
                                     ((Activity) BT).runOnUiThread(() -> textView_inf.setText("The name of the received file: " +
-                                            fileName + "\nFile size: " + Constants.decimalFormat.format(fileSize) + " " + fileUnit));
+                                            fileName + "\nFile size: " +
+                                            Constants.decimalFormat.format(fileSize).replace(",", ".") +
+                                            " " + fileUnit));
                                 } else {
                                     ((Activity) BT).runOnUiThread(() -> textView_inf.setText("Error downloaded and saving file"));
                                     break;

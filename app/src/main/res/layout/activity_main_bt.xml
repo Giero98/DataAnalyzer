@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity_BT"
+    tools:context=".bluetooh.MainActivity_BT"
     android:orientation="vertical">
 
     <LinearLayout
@@ -51,7 +51,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="@string/button_disconnectBack"
+                android:text="@string/button_back"
                 app:icon="@drawable/ic_bt_disconnect_back"
                 tools:ignore="TextSizeCheck" />
 
@@ -121,7 +121,6 @@
         </LinearLayout>
 
     </LinearLayout>
-
 
     <LinearLayout
         android:id="@+id/linearSpinner"
