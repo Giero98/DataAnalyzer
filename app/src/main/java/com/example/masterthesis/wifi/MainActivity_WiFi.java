@@ -1,4 +1,4 @@
-package com.example.masterthesis;
+package com.example.masterthesis.wifi;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -10,6 +10,10 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.masterthesis.MainActivity;
+import com.example.masterthesis.MainActivity_Log;
+import com.example.masterthesis.R;
 
 /*
   View of the application after a successful combination via Wi-Fi

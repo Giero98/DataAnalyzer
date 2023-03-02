@@ -23,17 +23,22 @@
         android:theme="@style/Theme.MasterThesis"
         tools:ignore="UnusedAttribute">
         <activity
-            android:name=".MainActivity_Log"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity"/>
-        <activity
-            android:name=".MainActivity_WiFi"
+            android:name=".Graph"
             android:exported="false"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
-            android:name=".MainActivity_BT"
+            android:name=".MainActivity_Log"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".wifi.MainActivity_WiFi"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
+        <activity
+            android:name=".bluetooh.MainActivity_BT"
             android:exported="false"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
