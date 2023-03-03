@@ -272,6 +272,7 @@ public class MainActivity_BT extends AppCompatActivity {
             if (newState == BluetoothProfile.STATE_CONNECTED) {
                 // połączenie zostało nawiązane, odczytaj wartość RSSI
                 new Thread(() -> {
+                    Thread.currentThread().setPriority(Thread.MIN_PRIORITY);
                     while(true) {
                         gatt.readRemoteRssi();
                         try {
@@ -336,11 +337,10 @@ public class MainActivity_BT extends AppCompatActivity {
             Double fileSize = threadClient.getFileSize(fileToSend.getData());
             String  fileName = threadClient.getFileName(fileToSend.getData()),
                     fileSizeUnit = threadClient.getFileSizeUnit();
-            textView_inf.setText("The name of the uploaded file: " + fileName);
-            textView_inf.setText(textView_inf.getText() +
+            textView_inf.setText("The name of the uploaded file: " + fileName +
                     "\nFile size: " +
                     Constants.decimalFormat.format(fileSize).replace(",", ".") +
-                    " " + fileSizeUnit);
+                    " " + fileSizeUnit + "\n");
         }
     }
 

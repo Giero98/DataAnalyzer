@@ -1,6 +1,6 @@
 package com.example.masterthesis;
 
-import androidx.appcompat.app.AppCompatActivity;
+import  androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -11,16 +11,22 @@ import android.widget.Button;
 import android.widget.RadioButton;
 
 import com.example.masterthesis.bluetooh.ConnectBtClientThread;
-import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.formatter.ValueFormatter;
+import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Graph extends AppCompatActivity {
 
-    private LineChart mLineChart;
+    private BarChart barChart;
+    String fileName;
     ArrayList<Integer> fileUploadNumberList = new ArrayList<>(), qualityRangeList = new ArrayList<>();
     ArrayList<Float> sendingTimeList = new ArrayList<>(), uploadSpeedList = new ArrayList<>();
 
@@ -31,7 +37,7 @@ public class Graph extends AppCompatActivity {
         setTitle("Graphs");
 
         Button buttonBack = findViewById(R.id.button_back);
-        mLineChart = findViewById(R.id.lineChart);
+        barChart = findViewById(R.id.barChart);
         RadioButton graph1 = findViewById(R.id.radioButton),
                     graph2 = findViewById(R.id.radioButton2),
                     graph3 = findViewById(R.id.radioButton3);
@@ -44,73 +50,115 @@ public class Graph extends AppCompatActivity {
 
         for(String list : ConnectBtClientThread.getMeasurementDataList())
         {
-            String[] dataArrayFileFirstData = list.split(",");
-            String fileUploadNumber = dataArrayFileFirstData[0];
-            try{
-                Integer.parseInt(fileUploadNumber);
-                String qualityRange = dataArrayFileFirstData[3];
-                String sendingTime = dataArrayFileFirstData[4];
-                String uploadSpeed = dataArrayFileFirstData[5];
+            if(list.contains(","))
+            {
+                String[] dataArrayFileFirstData = list.split(",");
+                String fileUploadNumber = dataArrayFileFirstData[0];
+                try {
+                    Integer.parseInt(fileUploadNumber);
+                    String qualityRange = dataArrayFileFirstData[3];
+                    String sendingTime = dataArrayFileFirstData[4];
+                    String uploadSpeed = dataArrayFileFirstData[5];
 
-                fileUploadNumberList.add(Integer.parseInt(fileUploadNumber));
-                qualityRangeList.add(Integer.parseInt(qualityRange));
-                sendingTimeList.add(Float.parseFloat(sendingTime));
-                uploadSpeedList.add(Float.parseFloat(uploadSpeed));
-
-
-            } catch (NumberFormatException ignored){}
+                    fileUploadNumberList.add(Integer.parseInt(fileUploadNumber));
+                    qualityRangeList.add(Integer.parseInt(qualityRange));
+                    sendingTimeList.add(Float.parseFloat(sendingTime));
+                    uploadSpeedList.add(Float.parseFloat(uploadSpeed));
+                } catch (NumberFormatException ignored) {}
+            } else {
+                if(!fileUploadNumberList.isEmpty())
+                    fileUploadNumberList.clear();
+                if(!qualityRangeList.isEmpty())
+                    qualityRangeList.clear();
+                if(!sendingTimeList.isEmpty())
+                    sendingTimeList.clear();
+                if(!uploadSpeedList.isEmpty())
+                    uploadSpeedList.clear();
+                fileName = list;
+            }
 
         }
 
 
+        barChart.getDescription().setEnabled(false);
+        barChart.setDrawValueAboveBar(true);
+        barChart.setDrawGridBackground(false);
+        barChart.setBackgroundColor(Color.WHITE);
+        barChart.setDoubleTapToZoomEnabled(false);
+        int maxVisibleColumns = 1; // maksymalna liczba kolumn wyświetlanych na ekranie
+        barChart.setVisibleXRangeMaximum(maxVisibleColumns);
+        barChart.setDragEnabled(true); // włącz przewijanie
+
+        XAxis xAxis = barChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setDrawGridLines(false);
+        xAxis.setGranularity(1f);
+        xAxis.setTextColor(Color.BLACK);
+        xAxis.setTextSize(12f);
+        xAxis.setLabelCount(fileUploadNumberList.size()); // liczba etykiet na osi X
+
+        YAxis leftAxis = barChart.getAxisLeft();
+        leftAxis.setDrawGridLines(false);
+        leftAxis.setAxisMinimum(0f); // minimalna wartość osi Y
+        leftAxis.setGranularity(0.01f);
+        leftAxis.setTextColor(Color.BLACK);
+        leftAxis.setTextSize(16f);
+
+        barChart.getAxisRight().setEnabled(false);
     }
 
     //OSX: fileUploadNumberList , OSY: sendingTimeList
     private void drawGraph1() {
         // przykładowe dane
-        ArrayList<Entry> entries = new ArrayList<>();
+        List<BarEntry> barEntries = new ArrayList<>();
 
         for(int i=0; i<fileUploadNumberList.size(); i++)
         {
-            entries.add(new Entry(fileUploadNumberList.get(i),sendingTimeList.get(i)));
+            barEntries.add(new BarEntry(fileUploadNumberList.get(i),sendingTimeList.get(i)));
         }
-        drawGraph(entries);
+        drawGraph(barEntries);
     }
 
     //OSX: fileUploadNumberList , OSY: qualityRangeList
     private void drawGraph2() {
         // przykładowe dane
-        ArrayList<Entry> entries = new ArrayList<>();
+        List<BarEntry> barEntries = new ArrayList<>();
 
         for(int i=0; i<fileUploadNumberList.size(); i++)
         {
-            entries.add(new Entry(fileUploadNumberList.get(i),qualityRangeList.get(i)));
+            barEntries.add(new BarEntry(fileUploadNumberList.get(i),qualityRangeList.get(i)));
         }
-        drawGraph(entries);
+        drawGraph(barEntries);
     }
 
     //OSX: fileUploadNumberList , OSY: qualityRangeList
     private void drawGraph3() {
         // przykładowe dane
-        ArrayList<Entry> entries = new ArrayList<>();
+        List<BarEntry> barEntries = new ArrayList<>();
 
         for(int i=0; i<fileUploadNumberList.size(); i++)
         {
-            entries.add(new Entry(fileUploadNumberList.get(i),uploadSpeedList.get(i)));
+            barEntries.add(new BarEntry(fileUploadNumberList.get(i),uploadSpeedList.get(i)));
         }
-        drawGraph(entries);
+        drawGraph(barEntries);
     }
 
-    private void drawGraph(ArrayList<Entry> entries){
+    private void drawGraph(List<BarEntry> barEntries){
         // konfiguracja wykresu
-        LineDataSet dataSet = new LineDataSet(entries, "Label");
-        dataSet.setColor(Color.RED);
-        dataSet.setValueTextColor(Color.BLUE);
-        dataSet.setLineWidth(2f);
+        BarDataSet barDataSet = new BarDataSet(barEntries, fileName);
+        barDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
+        barDataSet.setValueTextColor(Color.BLACK);
+        barDataSet.setHighlightEnabled(false);
+        barDataSet.setValueTextSize(16f);
+        barDataSet.setValueFormatter(new ValueFormatter() {
+            @Override
+            public String getFormattedValue(float value) {
+                return Constants.decimalFormat.format(value);
+            }
+        });
 
-        LineData lineData = new LineData(dataSet);
-        mLineChart.setData(lineData);
-        mLineChart.invalidate(); // odświeżenie wykresu
+        barChart.setData(new BarData(barDataSet));
+        barChart.invalidate();
     }
 
     //Create a menu for your current activity
