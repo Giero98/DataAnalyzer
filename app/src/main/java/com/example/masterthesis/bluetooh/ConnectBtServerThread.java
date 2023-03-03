@@ -30,7 +30,7 @@ public class ConnectBtServerThread extends Thread {
 
     public Button button_foundDevice, button_detect, button_disconnectBack;
     public TextView textView_connected, textView_inf, textView_percent;
-    public LinearLayout linearSpinner;
+    public LinearLayout linearPercent;
     public ProgressBar progressBar;
 
     public final MainActivity_Log.ListLog LOG;
@@ -55,7 +55,7 @@ public class ConnectBtServerThread extends Thread {
         button_foundDevice = ((Activity) BT).findViewById(R.id.button_foundDevice);
         button_detect = ((Activity) BT).findViewById(R.id.button_detect);
         button_disconnectBack = ((Activity) BT).findViewById(R.id.button_disconnectBack);
-        linearSpinner = ((Activity) BT).findViewById(R.id.linearSpinner);
+        linearPercent = ((Activity) BT).findViewById(R.id.linearPercent);
         progressBar = ((Activity) BT).findViewById(R.id.progressBar);
 
         textView_inf.setMovementMethod(new ScrollingMovementMethod());
@@ -124,7 +124,8 @@ public class ConnectBtServerThread extends Thread {
                 progressBar.setVisibility(View.VISIBLE);
                 button_foundDevice.setVisibility(View.INVISIBLE);
                 button_detect.setVisibility(View.INVISIBLE);
-                button_disconnectBack.setVisibility(View.INVISIBLE);});
+                button_disconnectBack.setVisibility(View.INVISIBLE);
+                linearPercent.setVisibility(View.VISIBLE);});
             Arrays.fill(buffer, 0, buffer.length, (byte) 0);
 
             try {
@@ -151,6 +152,8 @@ public class ConnectBtServerThread extends Thread {
                             String confirmMessage;
                             FileOutputStream fileToSave = null;
 
+                            progressBar.setMax((int)fileSize*Integer.parseInt(multipleFile));
+
                             for (int repeat = 0; repeat < Integer.parseInt(multipleFile); repeat++)
                             {
                                 long fullBytes = 0;
@@ -163,12 +166,12 @@ public class ConnectBtServerThread extends Thread {
                                     while ((bytes = inputStream.read(bufferData)) > 0) {
                                         fileToSave.write(bufferData, 0, bytes);
                                         fullBytes += bytes;
-                                        int percent = ((int) (fullBytes * 100.0) / (int) Long.parseLong(fileSizeString)) /
-                                                    (Integer.parseInt(multipleFile) - repeat);
+                                        int percent = (int) (fullBytes * 100.0) / (int) progressBar.getMax();
                                         ((Activity) BT).runOnUiThread(() -> textView_percent.setText("Download: " + percent + " %"));
                                         progressBar.setProgress(percent);
-                                        if (progressBar.getProgress() == (progressBar.getMax() / Integer.parseInt(multipleFile)) * (repeat+1) )
+                                        if (progressBar.getProgress() == (progressBar.getMax() / (Integer.parseInt(multipleFile)-repeat)) )
                                         {
+                                            LOG.addLog(LOG.currentDate(), "End of download file number " + (repeat+1));
                                             Arrays.fill(bufferData, 0, bufferData.length, (byte) 0);
                                             break;
                                         }
@@ -196,10 +199,11 @@ public class ConnectBtServerThread extends Thread {
                                 LOG.addLog(LOG.currentDate(), "Sending response to download and save file");
 
                                 if (confirmMessage.equals("Confirmed")) {
-                                    ((Activity) BT).runOnUiThread(() -> textView_inf.setText("The name of the received file: " +
-                                            fileName + "\nFile size: " +
-                                            Constants.decimalFormat.format(fileSize).replace(",", ".") +
-                                            " " + fileUnit));
+                                    ((Activity) BT).runOnUiThread(() -> textView_inf.setText(textView_inf.getText() +
+                                                    "The name of the received file: " + fileName +
+                                                    "\nFile size: " +
+                                                    Constants.decimalFormat.format(fileSize).replace(",", ".") +
+                                                    " " + fileUnit + "\n"));
                                 } else {
                                     ((Activity) BT).runOnUiThread(() -> textView_inf.setText("Error downloaded and saving file"));
                                     break;

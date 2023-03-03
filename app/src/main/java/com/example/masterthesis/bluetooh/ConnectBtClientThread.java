@@ -43,7 +43,7 @@ public class ConnectBtClientThread extends Thread {
     public Button button_chooseFile, button_foundDevice, button_detect, button_disconnectBack,
             button_saveMeasurementData, button_graph;
     public TextView textView_connected, textView_inf, textView_percent, textView_deviceRssi;
-    public LinearLayout linearSpinner;
+    public LinearLayout linearSpinner, linearPercent;
     public ProgressBar progressBar;
 
     //A variable stating whether the file has been selected for upload
@@ -85,6 +85,7 @@ public class ConnectBtClientThread extends Thread {
         button_saveMeasurementData = ((Activity) BT).findViewById(R.id.button_saveMeasurementData);
         button_graph = ((Activity) BT).findViewById(R.id.button_graph);
         linearSpinner = ((Activity) BT).findViewById(R.id.linearSpinner);
+        linearPercent = ((Activity) BT).findViewById(R.id.linearPercent);
         progressBar = ((Activity) BT).findViewById(R.id.progressBar);
 
         textView_inf.setMovementMethod(new ScrollingMovementMethod());
@@ -123,7 +124,8 @@ public class ConnectBtClientThread extends Thread {
             button_foundDevice.setVisibility(View.INVISIBLE);
             button_detect.setVisibility(View.INVISIBLE);
             button_disconnectBack.setText("Disconnect");
-            linearSpinner.setVisibility(View.VISIBLE);});
+            linearSpinner.setVisibility(View.VISIBLE);
+            linearPercent.setVisibility(View.VISIBLE);});
 
         if(sendNameDevice()) {
             //keep looping until the thread is stopped.
@@ -228,7 +230,7 @@ public class ConnectBtClientThread extends Thread {
                         progressBar.setProgress(percent);
                     }
                     outputStream.flush();
-                    LOG.addLog(LOG.currentDate(), "Data file sent");
+                    LOG.addLog(LOG.currentDate(), "End of file upload number " + (repeat+1));
                     Arrays.fill(buffer, 0, buffer.length, (byte) 0); //clearing the buffer
 
                     try {
@@ -248,6 +250,8 @@ public class ConnectBtClientThread extends Thread {
                                 String sizeUnit = setSpeedSendUnit(speedSend);
                                 int finalRepeat = repeat;
                                 ((Activity) BT).runOnUiThread(() -> textView_inf.setText(textView_inf.getText() +
+                                                "\nThe size of the set buffer: " +
+                                                bufferSize + " Bytes" +
                                                 "\nFile upload number: " +
                                                 (finalRepeat + 1) +
                                                 "\nFile transfer time: " +
@@ -281,6 +285,7 @@ public class ConnectBtClientThread extends Thread {
                 }
             }
             ((Activity) BT).runOnUiThread(() -> {
+                textView_inf.setText(textView_inf.getText() + "\n");
                 Toast.makeText(BT, "File sent", Toast.LENGTH_SHORT).show();
                 button_saveMeasurementData.setVisibility(View.VISIBLE);
                 button_graph.setVisibility(View.VISIBLE);
