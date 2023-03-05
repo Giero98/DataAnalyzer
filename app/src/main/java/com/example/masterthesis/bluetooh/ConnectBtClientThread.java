@@ -212,15 +212,16 @@ public class ConnectBtClientThread extends Thread {
             outputStream.write(fileData.getBytes());
             outputStream.flush();
             LOG.addLog(LOG.currentDate(), "Sending file information");
-            FileInputStream file = null;
+
             InputStream inputStream = socketClient.getInputStream();
             long fullBytes = 0;
+            FileInputStream file = (FileInputStream) BT.getContentResolver().openInputStream(uri);
+
             for(int repeat = 0 ; repeat < multipleFile; repeat++)
             {
                 //start counting the transfer time
                 long startTime = System.currentTimeMillis();
                 try {
-                    file = (FileInputStream) BT.getContentResolver().openInputStream(uri);
                     //A loop that sends a file and displays the progress percentage
                     while ((bytesRead = file.read(buffer)) > 0) {
                         outputStream.write(buffer, 0, bytesRead);
@@ -230,6 +231,7 @@ public class ConnectBtClientThread extends Thread {
                         progressBar.setProgress(percent);
                     }
                     outputStream.flush();
+                    file.getChannel().position(0);
                     LOG.addLog(LOG.currentDate(), "End of file upload number " + (repeat+1));
                     Arrays.fill(buffer, 0, buffer.length, (byte) 0); //clearing the buffer
 
@@ -248,19 +250,17 @@ public class ConnectBtClientThread extends Thread {
                                 double resultTime = (double) (endTime - startTime) / 1000; //time change ms to s
                                 double speedSend = fileSize / resultTime;
                                 String sizeUnit = setSpeedSendUnit(speedSend);
-                                int finalRepeat = repeat;
+                                int currentRepeat = repeat;
                                 ((Activity) BT).runOnUiThread(() -> textView_inf.setText(textView_inf.getText() +
                                                 "\nThe size of the set buffer: " +
                                                 bufferSize + " Bytes" +
                                                 "\nFile upload number: " +
-                                                (finalRepeat + 1) +
+                                                (currentRepeat + 1) +
                                                 "\nFile transfer time: " +
                                                 Constants.decimalFormat.format(resultTime).replace(",", ".") + " s" +
                                                 "\nUpload speed is: " +
                                                 Constants.decimalFormat.format(speedSend).replace(",", ".") +
                                                 " " + sizeUnit + "/s"));
-                                Arrays.fill(confirmBuffer, 0, confirmBuffer.length, (byte) 0);
-                                dataSendFromClient = false;
 
                                 measurementDataList.add((repeat + 1) + "," +
                                         fileSizeBytes + "," +
@@ -272,10 +272,9 @@ public class ConnectBtClientThread extends Thread {
                             } else if (confirmMessage.equals("NoneConfirmed")) {
                                 LOG.addLog(LOG.currentDate(), "Failed to save to the server");
                                 ((Activity) BT).runOnUiThread(() -> textView_inf.setText(textView_inf.getText() + "\nFailed to save to the server"));
-                                Arrays.fill(confirmBuffer, 0, confirmBuffer.length, (byte) 0);
-                                dataSendFromClient = false;
                                 break;
                             }
+                            Arrays.fill(confirmBuffer, 0, confirmBuffer.length, (byte) 0);
                         }
                     } catch (IOException e) {
                         LOG.addLog(LOG.currentDate(), "Failed to create stream to receive message whether file was delivered", e.getMessage());
@@ -290,6 +289,7 @@ public class ConnectBtClientThread extends Thread {
                 button_saveMeasurementData.setVisibility(View.VISIBLE);
                 button_graph.setVisibility(View.VISIBLE);
             });
+            dataSendFromClient = false;
             try {
                 if (file != null) {
                     file.close();
@@ -432,6 +432,9 @@ public class ConnectBtClientThread extends Thread {
                             if (!measurementDataList.isEmpty()) {
                                 measurementDataList.clear();
                             }
+
+                            ((Activity) BT).runOnUiThread(() -> Toast.makeText(BT,
+                                    "Dane zostały zapisane", Toast.LENGTH_SHORT).show());
                         } catch (IOException e) {
                             LOG.addLog(LOG.currentDate(), "", e.getMessage());
                         }

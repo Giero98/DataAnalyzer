@@ -16,7 +16,7 @@ public interface Constants {
 
     //Buffer size
     int     confirmBufferBytes = 100,
-            getBufferFirstInfOfFile = 1024;
+            getBufferFirstInfOfFile = 4096;
 
     //Time to search for Bluetooth devices
     int timeSearch = 12000; //ms
