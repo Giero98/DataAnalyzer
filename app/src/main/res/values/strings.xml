@@ -16,8 +16,8 @@
     <string name="multiple_file">How many times to upload the file?</string>
     <string name="discover_device">Select a device</string>
     <string name="default_multiple_file">1</string>
-    <string name="device_rssi_text">RSSI: </string>
-    <string name="graph_quality_range">Quality range</string>
+    <string name="quality_signal">Signal [%]: </string>
+    <string name="graph_quality_signal">Quality signal</string>
     <string name="graph_sending_time">Sending time</string>
     <string name="graph_upload_speed">Upload speed</string>
     <string name="graph_text">Choose which chart you want to display</string>
