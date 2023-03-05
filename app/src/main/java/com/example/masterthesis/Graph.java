@@ -4,6 +4,7 @@ import  androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.DashPathEffect;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -76,18 +77,14 @@ public class Graph extends AppCompatActivity {
                     uploadSpeedList.clear();
                 fileName = list;
             }
-
         }
 
 
         barChart.getDescription().setEnabled(false);
         barChart.setDrawValueAboveBar(true);
-        barChart.setDrawGridBackground(false);
         barChart.setBackgroundColor(Color.WHITE);
         barChart.setDoubleTapToZoomEnabled(false);
-        int maxVisibleColumns = 1; // maksymalna liczba kolumn wyświetlanych na ekranie
-        barChart.setVisibleXRangeMaximum(maxVisibleColumns);
-        barChart.setDragEnabled(true); // włącz przewijanie
+        //barChart.setDragEnabled(true); // włącz przewijanie
 
         XAxis xAxis = barChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
@@ -98,7 +95,7 @@ public class Graph extends AppCompatActivity {
         xAxis.setLabelCount(fileUploadNumberList.size()); // liczba etykiet na osi X
 
         YAxis leftAxis = barChart.getAxisLeft();
-        leftAxis.setDrawGridLines(false);
+        leftAxis.setGridDashedLine(new DashPathEffect(new float[]{10f, 5f}, 0f));
         leftAxis.setAxisMinimum(0f); // minimalna wartość osi Y
         leftAxis.setGranularity(0.01f);
         leftAxis.setTextColor(Color.BLACK);
@@ -157,7 +154,13 @@ public class Graph extends AppCompatActivity {
             }
         });
 
-        barChart.setData(new BarData(barDataSet));
+        BarData barData = new BarData(barDataSet);
+        barData.setBarWidth(0.7f); // ustawiamy stałą szerokość kolumn
+
+        barChart.setData(barData);
+        barChart.animateY(1000);
+        barChart.setVisibleXRangeMaximum(4); // ustawiamy maksymalną widoczną ilość kolumn
+        barChart.moveViewToX(0); // przesuwamy wykres do początku
         barChart.invalidate();
     }
 
