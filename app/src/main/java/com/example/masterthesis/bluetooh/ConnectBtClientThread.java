@@ -61,7 +61,7 @@ public class ConnectBtClientThread extends Thread {
     //Log class reference
     public static MainActivity_Log.ListLog LOG;
     private long fileSizeBytes; //file size in bytes
-    private String fileSizeUnit = "Bytes" , deviceName;
+    private static String fileSizeUnit = "Bytes" , deviceName;
     private OutputStream outputStream;
     public static ArrayList<String> measurementDataList = new ArrayList<>();
     public static String dataFileName;
@@ -214,11 +214,11 @@ public class ConnectBtClientThread extends Thread {
             LOG.addLog(LOG.currentDate(), "Sending file information");
 
             InputStream inputStream = socketClient.getInputStream();
-            long fullBytes = 0;
             FileInputStream file = (FileInputStream) BT.getContentResolver().openInputStream(uri);
 
             for(int repeat = 0 ; repeat < multipleFile; repeat++)
             {
+                long fullBytes = 0;
                 //start counting the transfer time
                 long startTime = System.currentTimeMillis();
                 try {
@@ -226,9 +226,10 @@ public class ConnectBtClientThread extends Thread {
                     while ((bytesRead = file.read(buffer)) > 0) {
                         outputStream.write(buffer, 0, bytesRead);
                         fullBytes += bytesRead;
-                        int percent = ((int) (fullBytes * 100.0) / (int) fileSizeBytes) / multipleFile;
+                        long percent = 100 * (fullBytes + fileSizeBytes * repeat) /
+                                (fileSizeBytes * multipleFile);
                         ((Activity) BT).runOnUiThread(() -> textView_percent.setText("Sent: " + percent + " %"));
-                        progressBar.setProgress(percent);
+                        progressBar.setProgress((int) percent);
                     }
                     outputStream.flush();
                     file.getChannel().position(0);
@@ -246,7 +247,6 @@ public class ConnectBtClientThread extends Thread {
                             if (confirmMessage.equals("Confirmed")) {
                                 //end of upload time counting
                                 long endTime = System.currentTimeMillis();
-                                ((Activity) BT).runOnUiThread(() -> Toast.makeText(BT, "File sent", Toast.LENGTH_SHORT).show());
                                 double resultTime = (double) (endTime - startTime) / 1000; //time change ms to s
                                 double speedSend = fileSize / resultTime;
                                 String sizeUnit = setSpeedSendUnit(speedSend);
@@ -351,7 +351,7 @@ public class ConnectBtClientThread extends Thread {
         return fileSize;
     }
 
-    public String getFileSizeUnit()
+    public static String getFileSizeUnit()
     {
         return fileSizeUnit;
     }

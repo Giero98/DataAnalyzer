@@ -148,28 +148,30 @@ public class ConnectBtServerThread extends Thread {
                             LOG.addLog(LOG.currentDate(), "File information is being retrieved");
                             Arrays.fill(buffer, 0, buffer.length, (byte) 0);
 
-                            double fileSize = conversionFileSize(Long.parseLong(fileSizeString), fileUnit);
+                            long fileSizeBytes = Long.parseLong(fileSizeString);
+                            int multipleSize = Integer.parseInt(multipleFile);
+                            int bufferFile = Integer.parseInt(bufferSize);
+                            double fileSize = conversionFileSize(fileSizeBytes, fileUnit);
 
-
-                            long fullBytes = 0;
-
-                            for (int repeat = 0; repeat < Integer.parseInt(multipleFile); repeat++)
+                            for (int repeat = 0; repeat < multipleSize; repeat++)
                             {
                                 String confirmMessage;
                                 FileOutputStream fileToSave = null;
+                                long fullBytes = 0;
                                 try {
                                     fileToSave = new FileOutputStream(setFilePlace());
                                     LOG.addLog(LOG.currentDate(), "The file name has been set");
-                                    byte[] bufferData = new byte[Integer.parseInt(bufferSize)];
+                                    byte[] bufferData = new byte[bufferFile];
 
                                     //loop where the file is fetched and the percentage of the file's saved data is displayed
                                     while ((bytes = inputStream.read(bufferData)) > 0) {
                                         fileToSave.write(bufferData, 0, bytes);
                                         fullBytes += bytes;
-                                        int percent = ((int) (fullBytes * 100.0) / Integer.parseInt(fileSizeString)) / (Integer.parseInt(multipleFile));
+                                        long percent = 100 * (fullBytes + fileSizeBytes * repeat) /
+                                                (fileSizeBytes * multipleSize);
                                         ((Activity) BT).runOnUiThread(() -> textView_percent.setText("Download: " + percent + " %"));
-                                        progressBar.setProgress(percent);
-                                        if (fullBytes == Long.parseLong(fileSizeString) *(repeat+1) )
+                                        progressBar.setProgress((int) percent);
+                                        if (fullBytes == fileSizeBytes)
                                         {
                                             LOG.addLog(LOG.currentDate(), "End of download file number " + (repeat+1));
                                             Arrays.fill(bufferData, 0, bufferData.length, (byte) 0);
@@ -177,7 +179,6 @@ public class ConnectBtServerThread extends Thread {
                                         }
                                     }
                                     fileToSave.flush();
-                                    ((Activity) BT).runOnUiThread(() -> Toast.makeText(BT, "Downloaded file", Toast.LENGTH_SHORT).show());
                                     LOG.addLog(new Date(System.currentTimeMillis()), "The file has been downloaded and saved");
                                     confirmMessage = "Confirmed";
                                 } catch (IOException e) {
@@ -210,6 +211,7 @@ public class ConnectBtServerThread extends Thread {
                                     break;
                                 }
                             }
+                            ((Activity) BT).runOnUiThread(() -> Toast.makeText(BT, "Downloaded file", Toast.LENGTH_SHORT).show());
                         }
                     } catch (IOException e) {
                         LOG.addLog(LOG.currentDate(),"The data could not be loaded", e.getMessage());

@@ -18,7 +18,7 @@
             android:text="@string/button_back" />
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/textView_graph"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -43,7 +43,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/graph_quality_range" />
+            android:text="@string/graph_quality_signal" />
 
         <RadioButton
             android:id="@+id/radioButton3"

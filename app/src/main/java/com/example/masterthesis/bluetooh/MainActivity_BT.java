@@ -292,8 +292,13 @@ public class MainActivity_BT extends AppCompatActivity {
         public void onReadRemoteRssi(BluetoothGatt gatt, int rssi, int status) {
             // obsługa odczytu wartości RSSI
             if (status == BluetoothGatt.GATT_SUCCESS) {
+                int percentRssi;
                 // odczytano wartość RSSI, zapisz ją i wykonaj odpowiednie akcje
-                runOnUiThread(() ->textView_deviceRssi.setText(Integer.toString(rssi)));
+                if(rssi>=0)
+                    percentRssi = 100;
+                else
+                    percentRssi = 100 + rssi;
+                runOnUiThread(() ->textView_deviceRssi.setText(Integer.toString(percentRssi)));
             } else {
                 // wystąpił błąd podczas odczytu wartości RSSI
                 LOG.addLog(LOG.currentDate(),"wystąpił błąd podczas odczytu wartości RSSI");
@@ -336,7 +341,7 @@ public class MainActivity_BT extends AppCompatActivity {
             fileToSend = data;
             Double fileSize = threadClient.getFileSize(fileToSend.getData());
             String  fileName = threadClient.getFileName(fileToSend.getData()),
-                    fileSizeUnit = threadClient.getFileSizeUnit();
+                    fileSizeUnit = ConnectBtClientThread.getFileSizeUnit();
             textView_inf.setText("The name of the uploaded file: " + fileName +
                     "\nFile size: " +
                     Constants.decimalFormat.format(fileSize).replace(",", ".") +
