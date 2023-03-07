@@ -30,7 +30,7 @@ public class ServerBt extends Thread {
     final TextView textView_connected, textView_inf, textView_percent;
     final LinearLayout layoutPercent;
     final ProgressBar progressBar;
-    static boolean running;
+    public static boolean running;
     final Logs.ListLog LOG;
     final Context BT;
     static BluetoothSocket socketServer;
@@ -56,13 +56,12 @@ public class ServerBt extends Thread {
 
     @SuppressLint({"SetTextI18n", "MissingPermission"})
     public void run() {
-        LOG.addLog("A server thread has started listening");
+        LOG.addLog("A server has started");
         try {
             serverSocket = Constants.bluetoothAdapter.listenUsingRfcommWithServiceRecord(Constants.NAME, Constants.MY_UUID);
         } catch (IOException e) {
             LOG.addLog("Socket's listen() method failed", e.getMessage());
         }
-
         try {
             socketServer = serverSocket.accept();
         } catch (IOException e) {
@@ -90,6 +89,7 @@ public class ServerBt extends Thread {
             } catch (IOException e) {
                 LOG.addLog("Error closing output stream:", e.getMessage());
             }
+            LOG.addLog("The server has ended");
         }
     }
 
