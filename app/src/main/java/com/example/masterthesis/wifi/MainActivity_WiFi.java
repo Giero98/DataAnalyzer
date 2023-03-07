@@ -12,7 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.masterthesis.MainActivity;
-import com.example.masterthesis.MainActivity_Log;
+import com.example.masterthesis.Logs;
 import com.example.masterthesis.R;
 
 /*
@@ -27,7 +27,7 @@ public class MainActivity_WiFi extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_wi_fi);
+        setContentView(R.layout.activity_wi_fi);
         setTitle("Wi-Fi");
 
         button_back = findViewById(R.id.button3);
@@ -62,7 +62,7 @@ public class MainActivity_WiFi extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.show_log) {
-            Intent intent = new Intent(this, MainActivity_Log.class);
+            Intent intent = new Intent(this, Logs.class);
             startActivity(intent);
             return true;
         }

@@ -21,7 +21,6 @@
             android:id="@+id/textView_graph"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:text="@string/graph_text" />
 
     </LinearLayout>
@@ -32,21 +31,21 @@
         android:orientation="horizontal">
 
         <RadioButton
-            android:id="@+id/radioButton"
+            android:id="@+id/radioButton_uploadTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/graph_sending_time" />
+            android:text="@string/graph_upload_time" />
 
         <RadioButton
-            android:id="@+id/radioButton2"
+            android:id="@+id/radioButton_qualitySignal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/graph_quality_signal" />
 
         <RadioButton
-            android:id="@+id/radioButton3"
+            android:id="@+id/radioButton_uploadSpeed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"

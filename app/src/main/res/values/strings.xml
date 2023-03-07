@@ -1,24 +1,25 @@
 <resources>
     <string name="app_name">Master Thesis</string>
-    <string name="first_text">Welcome to my App!</string>
+    <string name="about_app">An application created for the master thesis, where you can conduct
+        research on: transfer time, transfer speed, connection quality from one device that is a
+        client to another device that is a server.</string>
     <string name="button_wifi">CONNECT BY WI-FI</string>
     <string name="button_bt">CONNECT BY BLUETOOTH</string>
-    <string name="button3">BUTTON</string>
     <string name="button_back">BACK</string>
     <string name="button_detect">START DETECTED</string>
     <string name="button_foundDevice">FOUND DEVICE</string>
     <string name="button_sendData">SEND DATA</string>
-    <string name="button_chooseFile">CHOOSE A FILE</string>
-    <string name="button_save_measurement_data">SAVE THE ANALYSIS DATA</string>
-    <string name="button_graph">VIEW THE DATA GRAPH</string>
+    <string name="button_chooseFile">CHOOSE FILE</string>
+    <string name="button_save_measurement_data">SAVE DATA</string>
+    <string name="button_graph">SHOW GRAPH</string>
     <string name="button_inf_log">INFORMATION LOG</string>
     <string name="button_error_log">ERROR LOG</string>
     <string name="multiple_file">How many times to upload the file?</string>
     <string name="discover_device">Select a device</string>
     <string name="default_multiple_file">1</string>
-    <string name="quality_signal">Signal [%]: </string>
+    <string name="quality_signal">Signal [%]:</string>
     <string name="graph_quality_signal">Quality signal</string>
-    <string name="graph_sending_time">Sending time</string>
+    <string name="graph_upload_time">Upload time</string>
     <string name="graph_upload_speed">Upload speed</string>
     <string name="graph_text">Choose which chart you want to display</string>
 
@@ -33,13 +34,5 @@
         <item>256KB</item>
         <item>10% of file</item>
     </string-array>
-    <string name="title_activity_graph">Graph</string>
-    <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
 
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 </resources>

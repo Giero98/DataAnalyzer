@@ -7,6 +7,19 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <TextView
+        android:layout_width="339dp"
+        android:layout_height="279dp"
+        android:text="@string/about_app"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/button_wifi"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.127"
+        tools:ignore="TextSizeCheck" />
+
     <Button
         android:id="@+id/button_bt"
         android:layout_width="266dp"
@@ -19,19 +32,6 @@
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         tools:ignore="TextSizeCheck" />
-
-    <TextView
-        android:id="@+id/first_textView"
-        android:layout_width="388dp"
-        android:layout_height="143dp"
-        android:text="@string/first_text"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/button_wifi"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.127" />
 
     <Button
         android:id="@+id/button_wifi"

@@ -4,9 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".bluetooh.MainActivity_BT"
+    tools:context=".bluetooh.Bluetooth"
     android:orientation="horizontal"
-    android:background="@color/color_FF3750c3">
+    android:background="@color/color_FF3750c3"
+    tools:ignore="Overdraw">
 
     <TextView
         android:layout_width="wrap_content"
@@ -36,6 +37,5 @@
         android:visibility="invisible"
         app:srcCompat="@drawable/ic_done"
         tools:ignore="ContentDescription,ImageContrastCheck" />
-
 
 </LinearLayout>

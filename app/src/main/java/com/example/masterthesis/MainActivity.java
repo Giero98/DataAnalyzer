@@ -19,17 +19,11 @@ import android.widget.Button;
 import android.widget.Toast;
 import android.bluetooth.BluetoothAdapter;
 
-import com.example.masterthesis.bluetooh.MainActivity_BT;
+import com.example.masterthesis.bluetooh.Bluetooth;
 import com.example.masterthesis.wifi.MainActivity_WiFi;
 
-
-/**
- * Main view of the application
- */
 public class MainActivity extends AppCompatActivity {
-
-    //Log class reference
-    private final MainActivity_Log.ListLog LOG = new MainActivity_Log.ListLog();
+    final Logs.ListLog LOG = new Logs.ListLog();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,10 +33,8 @@ public class MainActivity extends AppCompatActivity {
         Button button_wifi = findViewById(R.id.button_wifi);
         Button button_bt = findViewById(R.id.button_bt);
 
-        //Bluetooth connection button
-        button_bt.setOnClickListener(v -> conditionalMethodsBt());
+        button_bt.setOnClickListener(v -> checkingPermissionsBt());
 
-        //Wi-Fi connection button
         button_wifi.setOnClickListener(v -> {
             Toast.makeText(this, "Connect", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(this, MainActivity_WiFi.class);
@@ -50,40 +42,35 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    //Checks if the API version is >=23
-    private boolean checkAPI() {
 
+    boolean checkAPI() {
+        // >= API 31 or >= Android 11
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.S;
     }
 
+    //region sectionBT
+
     //region checkBT
 
-    //Checks permissions to Bluetooth_Connect
-    private boolean checkBtConnect() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+    boolean checkBtConnect() {
+        if (checkAPI()) {
             return ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED;
         }
         else return true;
     }
-
-    //Checks permissions to Bluetooth_Scan
-    private boolean checkBtScan() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+    boolean checkBtScan() {
+        if (checkAPI()) {
             return ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED;
         }
         else return false;
     }
-
-    //Checks permissions to Bluetooth_Advertise
-    private boolean checkBtAdvertise() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+    boolean checkBtAdvertise() {
+        if (checkAPI()) {
             return ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_ADVERTISE) == PackageManager.PERMISSION_GRANTED;
         }
         else return false;
     }
-
-    //Checks permissions to Bluetooth_AccessFineLocation
-    private boolean checkBtAccessFineLocation() {
+    boolean checkBtAccessFineLocation() {
             return ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
     }
 
@@ -91,30 +78,23 @@ public class MainActivity extends AppCompatActivity {
 
     //region permissionBT
 
-    //Calling the action of granting permissions to Bluetooth_Connect
-    private void permissionBtConnect() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+    void permissionBtConnect() {
+        if (checkAPI()) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH_CONNECT}, Constants.REQUEST_BT_CONNECT);
         }
     }
-
-    //Calling the action of granting permissions to Bluetooth_Scan
-    private void permissionBtScan() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+    void permissionBtScan() {
+        if (checkAPI()) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH_SCAN}, Constants.REQUEST_BT_SCAN);
         }
     }
-
-    //Calling the action of granting permissions to Bluetooth_Advertise
-    private void permissionBtAdvertise() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+    void permissionBtAdvertise() {
+        if (checkAPI()) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH_ADVERTISE}, Constants.REQUEST_BT_ADVERTISE);
         }
     }
-
-    //Calling the action of granting permissions to Bluetooth_AccessFineLocation
-    private void permissionBtAccessFineLocation() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+    void permissionBtAccessFineLocation() {
+        if (checkAPI()) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, Constants.REQUEST_BT_ACCESS_FINE_LOCATION);
         }
     }
@@ -123,15 +103,13 @@ public class MainActivity extends AppCompatActivity {
 
     //region configureBT
 
-    //Launching the Bluetooth Activities
-    private void goToBt()
+    void goToBtActivity()
     {
-        Intent intent = new Intent(MainActivity.this, MainActivity_BT.class);
+        Intent intent = new Intent(this, Bluetooth.class);
         startActivity(intent);
     }
 
-    //A method composed of conditional functions that check Bluetooth support and permissions
-    private void conditionalMethodsBt()
+    void checkingPermissionsBt()
     {
         if (checkSupportBt()) {
             if (checkAPI()) {
@@ -144,48 +122,46 @@ public class MainActivity extends AppCompatActivity {
                 } else if (!checkBtAccessFineLocation()) {
                     permissionBtAccessFineLocation();
                 } else {
-                    firstStepBt();
+                    thatBtIsOn();
                 }
             } else {
-                firstStepBt();
+                thatBtIsOn();
             }
         }
     }
 
-    //Checking if the device supports Bluetooth
-    private boolean checkSupportBt() {
+    boolean checkSupportBt() {
         if (Constants.bluetoothAdapter == null) {
-            Toast.makeText(MainActivity.this, "Device doesn't support Bluetooth", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Device doesn't support Bluetooth", Toast.LENGTH_SHORT).show();
             return false;
         } else return true;
     }
 
-    //Turn on Bluetooth or go to Bluetooth Activities
-    private void firstStepBt() {
+    void thatBtIsOn() {
         if (!Constants.bluetoothAdapter.isEnabled())
             enableBt();
         else
-            goToBt();
+            goToBtActivity();
     }
 
-    //Launching the Bluetooth enablement intent on the device
-    private void enableBt() {
+    void enableBt() {
         Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
         ActivityEnableBt.launch(intent);
     }
-    //Reactions to permission response received enableBt
     final ActivityResultLauncher<Intent> ActivityEnableBt = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == Activity.RESULT_OK) {
-                    Toast.makeText(MainActivity.this, "Bluetooth started", Toast.LENGTH_SHORT).show();
-                    goToBt();
+                    Toast.makeText(this, "Bluetooth started", Toast.LENGTH_SHORT).show();
+                    goToBtActivity();
                 }
                 else
-                    Toast.makeText(MainActivity.this, "Bluetooth not enabled", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Bluetooth not enabled", Toast.LENGTH_SHORT).show();
             });
 
     //endregion configureBT
+
+    //endregion sectionBT
 
     //Reactions to permission response received
     @Override
@@ -194,50 +170,47 @@ public class MainActivity extends AppCompatActivity {
         switch (requestCode) {
             case Constants.REQUEST_BT_CONNECT:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    LOG.addLog(LOG.currentDate(),"BLUETOOTH_CONNECT permission granted");
-                    conditionalMethodsBt();
+                    LOG.addLog("BLUETOOTH_CONNECT permission granted");
+                    checkingPermissionsBt();
                 }
-                else LOG.addLog(LOG.currentDate(),"BLUETOOTH_CONNECT permission denied");
+                else LOG.addLog("BLUETOOTH_CONNECT permission denied");
                 break;
             case Constants.REQUEST_BT_SCAN:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    LOG.addLog(LOG.currentDate(),"BLUETOOTH_SCAN permission granted");
-                    conditionalMethodsBt();
+                    LOG.addLog("BLUETOOTH_SCAN permission granted");
+                    checkingPermissionsBt();
                 }
-                else LOG.addLog(LOG.currentDate(),"BLUETOOTH_SCAN permission denied");
+                else LOG.addLog("BLUETOOTH_SCAN permission denied");
                 break;
             case Constants.REQUEST_BT_ADVERTISE:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    LOG.addLog(LOG.currentDate(),"BLUETOOTH_ADVERTISE permission granted");
-                    conditionalMethodsBt();
+                    LOG.addLog("BLUETOOTH_ADVERTISE permission granted");
+                    checkingPermissionsBt();
                 }
-                else LOG.addLog(LOG.currentDate(),"BLUETOOTH_ADVERTISE permission denied");
+                else LOG.addLog("BLUETOOTH_ADVERTISE permission denied");
                 break;
             case Constants.REQUEST_BT_ACCESS_FINE_LOCATION:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    LOG.addLog(LOG.currentDate(),"BLUETOOTH_ACCESS_FINE_LOCATION permission granted");
-                    conditionalMethodsBt();
+                    LOG.addLog("BLUETOOTH_ACCESS_FINE_LOCATION permission granted");
+                    checkingPermissionsBt();
                 }
-                else LOG.addLog(LOG.currentDate(),"BLUETOOTH_ACCESS_FINE_LOCATION permission denied");
+                else LOG.addLog("BLUETOOTH_ACCESS_FINE_LOCATION permission denied");
                 break;
         }
     }
 
-    //Create a menu for your current activity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
         MenuItem showLog = menu.findItem(R.id.show_log);
-        showLog.setTitle("Show Log");
+        showLog.setTitle(Constants.titleLog);
         return true;
     }
-
-    //Create interactions for selecting items from the menu
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.show_log) {
-            Intent intent = new Intent(this, MainActivity_Log.class);
+            Intent intent = new Intent(this, Logs.class);
             startActivity(intent);
             return true;
         }

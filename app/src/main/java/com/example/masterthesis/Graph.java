@@ -5,7 +5,6 @@ import  androidx.appcompat.app.AppCompatActivity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.DashPathEffect;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.Menu;
@@ -14,7 +13,7 @@ import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
-import com.example.masterthesis.bluetooh.ConnectBtClientThread;
+import com.example.masterthesis.bluetooh.ClientBt;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
@@ -28,11 +27,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Graph extends AppCompatActivity {
-
-    private BarChart barChart;
+    public static String connectionDetails;
+    BarChart barChart;
     String fileName, columnUnit;
-    ArrayList<Integer> sentFileNumber = new ArrayList<>(), qualitySignal = new ArrayList<>();
-    ArrayList<Float> fileUploadTime = new ArrayList<>(), uploadSpeed = new ArrayList<>();
+    final ArrayList<Integer> sentFileNumber = new ArrayList<>(), qualitySignal = new ArrayList<>();
+    final ArrayList<Float> fileUploadTime = new ArrayList<>(), uploadSpeed = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,69 +41,98 @@ public class Graph extends AppCompatActivity {
 
         Button buttonBack = findViewById(R.id.button_back);
         barChart = findViewById(R.id.barChart);
-        RadioButton graphUploadTime = findViewById(R.id.radioButton),
-                    graphQualitySignal = findViewById(R.id.radioButton2),
-                    graphUploadSpeed = findViewById(R.id.radioButton3);
+        RadioButton graphUploadTime = findViewById(R.id.radioButton_uploadTime),
+                    graphQualitySignal = findViewById(R.id.radioButton_qualitySignal),
+                    graphUploadSpeed = findViewById(R.id.radioButton_uploadSpeed);
 
         buttonBack.setOnClickListener(v -> finish());
         graphUploadTime.setOnClickListener(v -> selectDataUploadTime());
         graphQualitySignal.setOnClickListener(v -> selectDataQualitySignal());
         graphUploadSpeed.setOnClickListener(v -> selectDataUploadSpeed());
 
-        assignmentBtData();
-
-        barChart.getDescription().setEnabled(false);
-        barChart.setDrawValueAboveBar(true);
-        barChart.setBackgroundColor(Color.WHITE);
-        barChart.setDoubleTapToZoomEnabled(false);
-        barChart.getAxisRight().setEnabled(false);
-
-        XAxis xAxis = barChart.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setDrawGridLines(false);
-        xAxis.setGranularity(1f);
-        xAxis.setTextColor(Color.BLACK);
-        xAxis.setTextSize(12f);
-        xAxis.setLabelCount(sentFileNumber.size());
-
-        YAxis leftAxis = barChart.getAxisLeft();
-        leftAxis.setGridDashedLine(new DashPathEffect(new float[]{10f, 5f}, 0f));
-        leftAxis.setAxisMinimum(0f);
-        leftAxis.setGranularity(0.01f);
-        leftAxis.setTextColor(Color.BLACK);
-        leftAxis.setTextSize(16f);
+        selectData();
+        setupGraph();
+        setupXAxis();
+        setupYAxis();
     }
 
-    private void assignmentBtData ()
+    void selectData()
     {
-        for(String measurementData : ConnectBtClientThread.getMeasurementDataList())
+        if(connectionDetails.equals(Constants.connectionBt))
+            assignmentBtData();
+        //else if(connectionDetails.equals(Constants.connectionWiFi))
+    }
+
+    void assignmentBtData()
+    {
+        for(String measurementData : ClientBt.getMeasurementDataList())
         {
             if(measurementData.contains(","))
             {
                 String[] dataArrayFileMeasurement = measurementData.split(",");
                 String sentFileNumberTable = dataArrayFileMeasurement[0];
-                try {
-                    Integer.parseInt(sentFileNumberTable);
-                    sentFileNumber.add(Integer.parseInt(sentFileNumberTable));
-                    qualitySignal.add(Integer.parseInt(dataArrayFileMeasurement[3]));
-                    fileUploadTime.add(Float.parseFloat(dataArrayFileMeasurement[4]));
-                    uploadSpeed.add(Float.parseFloat(dataArrayFileMeasurement[5]));
-                } catch (NumberFormatException ignored) {}
+                loadingIntoTheDataList(sentFileNumberTable, dataArrayFileMeasurement);
             } else {
-                if(!sentFileNumber.isEmpty())
-                    sentFileNumber.clear();
-                if(!qualitySignal.isEmpty())
-                    qualitySignal.clear();
-                if(!fileUploadTime.isEmpty())
-                    fileUploadTime.clear();
-                if(!uploadSpeed.isEmpty())
-                    uploadSpeed.clear();
+                clearingDataInLists();
                 fileName = measurementData;
             }
         }
     }
 
-    private void selectDataUploadTime() {
+    void loadingIntoTheDataList (String sentFileNumberTable, String[] dataArrayFileMeasurement)
+    {
+        try {
+            Integer.parseInt(sentFileNumberTable);
+            sentFileNumber.add(Integer.parseInt(sentFileNumberTable));
+            qualitySignal.add(Integer.parseInt(dataArrayFileMeasurement[3]));
+            fileUploadTime.add(Float.parseFloat(dataArrayFileMeasurement[4]));
+            uploadSpeed.add(Float.parseFloat(dataArrayFileMeasurement[5]));
+        } catch (NumberFormatException ignored) {}
+    }
+
+    void setupGraph()
+    {
+        barChart.getDescription().setEnabled(false);
+        barChart.setDrawValueAboveBar(true);
+        barChart.setBackgroundColor(Color.WHITE);
+        barChart.setDoubleTapToZoomEnabled(false);
+        barChart.getAxisRight().setEnabled(false);
+    }
+
+    void setupXAxis()
+    {
+        XAxis xAxis = barChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setDrawGridLines(false);
+        xAxis.setGranularity(Constants.distanceBetweenXAxisData);
+        xAxis.setTextColor(Color.BLACK);
+        xAxis.setTextSize(Constants.axisValueSize);
+        xAxis.setLabelCount(sentFileNumber.size());
+    }
+
+    void setupYAxis()
+    {
+        YAxis leftAxis = barChart.getAxisLeft();
+        leftAxis.setGridDashedLine(Constants.girdLineStyle);
+        leftAxis.setAxisMinimum(Constants.minimumYAxisValue);
+        leftAxis.setGranularity(Constants.distanceBetweenYAxisData);
+        leftAxis.setTextColor(Color.BLACK);
+        leftAxis.setTextSize(Constants.axisValueSize);
+    }
+
+    void clearingDataInLists()
+    {
+        if(!sentFileNumber.isEmpty())
+            sentFileNumber.clear();
+        if(!qualitySignal.isEmpty())
+            qualitySignal.clear();
+        if(!fileUploadTime.isEmpty())
+            fileUploadTime.clear();
+        if(!uploadSpeed.isEmpty())
+            uploadSpeed.clear();
+    }
+
+    void selectDataUploadTime() {
         List<BarEntry> graphData = new ArrayList<>();
         for(int i=0; i < sentFileNumber.size(); i++)
         {
@@ -114,7 +142,7 @@ public class Graph extends AppCompatActivity {
         drawGraph(graphData);
     }
 
-    private void selectDataQualitySignal() {
+    void selectDataQualitySignal() {
         List<BarEntry> graphData = new ArrayList<>();
         for(int i=0; i < sentFileNumber.size(); i++)
         {
@@ -124,7 +152,7 @@ public class Graph extends AppCompatActivity {
         drawGraph(graphData);
     }
 
-    private void selectDataUploadSpeed() {
+    void selectDataUploadSpeed() {
         List<BarEntry> graphData = new ArrayList<>();
         for(int i=0; i < sentFileNumber.size(); i++)
         {
@@ -135,11 +163,18 @@ public class Graph extends AppCompatActivity {
     }
 
     @SuppressLint("SetTextI18n")
-    private void drawGraph(List<BarEntry> graphData){
+    void drawGraph(List<BarEntry> graphData){
         TextView textViewGraph = findViewById(R.id.textView_graph);
         textViewGraph.setText("File details: " + fileName);
         textViewGraph.setGravity(Gravity.CENTER);
 
+        BarDataSet totalGraphData = formatDataSet(graphData);
+        BarData barData = formatData(totalGraphData);
+        lastGraphSetting(barData);
+    }
+
+    BarDataSet formatDataSet(List<BarEntry> graphData)
+    {
         BarDataSet totalGraphData = new BarDataSet(graphData, columnUnit);
         totalGraphData.setColors(ColorTemplate.MATERIAL_COLORS);
         totalGraphData.setValueTextColor(Color.BLACK);
@@ -151,13 +186,21 @@ public class Graph extends AppCompatActivity {
                 return Constants.decimalFormat.format(value);
             }
         });
+        return totalGraphData;
+    }
 
+    BarData formatData(BarDataSet totalGraphData)
+    {
         BarData barData = new BarData(totalGraphData);
-        barData.setBarWidth(0.7f); // set columns to a fixed width
+        barData.setBarWidth(Constants.columnWidth);
+        return barData;
+    }
 
+    void lastGraphSetting(BarData barData)
+    {
         barChart.setData(barData);
-        barChart.animateY(1000); // animated column display
-        barChart.setVisibleXRangeMaximum(4); // set the maximum visible number of columns
+        barChart.animateY(Constants.graphAnimationDuration);
+        barChart.setVisibleXRangeMaximum(Constants.maximumNumberOfColumnsOnTheScreen);
         barChart.moveViewToX(0); // graph moved to the beginning
         barChart.invalidate();
     }
@@ -167,7 +210,7 @@ public class Graph extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
         MenuItem itemShowLog = menu.findItem(R.id.show_log);
-        itemShowLog.setTitle("Show Log");
+        itemShowLog.setTitle(Constants.titleLog);
         return true;
     }
     //Create interactions for selecting items from the menu
@@ -175,7 +218,7 @@ public class Graph extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.show_log) {
-            Intent intent = new Intent(this, MainActivity_Log.class);
+            Intent intent = new Intent(this, Logs.class);
             startActivity(intent);
             return true;
         }
