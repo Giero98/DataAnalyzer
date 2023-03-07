@@ -15,7 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.masterthesis.Constants;
-import com.example.masterthesis.MainActivity_Log;
+import com.example.masterthesis.Logs;
 import com.example.masterthesis.R;
 
 import java.io.File;
@@ -24,85 +24,71 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
-import java.util.Date;
 
-public class ConnectBtServerThread extends Thread {
+public class ServerBt extends Thread {
+    final Button button_foundDevice, button_detect, button_disconnectBack;
+    final TextView textView_connected, textView_inf, textView_percent;
+    final LinearLayout layoutPercent;
+    final ProgressBar progressBar;
+    static boolean running;
+    final Logs.ListLog LOG;
+    final Context BT;
+    static BluetoothSocket socketServer;
+    BluetoothServerSocket serverSocket;
+    String fileName;
 
-    public Button button_foundDevice, button_detect, button_disconnectBack;
-    public TextView textView_connected, textView_inf, textView_percent;
-    public LinearLayout linearPercent;
-    public ProgressBar progressBar;
-
-    public final MainActivity_Log.ListLog LOG;
-    private final Context BT;
-    private BluetoothSocket socketServer;
-    private BluetoothServerSocket serverSocket;
-
-    //variable containing the name of the downloaded file
-    private String fileName;
-
-    //ConnectBtServerThread class constructor
-    public ConnectBtServerThread(Context BT, BluetoothSocket socketServer, MainActivity_Log.ListLog LOG)
+    public ServerBt(Context BT, Logs.ListLog LOG)
     {
         this.BT = BT;
-        this.socketServer = socketServer;
         this.LOG = LOG;
 
 
         textView_connected = ((Activity) BT).findViewById(R.id.textView_connected);
         textView_inf = ((Activity) BT).findViewById(R.id.textView_inf);
+        textView_inf.setMovementMethod(new ScrollingMovementMethod());
         textView_percent = ((Activity) BT).findViewById(R.id.textView_percent);
         button_foundDevice = ((Activity) BT).findViewById(R.id.button_foundDevice);
         button_detect = ((Activity) BT).findViewById(R.id.button_detect);
-        button_disconnectBack = ((Activity) BT).findViewById(R.id.button_disconnectBack);
-        linearPercent = ((Activity) BT).findViewById(R.id.linearPercent);
+        button_disconnectBack = ((Activity) BT).findViewById(R.id.button_disconnectAndBack);
+        layoutPercent = ((Activity) BT).findViewById(R.id.layoutPercent);
         progressBar = ((Activity) BT).findViewById(R.id.progressBar);
-
-        textView_inf.setMovementMethod(new ScrollingMovementMethod());
     }
-    //A method that is run when the start() method is called on an object representing a thread
+
     @SuppressLint({"SetTextI18n", "MissingPermission"})
     public void run() {
-        LOG.addLog(new Date(System.currentTimeMillis()),"A server thread has started listening");
+        LOG.addLog("A server thread has started listening");
         try {
             serverSocket = Constants.bluetoothAdapter.listenUsingRfcommWithServiceRecord(Constants.NAME, Constants.MY_UUID);
         } catch (IOException e) {
-            LOG.addLog(LOG.currentDate(),"Socket's listen() method failed", e.getMessage());
+            LOG.addLog("Socket's listen() method failed", e.getMessage());
         }
 
-        // Keep listening until exception occurs or a socket is returned.
         try {
             socketServer = serverSocket.accept();
         } catch (IOException e) {
-            LOG.addLog(LOG.currentDate(),"Socket's accept() method failed", e.getMessage());
+            LOG.addLog("Socket's accept() method failed", e.getMessage());
         }
         if (socketServer != null) {
-            LOG.addLog(LOG.currentDate(),"The connection attempt succeeded");
+            LOG.addLog("The connection attempt succeeded");
             try {
                 InputStream inputStream = socketServer.getInputStream();
                 getData(inputStream);
-
-                //if the connection is broken
-                if(!socketServer.isConnected()) {
+                if(!socketServer.isConnected())
                     try {
-                        ((Activity) BT).runOnUiThread(() -> {
-                            textView_connected.setText("Disconnected");
-                            Toast.makeText(BT, "Disconnected", Toast.LENGTH_SHORT).show();
-                            button_disconnectBack.setText("Back");
-                            button_disconnectBack.setVisibility(View.VISIBLE);});
+                        updateTextWhenDisconnected();
+                        running = false;
                         inputStream.close();
                         socketServer.close();
                     } catch (IOException ex) {
-                        LOG.addLog(LOG.currentDate(),"Error closing input stream and socket's", ex.getMessage());
+                        LOG.addLog("Error closing input stream and socket's", ex.getMessage());
                     }
-                }
             } catch (IOException e) {
-                LOG.addLog(LOG.currentDate(),"Failed to create stream to write data", e.getMessage());
+                LOG.addLog("Failed to create stream to write data", e.getMessage());
             }
             try {
                 serverSocket.close();
             } catch (IOException e) {
-                LOG.addLog(LOG.currentDate(),"Error closing output stream:", e.getMessage());
+                LOG.addLog("Error closing output stream:", e.getMessage());
             }
         }
     }
@@ -117,95 +103,77 @@ public class ConnectBtServerThread extends Thread {
         try {
             bytes = inputStream.read(buffer);
             String deviceName = new String(buffer, 0, bytes);
-            //runOnUiThread() Used to run code on the main UI thread.
-            ((Activity) BT).runOnUiThread(() -> {
-                textView_connected.setText("Connected as a server with\n" + deviceName);
-                textView_percent.setVisibility(View.VISIBLE);
-                progressBar.setVisibility(View.VISIBLE);
-                button_foundDevice.setVisibility(View.INVISIBLE);
-                button_detect.setVisibility(View.INVISIBLE);
-                button_disconnectBack.setVisibility(View.INVISIBLE);
-                linearPercent.setVisibility(View.VISIBLE);});
+            updateBtView(deviceName);
             Arrays.fill(buffer, 0, buffer.length, (byte) 0);
 
             try {
                 OutputStream outputStream = socketServer.getOutputStream();
 
-                //The loop will be sent until it is stopped
-                while(!interrupted()) {
+                while(running) {
                     try {
                         bytes = inputStream.read(buffer);
                         if (bytes > 0) {
-
-                            //File information is being retrieved
-                            String fileFirstData = new String(buffer, 0, bytes);
-                            String[] dataArrayFileFirstData = fileFirstData.split(";");
-                            fileName = dataArrayFileFirstData[0];
-                            String fileUnit = dataArrayFileFirstData[1];
-                            String fileSizeString = dataArrayFileFirstData[2];
-                            String bufferSize = dataArrayFileFirstData[3];
-                            String multipleFile = dataArrayFileFirstData[4];
-                            LOG.addLog(LOG.currentDate(), "File information is being retrieved");
+                            
+                            String fileDetails = new String(buffer, 0, bytes);
+                            String[] dataArrayFileDetails = fileDetails.split(";");
+                            fileName = dataArrayFileDetails[0];
+                            String fileSizeUnit = dataArrayFileDetails[1];
+                            String fileSizeString = dataArrayFileDetails[2];
+                            String bufferSizeString = dataArrayFileDetails[3];
+                            String multipleFileString = dataArrayFileDetails[4];
+                            LOG.addLog("File information is being retrieved");
                             Arrays.fill(buffer, 0, buffer.length, (byte) 0);
 
                             long fileSizeBytes = Long.parseLong(fileSizeString);
-                            int multipleSize = Integer.parseInt(multipleFile);
-                            int bufferFile = Integer.parseInt(bufferSize);
-                            double fileSize = conversionFileSize(fileSizeBytes, fileUnit);
+                            int multipleFile = Integer.parseInt(multipleFileString);
+                            int bufferSize = Integer.parseInt(bufferSizeString);
 
-                            for (int repeat = 0; repeat < multipleSize; repeat++)
+                            for (int repeat = 0; repeat < multipleFile; repeat++)
                             {
                                 String confirmMessage;
                                 FileOutputStream fileToSave = null;
                                 long fullBytes = 0;
                                 try {
                                     fileToSave = new FileOutputStream(setFilePlace());
-                                    LOG.addLog(LOG.currentDate(), "The file name has been set");
-                                    byte[] bufferData = new byte[bufferFile];
+                                    LOG.addLog("The file name has been set");
+                                    byte[] bufferData = new byte[bufferSize];
 
-                                    //loop where the file is fetched and the percentage of the file's saved data is displayed
                                     while ((bytes = inputStream.read(bufferData)) > 0) {
                                         fileToSave.write(bufferData, 0, bytes);
                                         fullBytes += bytes;
                                         long percent = 100 * (fullBytes + fileSizeBytes * repeat) /
-                                                (fileSizeBytes * multipleSize);
+                                                (fileSizeBytes * multipleFile);
                                         ((Activity) BT).runOnUiThread(() -> textView_percent.setText("Download: " + percent + " %"));
                                         progressBar.setProgress((int) percent);
                                         if (fullBytes == fileSizeBytes)
                                         {
-                                            LOG.addLog(LOG.currentDate(), "End of download file number " + (repeat+1));
+                                            LOG.addLog("End of download file number " + (repeat+1));
                                             Arrays.fill(bufferData, 0, bufferData.length, (byte) 0);
                                             break;
                                         }
                                     }
                                     fileToSave.flush();
-                                    LOG.addLog(new Date(System.currentTimeMillis()), "The file has been downloaded and saved");
+                                    LOG.addLog("The file has been downloaded and saved");
                                     confirmMessage = "Confirmed";
                                 } catch (IOException e) {
-                                    LOG.addLog(LOG.currentDate(), "Error downloaded and saving file", e.getMessage());
+                                    LOG.addLog("Error downloaded and saving file", e.getMessage());
                                     confirmMessage = "NoneConfirmed";
                                 } finally {
                                     try {
                                         if (fileToSave != null) {
                                             fileToSave.close();
-                                            LOG.addLog(LOG.currentDate(), "Stream to file closed");
+                                            LOG.addLog("Stream to file closed");
                                         }
                                     } catch (IOException e) {
-                                        LOG.addLog(LOG.currentDate(), "Error closing output stream:", e.getMessage());
+                                        LOG.addLog("Error closing output stream:", e.getMessage());
                                     }
                                 }
-                                //sending response to download and save file
                                 outputStream.write(confirmMessage.getBytes());
                                 outputStream.flush();
-                                LOG.addLog(LOG.currentDate(), "Sending response to download and save file");
+                                LOG.addLog("Sending response to download and save file");
 
-                                String currentFileName = fileName;
                                 if (confirmMessage.equals("Confirmed")) {
-                                    ((Activity) BT).runOnUiThread(() -> textView_inf.setText(textView_inf.getText() +
-                                                    "The name of the received file: " + currentFileName +
-                                                    "\nFile size: " +
-                                                    Constants.decimalFormat.format(fileSize).replace(",", ".") +
-                                                    " " + fileUnit + "\n\n"));
+                                    updateTextInf(fileName,fileSizeBytes,fileSizeUnit);
                                 } else {
                                     ((Activity) BT).runOnUiThread(() -> textView_inf.setText("Error downloaded and saving file"));
                                     break;
@@ -214,22 +182,33 @@ public class ConnectBtServerThread extends Thread {
                             ((Activity) BT).runOnUiThread(() -> Toast.makeText(BT, "Downloaded file", Toast.LENGTH_SHORT).show());
                         }
                     } catch (IOException e) {
-                        LOG.addLog(LOG.currentDate(),"The data could not be loaded", e.getMessage());
+                        LOG.addLog("The data could not be loaded", e.getMessage());
                         break;
                     }
                 }
                 outputStream.close();
             } catch (IOException e) {
-                LOG.addLog(LOG.currentDate(),"Failed to create stream to send data",e.getMessage());
+                LOG.addLog("Failed to create stream to send data",e.getMessage());
             }
         } catch (IOException e) {
-            LOG.addLog(LOG.currentDate(),"The first data could not be loaded",e.getMessage());
+            LOG.addLog("The first data could not be loaded",e.getMessage());
         }
     }
 
-    //method where the location to save the downloaded file is chosen
-    //and the name is set if it already exists in the given place
-    private File setFilePlace()
+    @SuppressLint("SetTextI18n")
+    void updateBtView(String deviceName)
+    {
+        ((Activity) BT).runOnUiThread(() -> {
+            textView_connected.setText("Connected as a server with\n" + deviceName);
+            textView_percent.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.VISIBLE);
+            button_foundDevice.setVisibility(View.INVISIBLE);
+            button_detect.setVisibility(View.INVISIBLE);
+            button_disconnectBack.setVisibility(View.INVISIBLE);
+            layoutPercent.setVisibility(View.VISIBLE);});
+    }
+
+    File setFilePlace()
     {
         File file = new File(
                 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) +
@@ -256,19 +235,41 @@ public class ConnectBtServerThread extends Thread {
         return file;
     }
 
-    //method where the file size is converted according to the unit
-    private double conversionFileSize(long fileSizeLong, String fileUnit)
+    @SuppressLint("SetTextI18n")
+    void updateTextInf(String fileName, long fileSizeBytes, String fileSizeUnit)
+    {
+        double fileSize = conversionFileSize(fileSizeBytes, fileSizeUnit);
+        ((Activity) BT).runOnUiThread(() -> textView_inf.setText(textView_inf.getText() +
+                "The name of the received file: " + fileName +
+                "\nFile size: " +
+                Constants.decimalFormat.format(fileSize).replace(",", ".") +
+                " " + fileSizeUnit + "\n\n"));
+    }
+
+    double conversionFileSize(long fileSizeLong, String fileUnit)
     {
         double fileSize = (double) fileSizeLong;
         switch (fileUnit) {
-            case "MB":
-                fileSize /= 1024; //to KB
-                fileSize /= 1024; //to MB
+            case Constants.fileSizeUnitMB:
+                fileSize /= Constants.size1Kb; //to KB
+                fileSize /= Constants.size1Kb; //to MB
                 break;
-            case "KB":
-                fileSize /= 1024; //to KB
+            case Constants.fileSizeUnitKB:
+                fileSize /= Constants.size1Kb; //to KB
                 break;
         }
         return fileSize;
     }
+
+    @SuppressLint("SetTextI18n")
+    void updateTextWhenDisconnected()
+    {
+        ((Activity) BT).runOnUiThread(() -> {
+            textView_connected.setText("Disconnected");
+            Toast.makeText(BT, "Disconnected", Toast.LENGTH_SHORT).show();
+            button_disconnectBack.setText("Back");
+            button_disconnectBack.setVisibility(View.VISIBLE);});
+    }
+
+    public static BluetoothSocket getSocketServer() {return socketServer;}
 }

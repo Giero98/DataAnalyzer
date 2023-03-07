@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".bluetooh.MainActivity_BT"
+    tools:context=".bluetooh.Bluetooth"
     android:orientation="vertical">
 
     <LinearLayout
@@ -21,7 +21,7 @@
             tools:ignore="InefficientWeight" />
 
         <TextView
-            android:id="@+id/textView_deviceRssiText"
+            android:id="@+id/textView_qualitySignalText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/quality_signal"
@@ -29,7 +29,7 @@
             tools:ignore="VisualLintBounds" />
 
         <TextView
-            android:id="@+id/textView_deviceRssi"
+            android:id="@+id/textView_qualitySignal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:ignore="VisualLintBounds" />
@@ -47,7 +47,7 @@
             android:orientation="vertical">
 
             <Button
-                android:id="@+id/button_disconnectBack"
+                android:id="@+id/button_disconnectAndBack"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -123,7 +123,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/linearSpinner"
+        android:id="@+id/parameterLayoutForFileUpload"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -193,7 +193,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/linearPercent"
+        android:id="@+id/layoutPercent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
