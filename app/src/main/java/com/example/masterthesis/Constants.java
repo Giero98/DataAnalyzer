@@ -13,9 +13,16 @@ public interface Constants {
     int     REQUEST_BT_CONNECT = 0,
             REQUEST_BT_SCAN = 1,
             REQUEST_BT_ADVERTISE = 2,
-            REQUEST_BT_ACCESS_FINE_LOCATION = 3,
+            REQUEST_ACCESS_FINE_LOCATION = 3,
             REQUEST_BT_SEND_DATA_FILE = 4,
-            minimumNumberOfUploadFiles = 1,
+            REQUEST_CHANGE_WIFI_STATE = 5,
+            REQUEST_ACCESS_WIFI_STATE = 6,
+            REQUEST_INTERNET = 7,
+            REQUEST_NEARBY_WIFI_DEVICES = 8,
+            REQUEST_ACCESS_NETWORK_STATE = 9,
+            REQUEST_CHANGE_NETWORK_STATE = 10;
+
+    int     minimumNumberOfUploadFiles = 1,
             maximumNumberOfUploadFiles = 100,
             maximumQualitySignal = 100,
             confirmBufferBytes = 100,
