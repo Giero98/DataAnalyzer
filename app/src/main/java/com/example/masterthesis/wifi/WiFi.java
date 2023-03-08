@@ -15,10 +15,7 @@ import com.example.masterthesis.MainActivity;
 import com.example.masterthesis.Logs;
 import com.example.masterthesis.R;
 
-/*
-  View of the application after a successful combination via Wi-Fi
- */
-public class MainActivity_WiFi extends AppCompatActivity {
+public class WiFi extends AppCompatActivity {
 
     Button button_back;
     TextView text1;

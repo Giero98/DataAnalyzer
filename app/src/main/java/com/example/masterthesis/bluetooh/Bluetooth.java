@@ -81,10 +81,7 @@ public class Bluetooth extends AppCompatActivity {
         button_sendData.setOnClickListener(v -> startSendData());
         button_saveMeasurementData.setOnClickListener(v -> saveMeasurementData());
         button_graph.setOnClickListener(v -> drawGraph());
-        button_disconnectBack.setOnClickListener(v -> {
-            closeBtConnection();
-            finish();
-        });
+        button_disconnectBack.setOnClickListener(v -> finish());
     }
 
     void startSelectBufferSize()
