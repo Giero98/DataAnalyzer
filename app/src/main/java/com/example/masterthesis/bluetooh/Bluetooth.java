@@ -112,8 +112,7 @@ public class Bluetooth extends AppCompatActivity {
     void startFoundDeviceBt() {
         Constants.bluetoothAdapter.startDiscovery();
         createListDiscoverableDevices();
-        startIntentActionFound();
-        startIntentActionAclDisconnected();
+        startReceiverWithFilters();
         selectDeviceToConnection();
     }
 
@@ -123,16 +122,11 @@ public class Bluetooth extends AppCompatActivity {
         listAdapter.clear();
     }
 
-    void startIntentActionFound()
+    void startReceiverWithFilters()
     {
         IntentFilter intent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        intent.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
         registerReceiver(receiver, intent);
-    }
-
-    void startIntentActionAclDisconnected()
-    {
-        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECTED);
-        registerReceiver(receiver, filter);
     }
 
     final BroadcastReceiver receiver = new BroadcastReceiver() {

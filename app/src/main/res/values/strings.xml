@@ -8,7 +8,8 @@
     <string name="button_back">BACK</string>
     <string name="button_detect">START DETECTED</string>
     <string name="button_foundDevice">FOUND DEVICE</string>
-    <string name="button_sendData">SEND DATA</string>
+    <string name="button_deviceDisplay">DISPLAY DEVICES</string>
+    <string name="button_sendData">SEND FILE</string>
     <string name="button_chooseFile">CHOOSE FILE</string>
     <string name="button_save_measurement_data">SAVE DATA</string>
     <string name="button_graph">SHOW GRAPH</string>
