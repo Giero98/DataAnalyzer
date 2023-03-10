@@ -98,7 +98,7 @@
                 android:layout_weight="2"
                 android:text="@string/button_sendData"
                 android:visibility="invisible"
-                app:icon="@drawable/ic_bt_send_data" />
+                app:icon="@drawable/ic_send_file" />
 
             <Button
                 android:id="@+id/button_saveMeasurementData"
@@ -106,7 +106,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="2"
                 android:text="@string/button_save_measurement_data"
-                app:icon="@drawable/ic_save"
+                app:icon="@drawable/ic_save_data"
                 android:visibility="invisible" />
 
             <Button
