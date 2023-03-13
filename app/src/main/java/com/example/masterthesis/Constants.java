@@ -56,7 +56,8 @@ public interface Constants {
                     "Quality range" + "," +
                     "Sending time [s]" + "," +
                     "Upload speed [" + ClientBt.fileSizeUnit + "/s]",
-            titleDialogToSaveData = "Enter the name of the measurement data file";
+            titleDialogToSaveData = "Enter the name of the measurement data file",
+            titleDialogToSelectDevice = "Select a device";
 
     //A unique UUID that will be used as a common identifier for both devices in Bluetooth
     //generated thanks to the website https://www.uuidgenerator.net/

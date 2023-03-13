@@ -45,8 +45,7 @@ public class ClientBt extends Thread {
     static boolean dataSendFromClient = false, running;
     @SuppressLint("StaticFieldLeak")
     static Context BT;
-    BluetoothSocket socketClient;
-    static BluetoothSocket socketClientStatic;
+    static BluetoothSocket socket;
     final BluetoothDevice device;
     static Intent fileToSend;
     static int multipleFile;
@@ -83,16 +82,15 @@ public class ClientBt extends Thread {
     public void run() {
         LOG.addLog("A client has started");
         try {
-            socketClient = device.createRfcommSocketToServiceRecord(Constants.MY_UUID);
+            socket = device.createRfcommSocketToServiceRecord(Constants.MY_UUID);
         } catch (IOException e) {
             LOG.addLog("Socket's create() method failed", e.getMessage());
             return;
         }
         deviceName = device.getName();
-        socketClientStatic = socketClient;
         Constants.bluetoothAdapter.cancelDiscovery();
         try {
-            socketClient.connect();
+            socket.connect();
         } catch (IOException e) {
             LOG.addLog("Unable to connect", e.getMessage());
             closeSocketClient();
@@ -105,7 +103,7 @@ public class ClientBt extends Thread {
             while (running) {
                 if (dataSendFromClient)
                     sendData();
-                if(!socketClient.isConnected()) {
+                if(!socket.isConnected()) {
                     closeSocketClient();
                     ((Activity) BT).runOnUiThread(() -> Toast.makeText(BT, "Disconnected", Toast.LENGTH_SHORT).show());
                     break;
@@ -115,7 +113,7 @@ public class ClientBt extends Thread {
     }
     void closeSocketClient() {
         try {
-            socketClient.close();
+            socket.close();
             LOG.addLog("Client socket closed");
         } catch (IOException e) {
             LOG.addLog("Could not close the client socket", e.getMessage());
@@ -133,13 +131,13 @@ public class ClientBt extends Thread {
             button_disconnectBack.setText("Disconnect");
             parameterLayoutForFileUpload.setVisibility(View.VISIBLE);
             layoutPercent.setVisibility(View.VISIBLE);});
-    }
 
+    }
     @SuppressLint("MissingPermission")
     private boolean sendNameDevice()
     {
         try {
-            outputStream = socketClient.getOutputStream();
+            outputStream = socket.getOutputStream();
             try {
                 @SuppressLint("HardwareIds")
                 String deviceInfo = Constants.bluetoothAdapter.getName();
@@ -182,7 +180,7 @@ public class ClientBt extends Thread {
             outputStream.flush();
             LOG.addLog("Sending file information");
 
-            InputStream inputStream = socketClient.getInputStream();
+            InputStream inputStream = socket.getInputStream();
             FileInputStream file = (FileInputStream) BT.getContentResolver().openInputStream(uri);
 
             for(int repeat = 0 ; repeat < multipleFile; repeat++)
@@ -356,9 +354,9 @@ public class ClientBt extends Thread {
         multipleFile = numberMultipleFile;
     }
 
-    public static BluetoothSocket getSocketClient()
+    public static BluetoothSocket getSocket()
     {
-        return socketClientStatic;
+        return socket;
     }
 
     @SuppressWarnings("SameReturnValue")

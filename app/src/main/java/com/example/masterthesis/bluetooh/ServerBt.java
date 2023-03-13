@@ -33,7 +33,7 @@ public class ServerBt extends Thread {
     public static boolean running;
     final Logs.ListLog LOG;
     final Context BT;
-    static BluetoothSocket socketServer;
+    static BluetoothSocket socket;
     BluetoothServerSocket serverSocket;
     String fileName;
 
@@ -63,21 +63,21 @@ public class ServerBt extends Thread {
             LOG.addLog("Socket's listen() method failed", e.getMessage());
         }
         try {
-            socketServer = serverSocket.accept();
+            socket = serverSocket.accept();
         } catch (IOException e) {
             LOG.addLog("Socket's accept() method failed", e.getMessage());
         }
-        if (socketServer != null) {
+        if (socket != null) {
             LOG.addLog("The connection attempt succeeded");
             try {
-                InputStream inputStream = socketServer.getInputStream();
+                InputStream inputStream = socket.getInputStream();
                 getData(inputStream);
-                if(!socketServer.isConnected())
+                if(!socket.isConnected())
                     try {
                         updateTextWhenDisconnected();
                         running = false;
                         inputStream.close();
-                        socketServer.close();
+                        socket.close();
                     } catch (IOException ex) {
                         LOG.addLog("Error closing input stream and socket's", ex.getMessage());
                     }
@@ -107,7 +107,7 @@ public class ServerBt extends Thread {
             Arrays.fill(buffer, 0, buffer.length, (byte) 0);
 
             try {
-                OutputStream outputStream = socketServer.getOutputStream();
+                OutputStream outputStream = socket.getOutputStream();
 
                 while(running) {
                     try {
@@ -271,5 +271,5 @@ public class ServerBt extends Thread {
             button_disconnectBack.setVisibility(View.VISIBLE);});
     }
 
-    public static BluetoothSocket getSocketServer() {return socketServer;}
+    public static BluetoothSocket getSocket() {return socket;}
 }

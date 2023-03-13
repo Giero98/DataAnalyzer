@@ -6,21 +6,19 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
-import com.example.masterthesis.bluetooh.Bluetooth;
-
 public class Buffer {
-    final Context contextBt;
+    Context currentContext;
     final Spinner selectBuffer;
     public static int bufferSize;
 
-    public Buffer(Bluetooth contextBt, Spinner selectBuffer) {
-        this.contextBt = contextBt;
+    public Buffer(Context context, Spinner selectBuffer) {
+        currentContext = context;
         this.selectBuffer = selectBuffer;
         settingBufferValue();
     }
 
     void settingBufferValue(){
-        ArrayAdapter<CharSequence> adapterBufferSize = ArrayAdapter.createFromResource(contextBt,
+        ArrayAdapter<CharSequence> adapterBufferSize = ArrayAdapter.createFromResource(currentContext,
                     R.array.buffer_size_array, android.R.layout.simple_spinner_item);
         adapterBufferSize.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         selectBuffer.setAdapter(adapterBufferSize);
