@@ -28,11 +28,11 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.masterthesis.Buffer;
 import com.example.masterthesis.Constants;
 import com.example.masterthesis.Graph;
 import com.example.masterthesis.Logs;
 import com.example.masterthesis.R;
-import com.example.masterthesis.Buffer;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -47,7 +47,7 @@ public class Bluetooth extends AppCompatActivity {
     Button button_sendData;
     TextView textView_inf, textView_qualitySignal;
     Intent fileToSend;
-    @SuppressLint("SetTextI18n")
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,15 +63,14 @@ public class Bluetooth extends AppCompatActivity {
         button_sendData = findViewById(R.id.button_sendData);
         ImageButton button_upMultipleFile = findViewById(R.id.button_upMultipleFile),
                     button_downMultipleFile = findViewById(R.id.button_downMultipleFile);
-        TextView textView_connected = findViewById(R.id.textView_connected);
         textView_inf = findViewById(R.id.textView_inf);
         textView_qualitySignal = findViewById(R.id.textView_qualitySignal);
         multiple_file = findViewById(R.id.multiple_file);
 
         startSelectBufferSize();
-        textView_connected.setText("Not connected");
         startServer();
 
+        button_disconnectBack.setOnClickListener(v -> finish());
         button_detect.setOnClickListener(v -> startDiscoverableBt());
         button_foundDevice.setOnClickListener(v -> startFoundDeviceBt());
         button_chooseFile.setOnClickListener(v -> chooseFile());
@@ -81,13 +80,12 @@ public class Bluetooth extends AppCompatActivity {
         button_sendData.setOnClickListener(v -> startSendData());
         button_saveMeasurementData.setOnClickListener(v -> saveMeasurementData());
         button_graph.setOnClickListener(v -> drawGraph());
-        button_disconnectBack.setOnClickListener(v -> finish());
     }
-
     void startSelectBufferSize()
     {
         new Buffer(this, findViewById(R.id.buffer_size));
     }
+
 
     void startServer()
     {
@@ -151,7 +149,7 @@ public class Bluetooth extends AppCompatActivity {
         @SuppressLint("InflateParams")
         View titleView = getLayoutInflater().inflate(R.layout.window_device_selection, null);
         deviceSelection.setCustomTitle(titleView);
-        deviceSelection.setTitle("Select a device");
+        deviceSelection.setTitle(Constants.titleDialogToSelectDevice);
 
         deviceSelection.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
 
@@ -192,7 +190,7 @@ public class Bluetooth extends AppCompatActivity {
                         } catch (InterruptedException e) {
                             LOG.addLog("Quality signal reading error", e.getMessage());
                         }
-                    } while (ClientBt.getSocketClient().isConnected());
+                    } while (ClientBt.getSocket().isConnected());
                 }).start();
             }
         }
@@ -333,19 +331,19 @@ public class Bluetooth extends AppCompatActivity {
             Constants.bluetoothAdapter.cancelDiscovery();
             LOG.addLog("bluetoothAdapter was closed");
         }
-        if(ClientBt.getSocketClient() != null)
-            if(ClientBt.getSocketClient().isConnected()) {
+        if(ClientBt.getSocket() != null)
+            if(ClientBt.getSocket().isConnected()) {
                 try {
-                    ClientBt.getSocketClient().close();
+                    ClientBt.getSocket().close();
                     LOG.addLog("Socket client was closed");
                 } catch (IOException e) {
                     LOG.addLog("Error closing socket client", e.getMessage());
                 }
             }
-        if(ServerBt.getSocketServer() != null)
-            if(ServerBt.getSocketServer().isConnected()) {
+        if(ServerBt.getSocket() != null)
+            if(ServerBt.getSocket().isConnected()) {
                 try {
-                    ServerBt.getSocketServer().close();
+                    ServerBt.getSocket().close();
                     LOG.addLog("Socket server was closed");
                 } catch (IOException e) {
                     LOG.addLog("Error closing socket server", e.getMessage());

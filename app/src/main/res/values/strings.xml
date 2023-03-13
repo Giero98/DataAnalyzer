@@ -23,6 +23,7 @@
     <string name="graph_upload_time">Upload time</string>
     <string name="graph_upload_speed">Upload speed</string>
     <string name="graph_text">Choose which chart you want to display</string>
+    <string name="textView_connected_first">Not connected</string>
 
     <string name="buffer_size">Buffer Size:</string>
     <string-array name="buffer_size_array">
