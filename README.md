@@ -10,4 +10,4 @@ An application in which a device using Bluetooth and Wi-Fi transfers files to an
 ## How to install
 
 ## License
-[License](../LICENSE) © Bartosz Gieras
+[License](../blob/main/LICENSE) © Bartosz Gieras
