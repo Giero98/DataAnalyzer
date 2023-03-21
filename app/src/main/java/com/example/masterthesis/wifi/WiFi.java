@@ -15,7 +15,6 @@ import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
-import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceInfo;
 import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceRequest;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
@@ -30,22 +29,23 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.masterthesis.Buffer;
 import com.example.masterthesis.Constants;
 import com.example.masterthesis.Logs;
 import com.example.masterthesis.R;
+import com.example.masterthesis.SendReceive;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 public class WiFi extends AppCompatActivity {
     final ArrayList<String> discoveredDevices = new ArrayList<>();
     ArrayAdapter<String> listAdapter;
     static final Logs.ListLog LOG = new Logs.ListLog();
     long fileSizeBytes;
-    String selectedDeviceName, fileSizeUnit = Constants.fileSizeUnitBytes;
+    String selectedDeviceName, fileSizeUnit = Constants.fileSizeUnitBytes, fileName;
     static WifiP2pManager wifiDirectManager;
     static WifiP2pManager.Channel wifiDirectChannel;
     TextView textView_connected, textView_inf, textView_qualitySignal;
@@ -79,6 +79,7 @@ public class WiFi extends AppCompatActivity {
         parameterLayoutForFileUpload = findViewById(R.id.parameterLayoutForFileUpload);
         layoutPercent = findViewById(R.id.layoutPercent);
 
+        startSelectBufferSize();
         settingVariableManagingConnect();
         startReceiverWithFilters();
 
@@ -89,9 +90,14 @@ public class WiFi extends AppCompatActivity {
         multiple_file.setOnClickListener(v -> readNumberOfFilesToSent());
         button_upMultipleFile.setOnClickListener(v -> increasingNumberOfFilesToSent());
         button_downMultipleFile.setOnClickListener(v -> reducingNumberOfFilesToSent());
-        button_sendData.setOnClickListener(v -> {});
+        button_sendData.setOnClickListener(v -> sendData());
         button_saveMeasurementData.setOnClickListener(v -> {});
         button_graph.setOnClickListener(v -> {});
+    }
+
+    void startSelectBufferSize()
+    {
+        new Buffer(this, findViewById(R.id.buffer_size));
     }
 
     void settingVariableManagingConnect()
@@ -158,8 +164,9 @@ public class WiFi extends AppCompatActivity {
     WifiP2pManager.ConnectionInfoListener connectionInfoListener = wifiDirectInfo -> {
         if(wifiDirectInfo.groupFormed && wifiDirectInfo.isGroupOwner)
         {
-            ServerWiFi server = new ServerWiFi(LOG, this, selectedDeviceName);
+            ServerWiFi server = new ServerWiFi(LOG,this, selectedDeviceName);
             server.start();
+
         } else if(wifiDirectInfo.groupFormed)
         {
             discoverService(wifiDirectInfo);
@@ -312,9 +319,10 @@ public class WiFi extends AppCompatActivity {
         if (requestCode == Constants.REQUEST_BT_SEND_DATA_FILE && resultCode == RESULT_OK) {
             LOG.addLog("You have selected a file to upload");
             button_sendData.setVisibility(View.VISIBLE);
+            parameterLayoutForFileUpload.setVisibility(View.VISIBLE);
             fileToSend = data;
             Double fileSize = getFileSize(fileToSend.getData());
-            String  fileName = getFileName(fileToSend.getData());
+            fileName = getFileName(fileToSend.getData());
             textView_inf.setText("The name of the uploaded file: " + fileName + "\nFile size: " +
                     Constants.decimalFormat.format(fileSize).replace(",", ".") +
                     " " + fileSizeUnit + "\n");
@@ -456,6 +464,75 @@ public class WiFi extends AppCompatActivity {
                 }
             }
     }
+
+    void sendData()
+    {
+        new Thread(() ->{
+            int multipleFile = Integer.parseInt(multiple_file.getText().toString());
+            SendReceive.sendData(fileToSend, fileSizeBytes, fileName, multipleFile);
+        }).start();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     @Override
     protected void onDestroy() {

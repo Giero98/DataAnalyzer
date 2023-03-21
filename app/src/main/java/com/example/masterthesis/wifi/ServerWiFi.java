@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.example.masterthesis.Logs;
 import com.example.masterthesis.R;
+import com.example.masterthesis.SendReceive;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -22,9 +23,9 @@ import java.util.Map;
 public class ServerWiFi extends Thread{
     static Socket socket;
     static ServerSocket serverSocket;
-    final Logs.ListLog LOG;
+    Logs.ListLog LOG;
     String deviceName;
-    static int port;
+    int port;
     Context WiFi;
 
     public ServerWiFi(Logs.ListLog LOG, Context WiFi, String deviceName){
@@ -89,15 +90,15 @@ public class ServerWiFi extends Thread{
                 TextView textView_connected = ((Activity) WiFi).findViewById(R.id.textView_connected);
                 ((Activity) WiFi).runOnUiThread(() ->
                         textView_connected.setText("Connected as a server with " + deviceName));
+
+
+                SendReceive send = new SendReceive(LOG,WiFi,socket);
+                send.start();
+
             } catch (IOException e) {
                 LOG.addLog("Client connection error", e.getMessage());
             }
         }while(socket==null);
-    }
-
-    public static int getPort()
-    {
-        return port;
     }
 
     public static Socket getSocket()
