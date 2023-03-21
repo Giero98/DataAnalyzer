@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 
-import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 

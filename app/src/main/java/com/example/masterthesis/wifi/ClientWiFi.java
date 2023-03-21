@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.example.masterthesis.Logs;
 import com.example.masterthesis.R;
+import com.example.masterthesis.SendReceive;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -43,6 +44,10 @@ public class ClientWiFi extends Thread{
             TextView textView_connected = ((Activity) WiFi).findViewById(R.id.textView_connected);
             ((Activity) WiFi).runOnUiThread(() ->
                     textView_connected.setText("Connected as a client with " + serverName));
+
+            SendReceive send = new SendReceive(LOG,WiFi,socket);
+            send.start();
+
         } catch(IOException e) {
             LOG.addLog("Client socket creation error with host", e.getMessage());
         }
