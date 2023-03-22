@@ -43,7 +43,7 @@ public interface Constants {
             titleLog = "Show LOG",
             back = "Back",
             connectionBt = "BT",
-            // --Commented out by Inspection (06.03.2023 21:50):connectionWiFi = "WIFI",
+            connectionWiFi = "WIFI",
             uploadTimeUnit = "[s]",
             qualitySignalUnit = "[%]",
             uploadSpeedUnit = "[" + ClientBt.getFileSizeUnit() + "/s]",
