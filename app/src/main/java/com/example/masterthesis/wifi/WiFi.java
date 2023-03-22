@@ -31,9 +31,9 @@ import android.widget.Toast;
 
 import com.example.masterthesis.Buffer;
 import com.example.masterthesis.Constants;
+import com.example.masterthesis.Graph;
 import com.example.masterthesis.Logs;
 import com.example.masterthesis.R;
-import com.example.masterthesis.SendReceive;
 
 import java.io.File;
 import java.io.IOException;
@@ -91,8 +91,8 @@ public class WiFi extends AppCompatActivity {
         button_upMultipleFile.setOnClickListener(v -> increasingNumberOfFilesToSent());
         button_downMultipleFile.setOnClickListener(v -> reducingNumberOfFilesToSent());
         button_sendData.setOnClickListener(v -> sendData());
-        button_saveMeasurementData.setOnClickListener(v -> {});
-        button_graph.setOnClickListener(v -> {});
+        button_saveMeasurementData.setOnClickListener(v -> saveMeasurementData());
+        button_graph.setOnClickListener(v -> drawGraph());
     }
 
     void startSelectBufferSize()
@@ -164,7 +164,7 @@ public class WiFi extends AppCompatActivity {
     WifiP2pManager.ConnectionInfoListener connectionInfoListener = wifiDirectInfo -> {
         if(wifiDirectInfo.groupFormed && wifiDirectInfo.isGroupOwner)
         {
-            ServerWiFi server = new ServerWiFi(LOG,this, selectedDeviceName);
+            ServerWiFi server = new ServerWiFi(LOG,this);
             server.start();
 
         } else if(wifiDirectInfo.groupFormed)
@@ -198,7 +198,6 @@ public class WiFi extends AppCompatActivity {
         wifiDirectManager.addServiceRequest(wifiDirectChannel, serviceRequest, new WifiP2pManager.ActionListener() {
                     @Override
                     public void onSuccess() {
-                        LOG.addLog("test 0002");
                     }
                     @Override
                     public void onFailure(int code) {
@@ -208,7 +207,6 @@ public class WiFi extends AppCompatActivity {
         wifiDirectManager.discoverServices(wifiDirectChannel, new WifiP2pManager.ActionListener() {
                 @Override
                 public void onSuccess() {
-                    LOG.addLog("test 0001");
                 }
                 @Override
                 public void onFailure(int code) {
@@ -216,26 +214,6 @@ public class WiFi extends AppCompatActivity {
                 }
             });
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     void startDiscoversDevices()
     {
@@ -283,7 +261,7 @@ public class WiFi extends AppCompatActivity {
     {
         WifiP2pConfig config = new WifiP2pConfig();
         config.deviceAddress = selectedDeviceAddress;
-        config.groupOwnerIntent = 15; //connect as a server
+        config.groupOwnerIntent = 0; //connect as a client
 
         wifiDirectManager.connect(wifiDirectChannel, config, new WifiP2pManager.ActionListener() {
             @SuppressLint("SetTextI18n")
@@ -410,6 +388,24 @@ public class WiFi extends AppCompatActivity {
         }
     }
 
+    void sendData()
+    {
+        new Thread(() -> {
+            int multipleFile = Integer.parseInt(multiple_file.getText().toString());
+            ClientWiFi.sendData(fileToSend,fileSizeBytes,fileName,multipleFile);
+        }).start();
+    }
+
+    void saveMeasurementData(){
+        ClientWiFi.saveMeasurementData();
+    }
+
+    void drawGraph(){
+        Graph.connectionDetails = Constants.connectionWiFi;
+        Intent intent = new Intent(this, Graph.class);
+        startActivity(intent);
+    }
+
     void disconnectTheConnection()
     {
         if(wifiDirectManager!=null) {
@@ -440,6 +436,7 @@ public class WiFi extends AppCompatActivity {
         if(ClientWiFi.getSocket() != null)
             if(ClientWiFi.getSocket().isConnected()) {
                 try {
+                    ClientWiFi.closeStream();
                     ClientWiFi.getSocket().close();
                     LOG.addLog("Socket client was closed");
                 } catch (IOException e) {
@@ -449,6 +446,7 @@ public class WiFi extends AppCompatActivity {
         if(ServerWiFi.getSocket() != null)
             if(ServerWiFi.getSocket().isConnected()) {
                 try {
+                    ServerWiFi.closeStream();
                     ServerWiFi.getSocket().close();
                     LOG.addLog("Socket server was closed");
                 } catch (IOException e) {
@@ -464,75 +462,6 @@ public class WiFi extends AppCompatActivity {
                 }
             }
     }
-
-    void sendData()
-    {
-        new Thread(() ->{
-            int multipleFile = Integer.parseInt(multiple_file.getText().toString());
-            SendReceive.sendData(fileToSend, fileSizeBytes, fileName, multipleFile);
-        }).start();
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     @Override
     protected void onDestroy() {

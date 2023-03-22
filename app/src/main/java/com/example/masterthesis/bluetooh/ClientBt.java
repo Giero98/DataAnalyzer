@@ -54,7 +54,6 @@ public class ClientBt extends Thread {
     public static String fileSizeUnit = Constants.fileSizeUnitBytes , deviceName;
     OutputStream outputStream;
     static final ArrayList<String> measurementDataList = new ArrayList<>();
-    static String dataFileName;
 
     public ClientBt(Context BT, BluetoothDevice device, Logs.ListLog LOG)
     {
@@ -372,7 +371,7 @@ public class ClientBt extends Thread {
 
         viewToSaveData.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
         viewToSaveData.setPositiveButton("OK", (dialog, which) -> {
-                    dataFileName = String.valueOf(editText.getText());
+                    String dataFileName = String.valueOf(editText.getText());
 
                     if(!dataFileName.isEmpty()) {
                         File file = new File(
