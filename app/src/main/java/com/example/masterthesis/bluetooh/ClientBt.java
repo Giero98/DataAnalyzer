@@ -171,7 +171,7 @@ public class ClientBt extends Thread {
 
         try {
             measurementDataList.add(fileName);
-            measurementDataList.add(Constants.titleFileColumn);
+            measurementDataList.add(Constants.titleBTFileColumn);
 
             String fileDetails = fileName + ";" + fileSizeUnit + ";" + fileSizeBytes + ";" +
                               bufferSize + ";" + multipleFile;

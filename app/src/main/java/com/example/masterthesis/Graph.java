@@ -33,7 +33,6 @@ public class Graph extends AppCompatActivity {
     String fileName, columnUnit;
     ArrayList<Integer> sentFileNumber = new ArrayList<>(), qualitySignal = new ArrayList<>();
     ArrayList<Float> fileUploadTime = new ArrayList<>(), uploadSpeed = new ArrayList<>();
-    static final Logs.ListLog LOG = new Logs.ListLog();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -176,7 +175,10 @@ public class Graph extends AppCompatActivity {
         {
             graphData.add(new BarEntry(sentFileNumber.get(i),uploadSpeed.get(i)));
         }
-        columnUnit = Constants.uploadSpeedUnit;
+        if(connectionDetails.equals(Constants.connectionBt))
+            columnUnit = Constants.uploadBTSpeedUnit;
+        else if(connectionDetails.equals(Constants.connectionWiFi))
+            columnUnit = Constants.uploadWiFiSpeedUnit;
         drawGraph(graphData);
     }
 

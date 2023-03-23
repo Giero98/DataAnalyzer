@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.graphics.DashPathEffect;
 
 import com.example.masterthesis.bluetooh.ClientBt;
+import com.example.masterthesis.wifi.WiFi;
 
 import java.text.DecimalFormat;
 import java.util.UUID;
@@ -35,7 +36,7 @@ public interface Constants {
     float   axisValueSize = 16f,
             columnWidth = 0.7f,
             distanceBetweenXAxisData = 1f,
-            distanceBetweenYAxisData = 0.01f,
+            distanceBetweenYAxisData = 0.001f,
             minimumYAxisValue = 0f;
     DashPathEffect girdLineStyle = new DashPathEffect(new float[]{10f, 5f}, 0f);
 
@@ -46,16 +47,23 @@ public interface Constants {
             connectionWiFi = "WIFI",
             uploadTimeUnit = "[s]",
             qualitySignalUnit = "[%]",
-            uploadSpeedUnit = "[" + ClientBt.getFileSizeUnit() + "/s]",
+            uploadBTSpeedUnit = "[" + ClientBt.getFileSizeUnit() + "/s]",
+            uploadWiFiSpeedUnit = "[" + WiFi.getFileSizeUnit() + "/s]",
             fileSizeUnitBytes = "Bytes",
             fileSizeUnitKB = "KB",
             fileSizeUnitMB = "MB",
-            titleFileColumn = "File upload number" + "," +
+            titleBTFileColumn = "File upload number" + "," +
                     "File size in bytes" + "," +
                     "File size in " + ClientBt.fileSizeUnit + "," +
                     "Quality range" + "," +
                     "Sending time [s]" + "," +
                     "Upload speed [" + ClientBt.fileSizeUnit + "/s]",
+            titleWiFiFileColumn = "File upload number" + "," +
+                    "File size in bytes" + "," +
+                    "File size in " + WiFi.fileSizeUnit + "," +
+                    "Quality range" + "," +
+                    "Sending time [s]" + "," +
+                    "Upload speed [" + WiFi.fileSizeUnit + "/s]",
             titleDialogToSaveData = "Enter the name of the measurement data file",
             titleDialogToSelectDevice = "Select a device";
 

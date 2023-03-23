@@ -226,9 +226,11 @@ public class ServerWiFi extends Thread{
 
     public static void closeStream()
     {
-        try {
-            inputStream.close();
-            outputStream.close();
+        try{
+            if(inputStream != null)
+                inputStream.close();
+            if(outputStream != null)
+                outputStream.close();
         } catch (IOException e) {
             LOG.addLog("Error close stream", e.getMessage());
         }
