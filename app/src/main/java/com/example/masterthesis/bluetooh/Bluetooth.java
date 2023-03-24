@@ -15,12 +15,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -30,8 +26,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.masterthesis.Buffer;
 import com.example.masterthesis.Constants;
+import com.example.masterthesis.file.FileInformation;
+import com.example.masterthesis.file.SendingData;
+import com.example.masterthesis.ui.DeclarationOfUIVar;
 import com.example.masterthesis.Graph;
 import com.example.masterthesis.Logs;
+import com.example.masterthesis.ui.NumberOfFileFromUI;
 import com.example.masterthesis.R;
 
 import java.io.IOException;
@@ -42,57 +42,41 @@ public class Bluetooth extends AppCompatActivity {
     ArrayAdapter<String> listAdapter;
     final Logs.ListLog LOG = new Logs.ListLog();
     ServerBt server;
-    public ClientBt client;
-    EditText multiple_file;
-    Button button_sendData;
-    TextView textView_inf, textView_qualitySignal;
     Intent fileToSend;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bt);
         setTitle("Bluetooth");
 
-        Button  button_disconnectBack = findViewById(R.id.button_disconnectAndBack),
-                button_detect = findViewById(R.id.button_detect),
-                button_foundDevice = findViewById(R.id.button_foundDevice),
-                button_chooseFile = findViewById(R.id.button_chooseFile),
-                button_saveMeasurementData = findViewById(R.id.button_saveMeasurementData),
-                button_graph = findViewById(R.id.button_graph);
-        button_sendData = findViewById(R.id.button_sendData);
-        ImageButton button_upMultipleFile = findViewById(R.id.button_upMultipleFile),
-                    button_downMultipleFile = findViewById(R.id.button_downMultipleFile);
-        textView_inf = findViewById(R.id.textView_inf);
-        textView_qualitySignal = findViewById(R.id.textView_qualitySignal);
-        multiple_file = findViewById(R.id.multiple_file);
-
+        new DeclarationOfUIVar(this);
         startSelectBufferSize();
-        startServer();
+        startServerBt();
 
-        button_disconnectBack.setOnClickListener(v -> finish());
-        button_detect.setOnClickListener(v -> startDiscoverableBt());
-        button_foundDevice.setOnClickListener(v -> startFoundDeviceBt());
-        button_chooseFile.setOnClickListener(v -> chooseFile());
-        multiple_file.setOnClickListener(v -> readNumberOfFilesToSent());
-        button_upMultipleFile.setOnClickListener(v -> increasingNumberOfFilesToSent());
-        button_downMultipleFile.setOnClickListener(v -> reducingNumberOfFilesToSent());
-        button_sendData.setOnClickListener(v -> startSendData());
-        button_saveMeasurementData.setOnClickListener(v -> saveMeasurementData());
-        button_graph.setOnClickListener(v -> drawGraph());
+        DeclarationOfUIVar.button_disconnectBack.setOnClickListener(v -> finish());
+        DeclarationOfUIVar.button_detect.setOnClickListener(v -> startDiscoverableBt());
+        DeclarationOfUIVar.button_devices.setOnClickListener(v -> startFoundDevicesBt());
+        DeclarationOfUIVar.button_chooseFile.setOnClickListener(v -> chooseFile());
+        DeclarationOfUIVar.multiple_file.setOnClickListener(v -> NumberOfFileFromUI.readNumberOfFilesToSent(this));
+        DeclarationOfUIVar.button_upMultipleFile.setOnClickListener(v -> NumberOfFileFromUI.increasingNumberOfFilesToSent());
+        DeclarationOfUIVar.button_downMultipleFile.setOnClickListener(v -> NumberOfFileFromUI.reducingNumberOfFilesToSent());
+        DeclarationOfUIVar.button_sendData.setOnClickListener(v -> startSendData());
+        DeclarationOfUIVar.button_saveMeasurementData.setOnClickListener(v -> saveMeasurementData());
+        DeclarationOfUIVar.button_graph.setOnClickListener(v -> drawGraph());
     }
     void startSelectBufferSize()
     {
         new Buffer(this, findViewById(R.id.buffer_size));
     }
 
-
-    void startServer()
+    void startServerBt()
     {
-        server = new ServerBt(this,LOG);
+        server = new ServerBt(this);
         ServerBt.running = true;
         server.start();
     }
+
+    //region button_detect
 
     void startDiscoverableBt() {
         Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
@@ -106,8 +90,12 @@ public class Bluetooth extends AppCompatActivity {
                     Toast.makeText(this, "The device is discoverable", Toast.LENGTH_SHORT).show();
             });
 
+    //endregion
+
+    //region button_devices
+
     @SuppressLint("MissingPermission")
-    void startFoundDeviceBt() {
+    void startFoundDevicesBt() {
         Constants.bluetoothAdapter.startDiscovery();
         createListDiscoverableDevices();
         startReceiverWithFilters();
@@ -159,19 +147,18 @@ public class Bluetooth extends AppCompatActivity {
             String deviceAddress = deviceInfo.substring(deviceInfo.length() - 17);
             BluetoothDevice device = Constants.bluetoothAdapter.getRemoteDevice(deviceAddress);
             ServerBt.running = false;
-            startClient(device);
+            startClientBt(device);
+            DeclarationOfUIVar.assignReferenceQualitySignal();
             device.connectGatt(this, false, receivingChangesOfRssiValues);
-            startVisibilityQualitySignal();
         });
 
         showDeviceSelection(deviceSelection);
         showDurationDeviceSearch(titleView);
     }
 
-    void startClient(BluetoothDevice device)
+    void startClientBt(BluetoothDevice device)
     {
-        client = new ClientBt(this, device, LOG);
-        ClientBt.running = true;
+        ClientBt client = new ClientBt(this, device);
         client.start();
     }
 
@@ -188,7 +175,8 @@ public class Bluetooth extends AppCompatActivity {
                             //noinspection BusyWait
                             Thread.sleep(Constants.delayReadingSignal);
                         } catch (InterruptedException e) {
-                            LOG.addLog("Quality signal reading error", e.getMessage());
+                            LOG.addLog("RSSI read hold error", e.getMessage());
+                            break;
                         }
                     } while (ClientBt.getSocket().isConnected());
                 }).start();
@@ -200,22 +188,19 @@ public class Bluetooth extends AppCompatActivity {
         public void onReadRemoteRssi(BluetoothGatt gatt, int rssi, int status) {
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 int percentQualitySignal;
-                if(rssi >= 0)
+                if(rssi >= 0) {
                     percentQualitySignal = Constants.maximumQualitySignal;
-                else
+                }
+                else {
                     percentQualitySignal = Constants.maximumQualitySignal + rssi;
-                runOnUiThread(() ->textView_qualitySignal.setText(Integer.toString(percentQualitySignal)));
+                }
+                runOnUiThread(() ->
+                        DeclarationOfUIVar.textView_qualitySignal.setText(Integer.toString(percentQualitySignal)));
             } else {
                 LOG.addLog("There was an error reading the signal quality value");
             }
         }
     };
-
-    void startVisibilityQualitySignal()
-    {
-        TextView qualitySignalText = findViewById(R.id.textView_qualitySignalText);
-        qualitySignalText.setVisibility(View.VISIBLE);
-    }
 
     void showDeviceSelection(AlertDialog.Builder deviceSelection)
     {
@@ -233,6 +218,10 @@ public class Bluetooth extends AppCompatActivity {
         }, Constants.timeSearch);
     }
 
+    //endregion
+
+    //region button_chooseFile
+
     void chooseFile() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
@@ -240,68 +229,41 @@ public class Bluetooth extends AppCompatActivity {
         startActivityForResult(intent,Constants.REQUEST_BT_SEND_DATA_FILE);
     }
 
-    @SuppressLint({"MissingPermission", "SetTextI18n"})
+    @SuppressLint("MissingPermission")
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == Constants.REQUEST_BT_SEND_DATA_FILE && resultCode == RESULT_OK) {
-            LOG.addLog("You have selected a file to upload");
-            button_sendData.setVisibility(View.VISIBLE);
+            LOG.addLog("Selected a file to upload");
             fileToSend = data;
-            Double fileSize = client.getFileSize(fileToSend.getData());
-            String  fileName = client.getFileName(fileToSend.getData()),
-                    fileSizeUnit = ClientBt.getFileSizeUnit();
-            textView_inf.setText("The name of the uploaded file: " + fileName + "\nFile size: " +
-                    Constants.decimalFormat.format(fileSize).replace(",", ".") +
-                    " " + fileSizeUnit + "\n");
+            Double fileSize = FileInformation.getFileSize(fileToSend.getData(),this);
+            String fileName = FileInformation.getFileName(fileToSend.getData(), this);
+            String fileSizeUnit = FileInformation.getFileSizeUnit(FileInformation.getFileSizeBytes());
+            displayFileInformation(fileSize, fileName, fileSizeUnit);
+            DeclarationOfUIVar.button_sendData.setVisibility(View.VISIBLE);
         }
     }
 
     @SuppressLint("SetTextI18n")
-    void readNumberOfFilesToSent()
+    void displayFileInformation(Double fileSize, String  fileName, String  fileSizeUnit)
     {
-        try {
-            int number = Integer.parseInt(multiple_file.getText().toString());
-            if(number < Constants.minimumNumberOfUploadFiles || number > Constants.maximumNumberOfUploadFiles)
-            {
-                Toast.makeText(this, "Enter a value between 1-100", Toast.LENGTH_SHORT).show();
-                if(number > Constants.maximumNumberOfUploadFiles)
-                    multiple_file.setText(Integer.toString(Constants.maximumNumberOfUploadFiles));
-            }
-        } catch(NumberFormatException e) {
-            Toast.makeText(this, "Enter a numeric value", Toast.LENGTH_SHORT).show();
-            LOG.addLog("Incorrect format loaded", e.getMessage());
-        }
+        DeclarationOfUIVar.textView_inf.setText("The name of the uploaded file: " + fileName +
+                "\nFile size: " + Constants.decimalFormat.format(fileSize).replace(",", ".") +
+                " " + fileSizeUnit + "\n");
     }
 
-    @SuppressLint("SetTextI18n")
-    void increasingNumberOfFilesToSent()
-    {
-        int number = Integer.parseInt(multiple_file.getText().toString());
-        if(number < Constants.maximumNumberOfUploadFiles) {
-            number += 1;
-            multiple_file.setText(Integer.toString(number));
-        }
-    }
-
-    @SuppressLint("SetTextI18n")
-    void reducingNumberOfFilesToSent()
-    {
-        int number = Integer.parseInt(multiple_file.getText().toString());
-        if(number > Constants.minimumNumberOfUploadFiles) {
-            number -= 1;
-            multiple_file.setText(Integer.toString(number));
-        }
-    }
+    //endregion
 
     void startSendData()
     {
-        int multipleFile = Integer.parseInt(multiple_file.getText().toString());
-        ClientBt.dataSendFromClient(true, fileToSend, multipleFile);
+        new Thread(() -> {
+            int multipleFile = NumberOfFileFromUI.getNumberFromUI();
+            new SendingData(LOG, this, ClientBt.getSocket(),fileToSend,multipleFile);
+        }).start();
     }
 
     void saveMeasurementData(){
-        ClientBt.saveMeasurementData();
+        SendingData.saveMeasurementData(this);
     }
 
     void drawGraph(){
@@ -310,43 +272,59 @@ public class Bluetooth extends AppCompatActivity {
         startActivity(intent);
     }
 
-    @SuppressLint("MissingPermission")
     void closeBtConnection()
     {
-        if(client != null)
-            if(client.isAlive()) {
-                ClientBt.running = false;
-                LOG.addLog("The client has ended");
-            }
+        closeServerBt();
+        endListening();
+        closeBtAdapter();
+        closeClientBtSocket();
+        closeServerBtSocket();
+    }
+    void closeServerBt()
+    {
         if(server != null)
             if(server.isAlive()) {
                 ServerBt.running = false;
-                LOG.addLog("The server has ended");
+                LOG.addLog("The server Bt has ended");
             }
+    }
+    void endListening()
+    {
         if(receiver.isOrderedBroadcast()) {
             unregisterReceiver(receiver);
-            LOG.addLog("Broadcast was closed");
+            LOG.addLog("Broadcast on Bt was closed");
         }
+    }
+    @SuppressLint("MissingPermission")
+    void closeBtAdapter()
+    {
         if(Constants.bluetoothAdapter.isDiscovering()) {
             Constants.bluetoothAdapter.cancelDiscovery();
             LOG.addLog("bluetoothAdapter was closed");
         }
+    }
+
+    void closeClientBtSocket()
+    {
         if(ClientBt.getSocket() != null)
             if(ClientBt.getSocket().isConnected()) {
                 try {
                     ClientBt.getSocket().close();
-                    LOG.addLog("Socket client was closed");
+                    LOG.addLog("Socket client Bt was closed");
                 } catch (IOException e) {
-                    LOG.addLog("Error closing socket client", e.getMessage());
+                    LOG.addLog("Error closing socket client Bt", e.getMessage());
                 }
             }
+    }
+    void closeServerBtSocket()
+    {
         if(ServerBt.getSocket() != null)
             if(ServerBt.getSocket().isConnected()) {
                 try {
                     ServerBt.getSocket().close();
-                    LOG.addLog("Socket server was closed");
+                    LOG.addLog("Socket server Bt was closed");
                 } catch (IOException e) {
-                    LOG.addLog("Error closing socket server", e.getMessage());
+                    LOG.addLog("Error closing socket server Bt", e.getMessage());
                 }
             }
     }

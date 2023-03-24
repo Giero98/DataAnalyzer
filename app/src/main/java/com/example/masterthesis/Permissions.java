@@ -29,21 +29,76 @@ public class Permissions extends MainActivity{
 
     public static boolean checkAPI33() {return Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU;}
 
+    public static boolean checkPermissionBt()
+    {
+        if (!checkBtConnect())
+        {
+            getPermissionBtConnect();
+            return false;
+        }
+        else if (!checkBtScan())
+        {
+            getPermissionBtScan();
+            return false;
+        }
+        else if (!checkBtAdvertise())
+        {
+            getPermissionBtAdvertise();
+            return false;
+        }
+        else return true;
+    }
+
+    public static boolean checkPermissionWifi()
+    {
+        if(!Permissions.checkAccessWiFiState())
+        {
+            Permissions.getPermissionAccessWiFiState();
+            return false;
+        }
+        else if(!Permissions.checkChangeWiFiState())
+        {
+            Permissions.getPermissionChangeWiFiState();
+            return false;
+        }
+        else if(!Permissions.checkInternet())
+        {
+            Permissions.getPermissionInternet();
+            return false;
+        }
+        else if(!Permissions.checkAccessNetworkState())
+        {
+            Permissions.getPermissionAccessNetworkState();
+            return false;
+        }
+        else if(!Permissions.checkChangeNetworkState())
+        {
+            Permissions.getPermissionChangeNetworkState();
+            return false;
+        }
+        else if(!Permissions.checkNearbyWiFiDevices())
+        {
+            Permissions.getPermissionNearbyWiFiDevices();
+            return false;
+        }
+        else return true;
+    }
+
     //region checkPermission
 
-    public static boolean checkBtConnect() {
+    static boolean checkBtConnect() {
         if (checkAPI31()) {
             return ContextCompat.checkSelfPermission(context, android.Manifest.permission.BLUETOOTH_CONNECT) == PackageManager.PERMISSION_GRANTED;
         }
         else return true;
     }
-    public static boolean checkBtScan() {
+    static boolean checkBtScan() {
         if (checkAPI31()) {
             return ContextCompat.checkSelfPermission(context, android.Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED;
         }
         else return true;
     }
-    public static boolean checkBtAdvertise() {
+    static boolean checkBtAdvertise() {
         if (checkAPI31()) {
             return ContextCompat.checkSelfPermission(context, android.Manifest.permission.BLUETOOTH_ADVERTISE) == PackageManager.PERMISSION_GRANTED;
         }
@@ -84,17 +139,17 @@ public class Permissions extends MainActivity{
 
     //region getPermission
 
-    public static void getPermissionBtConnect() {
+    static void getPermissionBtConnect() {
         if (checkAPI31()) {
             ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.BLUETOOTH_CONNECT}, Constants.REQUEST_BT_CONNECT);
         }
     }
-    public static void getPermissionBtScan() {
+    static void getPermissionBtScan() {
         if (checkAPI31()) {
             ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.BLUETOOTH_SCAN}, Constants.REQUEST_BT_SCAN);
         }
     }
-    public static void getPermissionBtAdvertise() {
+    static void getPermissionBtAdvertise() {
         if (checkAPI31()) {
             ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.BLUETOOTH_ADVERTISE}, Constants.REQUEST_BT_ADVERTISE);
         }
