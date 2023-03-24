@@ -37,9 +37,9 @@ import java.util.Arrays;
 
 public class ClientWiFi extends Thread{
     static final ArrayList<String> measurementDataList = new ArrayList<>();
-    static String fileSizeUnit = Constants.fileSizeUnitBytes;
+    public static String fileSizeUnit = Constants.fileSizeUnitBytes;
     @SuppressLint("StaticFieldLeak")
-    static TextView textView_percent, textView_inf, textView_qualitySignal;
+    static TextView textView_percent, textView_inf;
     @SuppressLint("StaticFieldLeak")
     static Button button_deviceDisplay, button_chooseFile, button_detect, button_saveMeasurementData, button_graph;
     @SuppressLint("StaticFieldLeak")
@@ -78,6 +78,26 @@ public class ClientWiFi extends Thread{
         }
     }
 
+    void changeUiButtonShow()
+    {
+        textView_percent = ((Activity) context).findViewById(R.id.textView_percent);
+        textView_inf = ((Activity) context).findViewById(R.id.textView_inf);
+        ((Activity) context).runOnUiThread(() ->textView_inf.setMovementMethod(new ScrollingMovementMethod()));
+        button_deviceDisplay = ((Activity) context).findViewById(R.id.button_deviceDisplay);
+        button_detect = ((Activity) context).findViewById(R.id.button_detect);
+        button_chooseFile = ((Activity) context).findViewById(R.id.button_chooseFile);
+        button_saveMeasurementData = ((Activity) context).findViewById(R.id.button_saveMeasurementData);
+        button_graph = ((Activity) context).findViewById(R.id.button_graph);
+        progressBar = ((Activity) context).findViewById(R.id.progressBar);
+        layoutPercent = ((Activity) context).findViewById(R.id.layoutPercent);
+        ((Activity) context).runOnUiThread(() ->{
+            button_deviceDisplay.setVisibility(View.INVISIBLE);
+            button_detect.setVisibility(View.INVISIBLE);
+            button_chooseFile.setVisibility(View.VISIBLE);
+            layoutPercent.setVisibility(View.VISIBLE);
+        });
+    }
+
     public static Socket getSocket()
     {
         return socket;
@@ -101,7 +121,7 @@ public class ClientWiFi extends Thread{
 
         try {
             measurementDataList.add(fileName);
-            measurementDataList.add(Constants.titleFileColumn);
+            measurementDataList.add(Constants.titleWiFiFileColumn);
 
             String fileDetails = fileName + ";" + fileSizeUnit + ";" + fileSizeBytes + ";" +
                     bufferSize + ";" + multipleFile;
@@ -202,36 +222,17 @@ public class ClientWiFi extends Thread{
     public static void closeStream()
     {
         try{
-            inputStream.close();
-            outputStream.close();
+            if(inputStream != null)
+                inputStream.close();
+            if(outputStream != null)
+                outputStream.close();
         } catch (IOException e) {
             LOG.addLog("Error close stream", e.getMessage());
         }
     }
 
-    static void changeUiButtonShow()
-    {
-        textView_percent = ((Activity) context).findViewById(R.id.textView_percent);
-        textView_inf = ((Activity) context).findViewById(R.id.textView_inf);
-        ((Activity) context).runOnUiThread(() ->textView_inf.setMovementMethod(new ScrollingMovementMethod()));
-        textView_qualitySignal = ((Activity) context).findViewById(R.id.textView_qualitySignal);
-        button_deviceDisplay = ((Activity) context).findViewById(R.id.button_deviceDisplay);
-        button_detect = ((Activity) context).findViewById(R.id.button_detect);
-        button_chooseFile = ((Activity) context).findViewById(R.id.button_chooseFile);
-        button_saveMeasurementData = ((Activity) context).findViewById(R.id.button_saveMeasurementData);
-        button_graph = ((Activity) context).findViewById(R.id.button_graph);
-        progressBar = ((Activity) context).findViewById(R.id.progressBar);
-        layoutPercent = ((Activity) context).findViewById(R.id.layoutPercent);
-        ((Activity) context).runOnUiThread(() ->{
-            button_deviceDisplay.setVisibility(View.INVISIBLE);
-            button_detect.setVisibility(View.INVISIBLE);
-            button_chooseFile.setVisibility(View.VISIBLE);
-            layoutPercent.setVisibility(View.VISIBLE);
-        });
-    }
-
     @SuppressLint("Range")
-    static double getFileSize(long fileSizeBytes)
+    public static double getFileSize(long fileSizeBytes)
     {
         double fileSize = fileSizeBytes;
         if(fileSize > Constants.size1Kb) {
@@ -338,8 +339,7 @@ public class ClientWiFi extends Thread{
     }
 
     @SuppressLint("SetTextI18n")
-    static void updateView()
-    {
+    static void updateView() {
         ((Activity) context).runOnUiThread(() -> {
             textView_inf.setText(textView_inf.getText() + "\n");
             Toast.makeText(context, "File sent", Toast.LENGTH_SHORT).show();

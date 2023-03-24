@@ -45,8 +45,9 @@ public class WiFi extends AppCompatActivity {
     ArrayAdapter<String> listAdapter;
     static final Logs.ListLog LOG = new Logs.ListLog();
     long fileSizeBytes;
-    String selectedDeviceName, fileSizeUnit = Constants.fileSizeUnitBytes, fileName;
-    static WifiP2pManager wifiDirectManager;
+    String selectedDeviceName, fileName;
+    public static String fileSizeUnit = Constants.fileSizeUnitBytes;
+    public static WifiP2pManager wifiDirectManager;
     static WifiP2pManager.Channel wifiDirectChannel;
     TextView textView_connected, textView_inf, textView_qualitySignal;
     EditText multiple_file;
@@ -166,7 +167,6 @@ public class WiFi extends AppCompatActivity {
         {
             ServerWiFi server = new ServerWiFi(LOG,this);
             server.start();
-
         } else if(wifiDirectInfo.groupFormed)
         {
             discoverService(wifiDirectInfo);
@@ -404,6 +404,11 @@ public class WiFi extends AppCompatActivity {
         Graph.connectionDetails = Constants.connectionWiFi;
         Intent intent = new Intent(this, Graph.class);
         startActivity(intent);
+    }
+
+    public static String getFileSizeUnit()
+    {
+        return fileSizeUnit;
     }
 
     void disconnectTheConnection()
