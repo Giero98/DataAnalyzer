@@ -14,8 +14,8 @@ import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
-import com.example.masterthesis.bluetooh.ClientBt;
-import com.example.masterthesis.wifi.ClientWiFi;
+import com.example.masterthesis.file.FileInformation;
+import com.example.masterthesis.file.SendingData;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
@@ -53,39 +53,15 @@ public class Graph extends AppCompatActivity {
         graphQualitySignal.setOnClickListener(v -> selectDataQualitySignal());
         graphUploadSpeed.setOnClickListener(v -> selectDataUploadSpeed());
 
-        selectData();
+        assignmentData();
         setupGraph();
         setupXAxis();
         setupYAxis();
     }
 
-    void selectData()
+    void assignmentData()
     {
-        if(connectionDetails.equals(Constants.connectionBt))
-            assignmentBtData();
-        else if(connectionDetails.equals(Constants.connectionWiFi))
-            assignmentWiFiData();
-    }
-
-    void assignmentBtData()
-    {
-        for(String measurementData : ClientBt.getMeasurementDataList())
-        {
-            if(measurementData.contains(","))
-            {
-                String[] dataArrayFileMeasurement = measurementData.split(",");
-                String sentFileNumberTable = dataArrayFileMeasurement[0];
-                loadingIntoTheDataList(sentFileNumberTable, dataArrayFileMeasurement);
-            } else {
-                clearingDataInLists();
-                fileName = measurementData;
-            }
-        }
-    }
-
-    void assignmentWiFiData()
-    {
-        for(String measurementData : ClientWiFi.getMeasurementDataList())
+        for(String measurementData : SendingData.getMeasurementDataList())
         {
             if(measurementData.contains(","))
             {
@@ -178,10 +154,7 @@ public class Graph extends AppCompatActivity {
         {
             graphData.add(new BarEntry(sentFileNumber.get(i),uploadSpeed.get(i)));
         }
-        if(connectionDetails.equals(Constants.connectionBt))
-            columnUnit = Constants.uploadBTSpeedUnit;
-        else if(connectionDetails.equals(Constants.connectionWiFi))
-            columnUnit = Constants.uploadWiFiSpeedUnit;
+        columnUnit = "[" + FileInformation.getFileSizeUnit(FileInformation.getFileSizeBytes()) + "/s]";
         drawGraph(graphData);
     }
 

@@ -57,7 +57,7 @@
                 tools:ignore="TextSizeCheck" />
 
             <Button
-                android:id="@+id/button_foundDevice"
+                android:id="@+id/button_devices"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"

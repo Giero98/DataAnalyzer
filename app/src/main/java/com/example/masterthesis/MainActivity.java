@@ -23,7 +23,6 @@ import com.example.masterthesis.wifi.WiFi;
 public class MainActivity extends AppCompatActivity {
     final Logs.ListLog LOG = new Logs.ListLog();
     WifiManager wifiManager;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,37 +37,19 @@ public class MainActivity extends AppCompatActivity {
         Button button_wifi = findViewById(R.id.button_wifi);
         Button button_bt = findViewById(R.id.button_bt);
 
-        button_bt.setOnClickListener(v -> checkingPermissionsBt());
-        button_wifi.setOnClickListener(v -> checkingPermissionsWiFi());
+        button_bt.setOnClickListener(v -> checkingBtSetting());
+        button_wifi.setOnClickListener(v -> checkingWifiSetting());
     }
 
     //region configureBT
 
-    void goToBtActivity()
-    {
-        Intent intent = new Intent(this, Bluetooth.class);
-        startActivity(intent);
-    }
-
-    public void checkingPermissionsBt()
+    void checkingBtSetting()
     {
         if (checkSupportBt())
         {
-            if (!Permissions.checkBtConnect())
+            if(Permissions.checkPermissionBt())
             {
-                Permissions.getPermissionBtConnect();
-            }
-            else if (!Permissions.checkBtScan())
-            {
-                Permissions.getPermissionBtScan();
-            }
-            else if (!Permissions.checkBtAdvertise())
-            {
-                Permissions.getPermissionBtAdvertise();
-            }
-            else
-            {
-                thatBtIsOn();
+                checkBtIsOn();
             }
         }
     }
@@ -80,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
         } else return true;
     }
 
-    void thatBtIsOn() {
+    void checkBtIsOn() {
         if (!Constants.bluetoothAdapter.isEnabled())
             enableBt();
         else
@@ -102,57 +83,29 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(this, "Bluetooth not enabled", Toast.LENGTH_SHORT).show();
             });
 
+    void goToBtActivity()
+    {
+        Intent intent = new Intent(this, Bluetooth.class);
+        startActivity(intent);
+    }
+
     //endregion
 
     //region configureWiFi
 
-    void goToWiFiActivity() {
-        Intent intent = new Intent(this, WiFi.class);
-        startActivity(intent);
+    void checkingWifiSetting()
+    {
+        if(Permissions.checkPermissionWifi()) {
+            checkWifiIsOnIfNotTurnOn();
+        }
     }
 
-    public void checkingPermissionsWiFi()
+    void checkWifiIsOnIfNotTurnOn()
     {
-
-        if(!Permissions.checkAccessWiFiState())
-        {
-            Permissions.getPermissionAccessWiFiState();
-        }
-        else if(!Permissions.checkChangeWiFiState())
-        {
-            Permissions.getPermissionChangeWiFiState();
-        }
-        else if(!Permissions.checkInternet())
-        {
-            Permissions.getPermissionInternet();
-        }
-        else if(!Permissions.checkAccessNetworkState())
-        {
-            Permissions.getPermissionAccessNetworkState();
-        }
-        else if(!Permissions.checkChangeNetworkState())
-        {
-            Permissions.getPermissionChangeNetworkState();
-        }
-        else if(!Permissions.checkNearbyWiFiDevices())
-        {
-            Permissions.getPermissionNearbyWiFiDevices();
-        }
-        else if (!wifiManager.isWifiEnabled())
-        {
+        if (!wifiManager.isWifiEnabled()) {
             enableWiFi();
         }
-        else if(checkSupportWiFiDirect())
-        {
-            goToWiFiActivity();
-        }
-    }
-
-    boolean checkSupportWiFiDirect() {
-        if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_WIFI_DIRECT)) {
-            Toast.makeText(this, "Device doesn't support WiFi Direct", Toast.LENGTH_SHORT).show();
-            return false;
-        } else return true;
+        else checkWifiDirectAvailableIfYesStartWifiActivity();
     }
 
     void enableWiFi() {
@@ -162,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             wifiManager.setWifiEnabled(true);
             Toast.makeText(this, "WiFi started", Toast.LENGTH_SHORT).show();
-            checkingPermissionsWiFi();
+            checkWifiDirectAvailableIfYesStartWifiActivity();
         }
     }
 
@@ -171,11 +124,32 @@ public class MainActivity extends AppCompatActivity {
             result -> {
                 if (wifiManager.isWifiEnabled()) {
                     Toast.makeText(this, "WiFi started", Toast.LENGTH_SHORT).show();
-                    checkingPermissionsWiFi();
+                    checkWifiDirectAvailableIfYesStartWifiActivity();
                 }
                 else
                     Toast.makeText(this, "WiFi not enabled", Toast.LENGTH_SHORT).show();
             });
+
+    void checkWifiDirectAvailableIfYesStartWifiActivity()
+    {
+        if (checkSupportWiFiDirect()) {
+            goToWiFiActivity();
+        }
+    }
+
+
+
+    boolean checkSupportWiFiDirect() {
+        if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_WIFI_DIRECT)) {
+            Toast.makeText(this, "Device doesn't support WiFi Direct", Toast.LENGTH_SHORT).show();
+            return false;
+        } else return true;
+    }
+
+    void goToWiFiActivity() {
+        Intent intent = new Intent(this, WiFi.class);
+        startActivity(intent);
+    }
 
     //endregion
 
@@ -187,21 +161,21 @@ public class MainActivity extends AppCompatActivity {
             case Constants.REQUEST_BT_CONNECT:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     LOG.addLog("BLUETOOTH_CONNECT permission granted");
-                    checkingPermissionsBt();
+                    checkingBtSetting();
                 }
                 else LOG.addLog("BLUETOOTH_CONNECT permission denied");
                 break;
             case Constants.REQUEST_BT_SCAN:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     LOG.addLog("BLUETOOTH_SCAN permission granted");
-                    checkingPermissionsBt();
+                    checkingBtSetting();
                 }
                 else LOG.addLog("BLUETOOTH_SCAN permission denied");
                 break;
             case Constants.REQUEST_BT_ADVERTISE:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     LOG.addLog("BLUETOOTH_ADVERTISE permission granted");
-                    checkingPermissionsBt();
+                    checkingBtSetting();
                 }
                 else LOG.addLog("BLUETOOTH_ADVERTISE permission denied");
                 break;
@@ -214,42 +188,42 @@ public class MainActivity extends AppCompatActivity {
             case Constants.REQUEST_CHANGE_WIFI_STATE:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     LOG.addLog("CHANGE_WIFI_STATE permission granted");
-                    checkingPermissionsWiFi();
+                    checkingWifiSetting();
                 }
                 else LOG.addLog("CHANGE_WIFI_STATE permission denied");
                 break;
             case Constants.REQUEST_ACCESS_WIFI_STATE:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     LOG.addLog("ACCESS_WIFI_STATE permission granted");
-                    checkingPermissionsWiFi();
+                    checkingWifiSetting();
                 }
                 else LOG.addLog("ACCESS_WIFI_STATE permission denied");
                 break;
             case Constants.REQUEST_INTERNET:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     LOG.addLog("INTERNET permission granted");
-                    checkingPermissionsWiFi();
+                    checkingWifiSetting();
                 }
                 else LOG.addLog("INTERNET permission denied");
                 break;
             case Constants.REQUEST_NEARBY_WIFI_DEVICES:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     LOG.addLog("NEARBY_WIFI_DEVICES permission granted");
-                    checkingPermissionsWiFi();
+                    checkingWifiSetting();
                 }
                 else LOG.addLog("NEARBY_WIFI_DEVICES permission denied");
                 break;
             case Constants.REQUEST_ACCESS_NETWORK_STATE:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     LOG.addLog("ACCESS_NETWORK_STATE permission granted");
-                    checkingPermissionsWiFi();
+                    checkingWifiSetting();
                 }
                 else LOG.addLog("ACCESS_NETWORK_STATE permission denied");
                 break;
             case Constants.REQUEST_CHANGE_NETWORK_STATE:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     LOG.addLog("CHANGE_NETWORK_STATE permission granted");
-                    checkingPermissionsWiFi();
+                    checkingWifiSetting();
                 }
                 else LOG.addLog("CHANGE_NETWORK_STATE permission denied");
                 break;
