@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -45,6 +46,8 @@ public class Graph extends AppCompatActivity {
                     graphQualitySignal = findViewById(R.id.radioButton_qualitySignal),
                     graphUploadSpeed = findViewById(R.id.radioButton_uploadSpeed);
 
+        if(connectionDetails.equals(Constants.connectionWiFi))
+            graphQualitySignal.setVisibility(View.INVISIBLE);
         buttonBack.setOnClickListener(v -> finish());
         graphUploadTime.setOnClickListener(v -> selectDataUploadTime());
         graphQualitySignal.setOnClickListener(v -> selectDataQualitySignal());
