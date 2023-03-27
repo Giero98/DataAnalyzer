@@ -1,4 +1,4 @@
-package com.example.masterthesis;
+package com.bg.masterthesis;
 
 import android.Manifest;
 import android.annotation.SuppressLint;

@@ -1,4 +1,4 @@
-package com.example.masterthesis.bluetooh;
+package com.bg.masterthesis.bluetooh;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -7,9 +7,9 @@ import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.widget.Toast;
 
-import com.example.masterthesis.Constants;
-import com.example.masterthesis.ui.DeclarationOfUIVar;
-import com.example.masterthesis.Logs;
+import com.bg.masterthesis.Constants;
+import com.bg.masterthesis.ui.DeclarationOfUIVar;
+import com.bg.masterthesis.Logs;
 
 import java.io.IOException;
 

@@ -1,11 +1,11 @@
-package com.example.masterthesis.wifi;
+package com.bg.masterthesis.wifi;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.wifi.p2p.WifiP2pInfo;
 
-import com.example.masterthesis.ui.DeclarationOfUIVar;
-import com.example.masterthesis.Logs;
+import com.bg.masterthesis.ui.DeclarationOfUIVar;
+import com.bg.masterthesis.Logs;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;

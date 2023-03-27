@@ -1,4 +1,4 @@
-package com.example.masterthesis;
+package com.bg.masterthesis;
 
 import androidx.appcompat.app.AppCompatActivity;
 

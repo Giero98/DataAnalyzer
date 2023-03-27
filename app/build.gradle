@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace 'com.example.masterthesis'
+    namespace 'com.bg.masterthesis'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.masterthesis"
+        applicationId "com.bg.masterthesis"
         minSdk 22
         targetSdk 33
         versionCode 1

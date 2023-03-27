@@ -1,11 +1,11 @@
-package com.example.masterthesis.ui;
+package com.bg.masterthesis.ui;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.widget.Toast;
 
-import com.example.masterthesis.Constants;
-import com.example.masterthesis.Logs;
+import com.bg.masterthesis.Constants;
+import com.bg.masterthesis.Logs;
 
 public class NumberOfFileFromUI {
 

@@ -1,9 +1,9 @@
-package com.example.masterthesis;
+package com.bg.masterthesis;
 
 import android.bluetooth.BluetoothAdapter;
 import android.graphics.DashPathEffect;
 
-import com.example.masterthesis.file.FileInformation;
+import com.bg.masterthesis.file.FileInformation;
 
 import java.io.File;
 import java.text.DecimalFormat;
