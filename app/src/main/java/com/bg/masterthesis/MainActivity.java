@@ -1,4 +1,4 @@
-package com.example.masterthesis;
+package com.bg.masterthesis;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -17,8 +17,8 @@ import android.widget.Button;
 import android.widget.Toast;
 import android.bluetooth.BluetoothAdapter;
 
-import com.example.masterthesis.bluetooh.Bluetooth;
-import com.example.masterthesis.wifi.WiFi;
+import com.bg.masterthesis.bluetooh.Bluetooth;
+import com.bg.masterthesis.wifi.WiFi;
 
 public class MainActivity extends AppCompatActivity {
     final Logs.ListLog LOG = new Logs.ListLog();

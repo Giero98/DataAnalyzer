@@ -1,17 +1,17 @@
-package com.example.masterthesis.wifi;
+package com.bg.masterthesis.wifi;
 
-import static com.example.masterthesis.wifi.WiFi.wifiDirectChannel;
-import static com.example.masterthesis.wifi.WiFi.wifiDirectManager;
+import static com.bg.masterthesis.wifi.WiFi.wifiDirectChannel;
+import static com.bg.masterthesis.wifi.WiFi.wifiDirectManager;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceInfo;
 
-import com.example.masterthesis.Constants;
-import com.example.masterthesis.ui.DeclarationOfUIVar;
-import com.example.masterthesis.Logs;
-import com.example.masterthesis.file.SavingData;
+import com.bg.masterthesis.Constants;
+import com.bg.masterthesis.ui.DeclarationOfUIVar;
+import com.bg.masterthesis.Logs;
+import com.bg.masterthesis.file.SavingData;
 
 import java.io.IOException;
 import java.net.ServerSocket;

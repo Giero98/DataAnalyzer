@@ -1,4 +1,4 @@
-package com.example.masterthesis.bluetooh;
+package com.bg.masterthesis.bluetooh;
 
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
@@ -24,15 +24,15 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.masterthesis.Buffer;
-import com.example.masterthesis.Constants;
-import com.example.masterthesis.file.FileInformation;
-import com.example.masterthesis.file.SendingData;
-import com.example.masterthesis.ui.DeclarationOfUIVar;
-import com.example.masterthesis.Graph;
-import com.example.masterthesis.Logs;
-import com.example.masterthesis.ui.NumberOfFileFromUI;
-import com.example.masterthesis.R;
+import com.bg.masterthesis.Buffer;
+import com.bg.masterthesis.Constants;
+import com.bg.masterthesis.file.FileInformation;
+import com.bg.masterthesis.file.SendingData;
+import com.bg.masterthesis.ui.DeclarationOfUIVar;
+import com.bg.masterthesis.Graph;
+import com.bg.masterthesis.Logs;
+import com.bg.masterthesis.ui.NumberOfFileFromUI;
+import com.bg.masterthesis.R;
 
 import java.io.IOException;
 import java.util.ArrayList;

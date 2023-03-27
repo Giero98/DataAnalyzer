@@ -1,4 +1,4 @@
-package com.example.masterthesis.file;
+package com.bg.masterthesis.file;
 
 
 import android.annotation.SuppressLint;
@@ -12,10 +12,10 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 
-import com.example.masterthesis.Buffer;
-import com.example.masterthesis.Constants;
-import com.example.masterthesis.Logs;
-import com.example.masterthesis.ui.DeclarationOfUIVar;
+import com.bg.masterthesis.Buffer;
+import com.bg.masterthesis.Constants;
+import com.bg.masterthesis.Logs;
+import com.bg.masterthesis.ui.DeclarationOfUIVar;
 
 import java.io.File;
 import java.io.FileInputStream;

@@ -1,4 +1,4 @@
-package com.example.masterthesis.ui;
+package com.bg.masterthesis.ui;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -13,7 +13,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.masterthesis.R;
+import com.bg.masterthesis.R;
 
 @SuppressLint({"StaticFieldLeak","SetTextI18n"})
 public class DeclarationOfUIVar {
