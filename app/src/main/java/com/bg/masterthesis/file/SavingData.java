@@ -21,14 +21,15 @@ import java.util.Arrays;
 
 public class SavingData {
     String fileName;
-    static Logs.ListLog LOG;
+    Logs.ListLog LOG;
+    DeclarationOfUIVar declarationUI;
     static InputStream inputStream;
     static OutputStream outputStream;
     Context context;
 
     public SavingData(Logs.ListLog LOG, Context context, BluetoothSocket socket)
     {
-        SavingData.LOG = LOG;
+        this.LOG = LOG;
         this.context = context;
         openStream(socket);
         startSavingData();
@@ -36,7 +37,7 @@ public class SavingData {
 
     public SavingData(Logs.ListLog LOG, Context context, Socket socket)
     {
-        SavingData.LOG = LOG;
+        this.LOG = LOG;
         this.context = context;
         openStream(socket);
         startSavingData();
@@ -45,6 +46,7 @@ public class SavingData {
     @SuppressLint("SetTextI18n")
     void startSavingData()
     {
+        declarationUI = new DeclarationOfUIVar(context);
         byte[] buffer = new byte[Constants.getBufferFirstInfOfFile];
         int bytes;
 
@@ -83,8 +85,8 @@ public class SavingData {
                             long percent = 100 * (fullBytes + fileSizeBytes * repeat) /
                                     (fileSizeBytes * multipleFile);
                             ((Activity) context).runOnUiThread(() ->
-                                    DeclarationOfUIVar.textView_percent.setText("Download: " + percent + " %"));
-                            DeclarationOfUIVar.progressBar.setProgress((int) percent);
+                                    declarationUI.textView_percent.setText("Download: " + percent + " %"));
+                            declarationUI.progressBar.setProgress((int) percent);
                             if (fullBytes == fileSizeBytes) {
                                 LOG.addLog("End of download file number " + (repeat + 1));
                                 Arrays.fill(bufferData, 0, bufferData.length, (byte) 0);
@@ -115,7 +117,7 @@ public class SavingData {
                         updateTextInf(fileName,fileSizeBytes,fileSizeUnit);
                     } else {
                         ((Activity) context).runOnUiThread(() ->
-                                DeclarationOfUIVar.textView_inf.setText("Error downloaded and saving file"));
+                                declarationUI.textView_inf.setText("Error downloaded and saving file"));
                         break;
                     }
                 }
@@ -179,7 +181,7 @@ public class SavingData {
     {
         double fileSize = conversionFileSize(fileSizeBytes, fileSizeUnit);
         ((Activity) context).runOnUiThread(() ->
-                DeclarationOfUIVar.textView_inf.setText(DeclarationOfUIVar.textView_inf.getText() +
+                declarationUI.textView_inf.setText(declarationUI.textView_inf.getText() +
                         "The name of the received file: " + fileName +
                         "\nFile size: " +
                         Constants.decimalFormat.format(fileSize).replace(",", ".") +
@@ -201,7 +203,7 @@ public class SavingData {
         return fileSize;
     }
 
-    public static void closeStream()
+    public static void closeStream(Logs.ListLog LOG)
     {
         try{
             if(inputStream != null)

@@ -29,14 +29,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class SendingData {
-    public static final ArrayList<String> measurementDataList = new ArrayList<>();
-    static Logs.ListLog LOG;
+    public static ArrayList<String> measurementDataList = new ArrayList<>();
+    Logs.ListLog LOG;
+    DeclarationOfUIVar declarationUI;
     static InputStream inputStream;
     static OutputStream outputStream;
     Context context;
     public SendingData(Logs.ListLog LOG, Context context, BluetoothSocket socket, Intent fileToSend, int multipleFile)
     {
-        SendingData.LOG = LOG;
+        this.LOG = LOG;
         this.context = context;
         openStream(socket);
         startSendingData(fileToSend,multipleFile);
@@ -44,7 +45,7 @@ public class SendingData {
 
     public SendingData(Logs.ListLog LOG, Context context, Socket socket, Intent fileToSend, int multipleFile)
     {
-        SendingData.LOG = LOG;
+        this.LOG = LOG;
         this.context = context;
         openStream(socket);
         startSendingData(fileToSend,multipleFile);
@@ -53,10 +54,12 @@ public class SendingData {
     @SuppressLint("SetTextI18n")
     void startSendingData(Intent fileToSend, int multipleFile)
     {
+        declarationUI = new DeclarationOfUIVar(context);
+
         double fileSize = FileInformation.getFileSize(fileToSend.getData(),context);
         long fileSizeBytes = FileInformation.getFileSizeBytes();
         String fileName = FileInformation.getFileName(fileToSend.getData(), context);
-        String fileSizeUnit = FileInformation.getFileSizeUnit(FileInformation.getFileSizeBytes());
+        String fileSizeUnit = FileInformation.getFileSizeUnit(fileSizeBytes);
 
         int bytesRead,bufferSize;
         if(Buffer.bufferSize == 0)
@@ -109,8 +112,8 @@ public class SendingData {
                         long percent = 100 * (fullBytes + fileSizeBytes * repeat) /
                                 (fileSizeBytes * multipleFile);
                         ((Activity) context).runOnUiThread(() ->
-                                DeclarationOfUIVar.textView_percent.setText("Sent: " + percent + " %"));
-                        DeclarationOfUIVar.progressBar.setProgress((int) percent);
+                                declarationUI.textView_percent.setText("Sent: " + percent + " %"));
+                        declarationUI.progressBar.setProgress((int) percent);
                     }
                     outputStream.flush();
                     file.getChannel().position(0);
@@ -133,7 +136,7 @@ public class SendingData {
                             } else if (confirmMessage.equals("NoneConfirmed")) {
                                 LOG.addLog("Failed to save to the server");
                                 ((Activity) context).runOnUiThread(() ->
-                                        DeclarationOfUIVar.textView_inf.setText(DeclarationOfUIVar.textView_inf.getText() +
+                                        declarationUI.textView_inf.setText(declarationUI.textView_inf.getText() +
                                                 "\nFailed to save to the server"));
                                 return;
                             }
@@ -146,7 +149,7 @@ public class SendingData {
                     LOG.addLog("Failed to send file", e.getMessage());
                 }
             }
-            DeclarationOfUIVar.updateViewWhenFileSent();
+            declarationUI.updateViewWhenFileSent();
 
             try {
                 if (file != null) {
@@ -200,10 +203,10 @@ public class SendingData {
     }
 
     @SuppressLint("SetTextI18n")
-    static void updateTextInf(Context context, int bufferSize, int repeat, double resultTime, double speedSend, String sizeUnit)
+    void updateTextInf(Context context, int bufferSize, int repeat, double resultTime, double speedSend, String sizeUnit)
     {
         ((Activity) context).runOnUiThread(() ->
-                DeclarationOfUIVar.textView_inf.setText(DeclarationOfUIVar.textView_inf.getText() +
+                declarationUI.textView_inf.setText(declarationUI.textView_inf.getText() +
                         "\nThe size of the set buffer: " + bufferSize + " Bytes" +
                         "\nFile upload number: " + (repeat + 1) +
                         "\nFile transfer time: " +
@@ -213,12 +216,12 @@ public class SendingData {
                         " " + sizeUnit + "/s"));
     }
 
-    static void saveMeasurementDataToList(long fileSizeBytes, int repeat, double fileSize, double resultTime, double speedSend)
+    void saveMeasurementDataToList(long fileSizeBytes, int repeat, double fileSize, double resultTime, double speedSend)
     {
         String qualitySignal;
 
         try{
-            qualitySignal=(String) DeclarationOfUIVar.textView_qualitySignal.getText();
+            qualitySignal = (String) declarationUI.textView_qualitySignal.getText();
         } catch (NullPointerException e) {
             qualitySignal="0";
         }
@@ -231,7 +234,8 @@ public class SendingData {
                 Constants.decimalFormat.format(speedSend).replace(",", "."));
     }
 
-    public static void saveMeasurementData(Context context){
+    public static void saveMeasurementData(Context context, Logs.ListLog LOG)
+    {
 
         AlertDialog.Builder viewToSaveData = new AlertDialog.Builder(context);
         viewToSaveData.setTitle(Constants.titleDialogToSaveData);
@@ -281,7 +285,7 @@ public class SendingData {
         return measurementDataList;
     }
 
-    public static void closeStream()
+    public static void closeStream(Logs.ListLog LOG)
     {
         try{
             if(inputStream != null)

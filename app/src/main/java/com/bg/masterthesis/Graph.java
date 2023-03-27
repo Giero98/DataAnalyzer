@@ -31,6 +31,8 @@ import java.util.List;
 public class Graph extends AppCompatActivity {
     public static String connectionDetails;
     BarChart barChart;
+    Button buttonBack;
+    RadioButton graphUploadTime, graphQualitySignal, graphUploadSpeed;
     String fileName, columnUnit;
     ArrayList<Integer> sentFileNumber = new ArrayList<>(), qualitySignal = new ArrayList<>();
     ArrayList<Float> fileUploadTime = new ArrayList<>(), uploadSpeed = new ArrayList<>();
@@ -38,28 +40,43 @@ public class Graph extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_graph);
-        setTitle("Graphs");
+        setTitle(Constants.titleGraphActivity);
 
-        Button buttonBack = findViewById(R.id.button_back);
-        barChart = findViewById(R.id.barChart);
-        RadioButton graphUploadTime = findViewById(R.id.radioButton_uploadTime),
-                    graphQualitySignal = findViewById(R.id.radioButton_qualitySignal),
-                    graphUploadSpeed = findViewById(R.id.radioButton_uploadSpeed);
+        declarationButtonsAndChart();
+        buttonsResponse();
 
-        if(connectionDetails.equals(Constants.connectionWiFi))
-            graphQualitySignal.setVisibility(View.INVISIBLE);
-        buttonBack.setOnClickListener(v -> finish());
-        graphUploadTime.setOnClickListener(v -> selectDataUploadTime());
-        graphQualitySignal.setOnClickListener(v -> selectDataQualitySignal());
-        graphUploadSpeed.setOnClickListener(v -> selectDataUploadSpeed());
+        hideSignalQualityGraphForWifi();
 
-        assignmentData();
+        allocationData();
         setupGraph();
         setupXAxis();
         setupYAxis();
     }
 
-    void assignmentData()
+    void declarationButtonsAndChart()
+    {
+        buttonBack = findViewById(R.id.button_back);
+        barChart = findViewById(R.id.barChart);
+        graphUploadTime = findViewById(R.id.radioButton_uploadTime);
+        graphQualitySignal = findViewById(R.id.radioButton_qualitySignal);
+        graphUploadSpeed = findViewById(R.id.radioButton_uploadSpeed);
+    }
+
+    void hideSignalQualityGraphForWifi()
+    {
+        if(connectionDetails.equals(Constants.connectionWiFi))
+            graphQualitySignal.setVisibility(View.INVISIBLE);
+    }
+
+    void buttonsResponse()
+    {
+        buttonBack.setOnClickListener(v -> finish());
+        graphUploadTime.setOnClickListener(v -> selectDataUploadTime());
+        graphQualitySignal.setOnClickListener(v -> selectDataQualitySignal());
+        graphUploadSpeed.setOnClickListener(v -> selectDataUploadSpeed());
+    }
+
+    void allocationData()
     {
         for(String measurementData : SendingData.getMeasurementDataList())
         {
@@ -84,6 +101,18 @@ public class Graph extends AppCompatActivity {
             fileUploadTime.add(Float.parseFloat(dataArrayFileMeasurement[4]));
             uploadSpeed.add(Float.parseFloat(dataArrayFileMeasurement[5]));
         } catch (NumberFormatException ignored) {}
+    }
+
+    void clearingDataInLists()
+    {
+        if(!sentFileNumber.isEmpty())
+            sentFileNumber.clear();
+        if(!qualitySignal.isEmpty())
+            qualitySignal.clear();
+        if(!fileUploadTime.isEmpty())
+            fileUploadTime.clear();
+        if(!uploadSpeed.isEmpty())
+            uploadSpeed.clear();
     }
 
     void setupGraph()
@@ -114,18 +143,6 @@ public class Graph extends AppCompatActivity {
         leftAxis.setGranularity(Constants.distanceBetweenYAxisData);
         leftAxis.setTextColor(Color.BLACK);
         leftAxis.setTextSize(Constants.axisValueSize);
-    }
-
-    void clearingDataInLists()
-    {
-        if(!sentFileNumber.isEmpty())
-            sentFileNumber.clear();
-        if(!qualitySignal.isEmpty())
-            qualitySignal.clear();
-        if(!fileUploadTime.isEmpty())
-            fileUploadTime.clear();
-        if(!uploadSpeed.isEmpty())
-            uploadSpeed.clear();
     }
 
     void selectDataUploadTime() {
@@ -166,7 +183,7 @@ public class Graph extends AppCompatActivity {
 
         BarDataSet totalGraphData = formatDataSet(graphData);
         BarData barData = formatData(totalGraphData);
-        lastGraphSetting(barData);
+        lastSettingGraph(barData);
     }
 
     BarDataSet formatDataSet(List<BarEntry> graphData)
@@ -192,16 +209,14 @@ public class Graph extends AppCompatActivity {
         return barData;
     }
 
-    void lastGraphSetting(BarData barData)
+    void lastSettingGraph(BarData barData)
     {
         barChart.setData(barData);
         barChart.animateY(Constants.graphAnimationDuration);
         barChart.setVisibleXRangeMaximum(Constants.maximumNumberOfColumnsOnTheScreen);
-        barChart.moveViewToX(0); // graph moved to the beginning
         barChart.invalidate();
     }
 
-    //Create a menu for your current activity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
@@ -209,7 +224,6 @@ public class Graph extends AppCompatActivity {
         itemShowLog.setTitle(Constants.titleLog);
         return true;
     }
-    //Create interactions for selecting items from the menu
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();

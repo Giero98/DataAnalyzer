@@ -15,6 +15,7 @@ import java.io.IOException;
 public class ServerBt extends Thread {
     public static boolean running;
     final Logs.ListLog LOG = new Logs.ListLog();
+    DeclarationOfUIVar declarationUI;
     final Context context;
     static BluetoothSocket socket;
     BluetoothServerSocket serverSocket;
@@ -31,7 +32,8 @@ public class ServerBt extends Thread {
         waitingForConnection();
         if (socket != null) {
             LOG.addLog("The connection by Bt attempt succeeded");
-            DeclarationOfUIVar.viewAfterSuccessConnectionOnServerBt();
+            declarationUI = new DeclarationOfUIVar(context);
+            declarationUI.viewAfterSuccessConnectionOnServerBt();
             savingData();
             try {
                 serverSocket.close();
@@ -66,9 +68,9 @@ public class ServerBt extends Thread {
             new SavingData(LOG, context, socket);
             if(!socket.isConnected())
                 try {
-                    DeclarationOfUIVar.updateViewWhenDisconnected();
+                    declarationUI.updateViewWhenDisconnected();
                     running = false;
-                    SavingData.closeStream();
+                    SavingData.closeStream(LOG);
                     socket.close();
                 } catch (IOException ex) {
                     LOG.addLog("Error closing input stream and socket's Bt", ex.getMessage());

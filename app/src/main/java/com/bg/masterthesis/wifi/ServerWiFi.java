@@ -22,12 +22,13 @@ import java.util.Map;
 public class ServerWiFi extends Thread{
     static Socket socket;
     static ServerSocket serverSocket;
-    static Logs.ListLog LOG = new Logs.ListLog();
+    final Logs.ListLog LOG = new Logs.ListLog();
     int port;
     Context context;
 
     public ServerWiFi(Context context){
         this.context = context;
+
     }
 
     @Override
@@ -83,7 +84,9 @@ public class ServerWiFi extends Thread{
         do {
             try {
                 socket = serverSocket.accept();
-                DeclarationOfUIVar.updateViewWhenStartServerWifi();
+
+                DeclarationOfUIVar declarationUI = new DeclarationOfUIVar(context);
+                declarationUI.updateViewWhenStartServerWifi();
                 savingData();
             } catch (IOException e) {
                 LOG.addLog("Connection by Wifi Direct error", e.getMessage());

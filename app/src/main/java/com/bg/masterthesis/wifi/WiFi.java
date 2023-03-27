@@ -37,11 +37,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class WiFi extends AppCompatActivity {
-    final ArrayList<String> discoveredDevices = new ArrayList<>();
+    ArrayList<String> discoveredDevices = new ArrayList<>();
     ArrayAdapter<String> listAdapter;
-    static final Logs.ListLog LOG = new Logs.ListLog();
+    final Logs.ListLog LOG = new Logs.ListLog();
+    DeclarationOfUIVar declarationUI;
     String fileName;
-
     public static WifiP2pManager wifiDirectManager;
     static WifiP2pManager.Channel wifiDirectChannel;
     Intent fileToSend;
@@ -50,23 +50,13 @@ public class WiFi extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_wi_fi);
-        setTitle("Wi-Fi");
+        setTitle(Constants.titleWifiActivity);
 
-        new DeclarationOfUIVar(this);
+        declarationUI = new DeclarationOfUIVar(this);
         startSelectBufferSize();
         settingVariableManagingConnect();
+        buttonsResponse();
         startReceiverWithFilters();
-
-        DeclarationOfUIVar.button_disconnectBack.setOnClickListener(v -> finish());
-        DeclarationOfUIVar.button_detect.setOnClickListener(v -> startDiscoversDevices());
-        DeclarationOfUIVar.button_devices.setOnClickListener(v -> displayWiFiDirectDevices());
-        DeclarationOfUIVar.button_chooseFile.setOnClickListener(v -> chooseFile());
-        DeclarationOfUIVar.multiple_file.setOnClickListener(v -> NumberOfFileFromUI.readNumberOfFilesToSent(this));
-        DeclarationOfUIVar.button_upMultipleFile.setOnClickListener(v -> NumberOfFileFromUI.increasingNumberOfFilesToSent());
-        DeclarationOfUIVar.button_downMultipleFile.setOnClickListener(v -> NumberOfFileFromUI.reducingNumberOfFilesToSent());
-        DeclarationOfUIVar.button_sendData.setOnClickListener(v -> sendData());
-        DeclarationOfUIVar.button_saveMeasurementData.setOnClickListener(v -> saveMeasurementData());
-        DeclarationOfUIVar.button_graph.setOnClickListener(v -> drawGraph());
     }
 
     void startSelectBufferSize()
@@ -78,6 +68,20 @@ public class WiFi extends AppCompatActivity {
     {
         wifiDirectManager = (WifiP2pManager) getSystemService(WIFI_P2P_SERVICE);
         wifiDirectChannel = wifiDirectManager.initialize(this,getMainLooper(),null);
+    }
+
+    void buttonsResponse()
+    {
+        declarationUI.button_disconnectBack.setOnClickListener(v -> finish());
+        declarationUI.button_detect.setOnClickListener(v -> startDiscoversDevices());
+        declarationUI.button_devices.setOnClickListener(v -> displayWiFiDirectDevices());
+        declarationUI.button_chooseFile.setOnClickListener(v -> chooseFile());
+        declarationUI.multiple_file.setOnClickListener(v -> NumberOfFileFromUI.readNumberOfFilesToSent(this));
+        declarationUI.button_upMultipleFile.setOnClickListener(v -> NumberOfFileFromUI.increasingNumberOfFilesToSent());
+        declarationUI.button_downMultipleFile.setOnClickListener(v -> NumberOfFileFromUI.reducingNumberOfFilesToSent());
+        declarationUI.button_sendData.setOnClickListener(v -> sendData());
+        declarationUI.button_saveMeasurementData.setOnClickListener(v -> saveMeasurementData());
+        declarationUI.button_graph.setOnClickListener(v -> drawGraph());
     }
 
     void startReceiverWithFilters()
@@ -95,7 +99,7 @@ public class WiFi extends AppCompatActivity {
         listAdapter.clear();
     }
 
-    final BroadcastReceiver receiver = new BroadcastReceiver() {
+    BroadcastReceiver receiver = new BroadcastReceiver() {
         @SuppressLint("SetTextI18n")
         @Override
         public void onReceive(Context context, Intent intent)
@@ -113,7 +117,7 @@ public class WiFi extends AppCompatActivity {
                         wifiDirectManager.requestConnectionInfo(wifiDirectChannel, connectionInfoListener);
                     }
                     else {
-                        DeclarationOfUIVar.textView_connected.setText("Not connected");
+                        declarationUI.textView_connected.setText("Not connected");
                     }
                 }
             }
@@ -153,11 +157,11 @@ public class WiFi extends AppCompatActivity {
 
             String[] portNumberInfo = record.toString().split("=");
             String portNumber = portNumberInfo[1].replace("}","");
-            LOG.addLog("portNumber:  " + portNumber);
-            ClientWiFi client = new ClientWiFi(wifiDirectInfo, portNumber);
-            client.start();
-
             buddies.put(device.deviceAddress, record.get("Port"));
+            LOG.addLog("portNumber:  " + portNumber);
+
+            ClientWiFi client = new ClientWiFi(this, wifiDirectInfo, portNumber);
+            client.start();
         };
 
         WifiP2pManager.DnsSdServiceResponseListener servListener = (instanceName, registrationType, resourceType) ->
@@ -269,8 +273,9 @@ public class WiFi extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == Constants.REQUEST_BT_SEND_DATA_FILE && resultCode == RESULT_OK) {
             LOG.addLog("You have selected a file to upload");
-            DeclarationOfUIVar.button_sendData.setVisibility(View.VISIBLE);
-            DeclarationOfUIVar.parameterLayoutForFileUpload.setVisibility(View.VISIBLE);
+            declarationUI.button_sendData.setVisibility(View.VISIBLE);
+            declarationUI.parameterLayoutForFileUpload.setVisibility(View.VISIBLE);
+
             fileToSend = data;
             Double fileSize = FileInformation.getFileSize(fileToSend.getData(),this);
             fileName = FileInformation.getFileName(fileToSend.getData(), this);
@@ -281,7 +286,7 @@ public class WiFi extends AppCompatActivity {
     @SuppressLint("SetTextI18n")
     void displayFileInformation(Double fileSize)
     {
-        DeclarationOfUIVar.textView_inf.setText("The name of the uploaded file: " + fileName +
+        declarationUI.textView_inf.setText("The name of the uploaded file: " + fileName +
                 "\nFile size: " + Constants.decimalFormat.format(fileSize).replace(",", ".") +
                 " " + FileInformation.getFileSizeUnit(FileInformation.getFileSizeBytes()) + "\n");
     }
@@ -297,7 +302,7 @@ public class WiFi extends AppCompatActivity {
     }
 
     void saveMeasurementData(){
-        SendingData.saveMeasurementData(this);
+        SendingData.saveMeasurementData(this, LOG);
     }
 
     void drawGraph(){
@@ -305,8 +310,6 @@ public class WiFi extends AppCompatActivity {
         Intent intent = new Intent(this, Graph.class);
         startActivity(intent);
     }
-
-
 
     void disconnectTheConnection()
     {
@@ -355,7 +358,7 @@ public class WiFi extends AppCompatActivity {
         if(ClientWiFi.getSocket() != null)
             if(ClientWiFi.getSocket().isConnected()) {
                 try {
-                    SendingData.closeStream();
+                    SendingData.closeStream(LOG);
                     ClientWiFi.getSocket().close();
                     LOG.addLog("Socket client was closed");
                 } catch (IOException e) {
@@ -369,7 +372,7 @@ public class WiFi extends AppCompatActivity {
         if(ServerWiFi.getSocket() != null)
             if(ServerWiFi.getSocket().isConnected()) {
                 try {
-                    SavingData.closeStream();
+                    SavingData.closeStream(LOG);
                     ServerWiFi.getSocket().close();
                     LOG.addLog("Socket server was closed");
                 } catch (IOException e) {

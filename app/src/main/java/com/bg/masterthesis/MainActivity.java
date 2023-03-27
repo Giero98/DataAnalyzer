@@ -22,21 +22,40 @@ import com.bg.masterthesis.wifi.WiFi;
 
 public class MainActivity extends AppCompatActivity {
     final Logs.ListLog LOG = new Logs.ListLog();
+    Permissions permissions = new Permissions(this);
     WifiManager wifiManager;
+    Button button_wifi, button_bt;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        initializePermissionAndGetWifiManager();
+        declarationFirstButtons();
+        buttonsResponses();
+    }
+
+    void initializePermissionAndGetWifiManager()
+    {
+        permissions = new Permissions(this);
+        checkAndRequestPermissionForAccessFineLocation();
         wifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
-        new Permissions(this);
+    }
 
-        if (!Permissions.checkAccessFineLocation())
-            Permissions.getPermissionAccessFineLocation();
+    void checkAndRequestPermissionForAccessFineLocation()
+    {
+        if (!permissions.checkAccessFineLocation())
+            permissions.getPermissionAccessFineLocation();
+    }
 
-        Button button_wifi = findViewById(R.id.button_wifi);
-        Button button_bt = findViewById(R.id.button_bt);
+    void declarationFirstButtons()
+    {
+        button_wifi = findViewById(R.id.button_wifi);
+        button_bt = findViewById(R.id.button_bt);
+    }
 
+    void buttonsResponses()
+    {
         button_bt.setOnClickListener(v -> checkingBtSetting());
         button_wifi.setOnClickListener(v -> checkingWifiSetting());
     }
@@ -47,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
     {
         if (checkSupportBt())
         {
-            if(Permissions.checkPermissionBt())
+            if(permissions.checkPermissionBt())
             {
                 checkBtIsOn();
             }
@@ -95,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
 
     void checkingWifiSetting()
     {
-        if(Permissions.checkPermissionWifi()) {
+        if(permissions.checkPermissionWifi()) {
             checkWifiIsOnIfNotTurnOn();
         }
     }
@@ -109,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void enableWiFi() {
-        if(Permissions.checkAPI29()) {
+        if(permissions.checkAPI29()) {
             Intent intent = new Intent(Settings.Panel.ACTION_WIFI);
             ActivityEnableWiFi.launch(intent);
         } else {
@@ -136,8 +155,6 @@ public class MainActivity extends AppCompatActivity {
             goToWiFiActivity();
         }
     }
-
-
 
     boolean checkSupportWiFiDirect() {
         if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_WIFI_DIRECT)) {
