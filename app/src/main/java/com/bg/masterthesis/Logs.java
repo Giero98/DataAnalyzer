@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class Logs extends AppCompatActivity {
-    final ArrayList<String> LIST_LOG = new ArrayList<>(), LIST_LOG_ERROR = new ArrayList<>();
+    static final ArrayList<String> LIST_LOG = new ArrayList<>(), LIST_LOG_ERROR = new ArrayList<>();
     ListView logListView;
     Button buttonInfLog, buttonErrorLog;
     ArrayAdapter<String> listAdapterLog, listAdapterLogError;
@@ -61,22 +61,19 @@ public class Logs extends AppCompatActivity {
         buttonErrorLog.setOnClickListener(v-> setAndUpdateErrorLogList());
     }
 
-    public static class ListLog extends Logs
+    public void addLog(String description, String errorCode)
     {
-        public void addLog(String description, String errorCode)
-        {
-            LIST_LOG_ERROR.add(currentDate()  + "\n" + description + "\n" + errorCode);
-        }
+        LIST_LOG_ERROR.add(currentDate()  + "\n" + description + "\n" + errorCode);
+    }
 
-        public void addLog(String description)
-        {
-            LIST_LOG.add(currentDate() + "\n" + description);
-        }
+    public void addLog(String description)
+    {
+        LIST_LOG.add(currentDate() + "\n" + description);
+    }
 
-        Date currentDate()
-        {
-            return new Date(System.currentTimeMillis());
-        }
+    Date currentDate()
+    {
+        return new Date(System.currentTimeMillis());
     }
 
     @Override

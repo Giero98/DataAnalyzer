@@ -14,7 +14,7 @@ import java.io.IOException;
 
 public class ServerBt extends Thread {
     public static boolean running;
-    final Logs.ListLog LOG = new Logs.ListLog();
+    final Logs LOG = new Logs();
     DeclarationOfUIVar declarationUI;
     final Context context;
     static BluetoothSocket socket;
@@ -64,17 +64,22 @@ public class ServerBt extends Thread {
 
     void savingData()
     {
+        SavingData savingData = new SavingData(LOG, context, socket);
         while(running) {
-            new SavingData(LOG, context, socket);
-            if(!socket.isConnected())
-                try {
-                    declarationUI.updateViewWhenDisconnected();
-                    running = false;
-                    SavingData.closeStream(LOG);
-                    socket.close();
-                } catch (IOException ex) {
-                    LOG.addLog("Error closing input stream and socket's Bt", ex.getMessage());
-                }
+            savingData.startSavingData();
+            if(!socket.isConnected()) {
+                LOG.addLog("running stop");
+                running = false;
+            }
+        }
+        declarationUI.updateViewWhenDisconnected();
+        LOG.addLog("updateView");
+        SavingData.closeStreams(LOG);
+        LOG.addLog("closeStreams");
+        try {
+            socket.close();
+        } catch (IOException ex) {
+            LOG.addLog("Error closing socket's Bt", ex.getMessage());
         }
     }
 

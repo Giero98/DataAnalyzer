@@ -18,8 +18,9 @@ import com.bg.masterthesis.R;
 @SuppressLint("SetTextI18n")
 public class DeclarationOfUIVar {
     Context context;
-    public TextView textView_connected, textView_percent,
-            textView_inf, textView_qualitySignal;
+    public TextView textView_connected, textView_percent, textView_inf;
+    @SuppressLint("StaticFieldLeak")
+    public static TextView textView_qualitySignal;
     @SuppressLint("StaticFieldLeak")
     public static EditText multiple_file;
     public Button button_devices, button_detect, button_chooseFile, button_sendData,

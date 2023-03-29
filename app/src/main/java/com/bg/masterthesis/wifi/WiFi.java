@@ -39,7 +39,7 @@ import java.util.HashMap;
 public class WiFi extends AppCompatActivity {
     ArrayList<String> discoveredDevices = new ArrayList<>();
     ArrayAdapter<String> listAdapter;
-    final Logs.ListLog LOG = new Logs.ListLog();
+    final Logs LOG = new Logs();
     DeclarationOfUIVar declarationUI;
     String fileName;
     public static WifiP2pManager wifiDirectManager;
@@ -76,7 +76,7 @@ public class WiFi extends AppCompatActivity {
         declarationUI.button_detect.setOnClickListener(v -> startDiscoversDevices());
         declarationUI.button_devices.setOnClickListener(v -> displayWiFiDirectDevices());
         declarationUI.button_chooseFile.setOnClickListener(v -> chooseFile());
-        declarationUI.multiple_file.setOnClickListener(v -> NumberOfFileFromUI.readNumberOfFilesToSent(this));
+        DeclarationOfUIVar.multiple_file.setOnClickListener(v -> NumberOfFileFromUI.readNumberOfFilesToSent(this));
         declarationUI.button_upMultipleFile.setOnClickListener(v -> NumberOfFileFromUI.increasingNumberOfFilesToSent());
         declarationUI.button_downMultipleFile.setOnClickListener(v -> NumberOfFileFromUI.reducingNumberOfFilesToSent());
         declarationUI.button_sendData.setOnClickListener(v -> sendData());
@@ -372,7 +372,7 @@ public class WiFi extends AppCompatActivity {
         if(ServerWiFi.getSocket() != null)
             if(ServerWiFi.getSocket().isConnected()) {
                 try {
-                    SavingData.closeStream(LOG);
+                    SavingData.closeStreams(LOG);
                     ServerWiFi.getSocket().close();
                     LOG.addLog("Socket server was closed");
                 } catch (IOException e) {

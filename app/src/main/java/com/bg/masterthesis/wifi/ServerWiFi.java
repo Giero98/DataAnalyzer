@@ -22,7 +22,7 @@ import java.util.Map;
 public class ServerWiFi extends Thread{
     static Socket socket;
     static ServerSocket serverSocket;
-    final Logs.ListLog LOG = new Logs.ListLog();
+    final Logs LOG = new Logs();
     int port;
     Context context;
 
@@ -95,9 +95,10 @@ public class ServerWiFi extends Thread{
     }
 
     void savingData() {
+        SavingData savingData = new SavingData(LOG, context, socket);
         while (socket!=null)
         {
-            new SavingData(LOG, context, socket);
+            savingData.startSavingData();
         }
     }
 

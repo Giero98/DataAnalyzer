@@ -16,7 +16,7 @@ public class ClientWiFi extends Thread {
     static Socket socket = new Socket();
     String serverAddress;
     int port;
-    final Logs.ListLog LOG = new Logs.ListLog();
+    final Logs LOG = new Logs();
     Context context;
 
     public ClientWiFi(Context context, WifiP2pInfo wifiDirectInfo, String portNumber) {

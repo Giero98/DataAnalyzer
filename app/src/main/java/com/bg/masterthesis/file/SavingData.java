@@ -21,30 +21,28 @@ import java.util.Arrays;
 
 public class SavingData {
     String fileName;
-    Logs.ListLog LOG;
+    Logs LOG;
     DeclarationOfUIVar declarationUI;
     static InputStream inputStream;
     static OutputStream outputStream;
     Context context;
 
-    public SavingData(Logs.ListLog LOG, Context context, BluetoothSocket socket)
+    public SavingData(Logs LOG, Context context, BluetoothSocket socket)
     {
         this.LOG = LOG;
         this.context = context;
-        openStream(socket);
-        startSavingData();
+        openStreams(socket);
     }
 
-    public SavingData(Logs.ListLog LOG, Context context, Socket socket)
+    public SavingData(Logs LOG, Context context, Socket socket)
     {
         this.LOG = LOG;
         this.context = context;
-        openStream(socket);
-        startSavingData();
+        openStreams(socket);
     }
 
     @SuppressLint("SetTextI18n")
-    void startSavingData()
+    public void startSavingData()
     {
         declarationUI = new DeclarationOfUIVar(context);
         byte[] buffer = new byte[Constants.getBufferFirstInfOfFile];
@@ -124,28 +122,28 @@ public class SavingData {
                 ((Activity) context).runOnUiThread(() ->
                         Toast.makeText(context, "Downloaded file", Toast.LENGTH_SHORT).show());
             }
-        } catch (IOException e) {
-            LOG.addLog("Data download error", e.getMessage());
+        } catch (Exception ignored) {
+            //LOG.addLog("Data download error", e.getMessage());
         }
     }
 
-    void openStream(Socket socket)
+    void openStreams(Socket socket)
     {
         try{
             inputStream = socket.getInputStream();
             outputStream = socket.getOutputStream();
         } catch (IOException e) {
-            LOG.addLog("Open stream error", e.getMessage());
+            LOG.addLog("Open streams error", e.getMessage());
         }
     }
 
-    void openStream(BluetoothSocket socket)
+    void openStreams(BluetoothSocket socket)
     {
         try{
             inputStream = socket.getInputStream();
             outputStream = socket.getOutputStream();
         } catch (IOException e) {
-            LOG.addLog("Open stream error", e.getMessage());
+            LOG.addLog("Open streams error", e.getMessage());
         }
     }
 
@@ -203,7 +201,7 @@ public class SavingData {
         return fileSize;
     }
 
-    public static void closeStream(Logs.ListLog LOG)
+    public static void closeStreams(Logs LOG)
     {
         try{
             if(inputStream != null)
@@ -211,7 +209,7 @@ public class SavingData {
             if(outputStream != null)
                 outputStream.close();
         } catch (IOException e) {
-            LOG.addLog("Error close stream", e.getMessage());
+            LOG.addLog("Error close streams", e.getMessage());
         }
     }
 }

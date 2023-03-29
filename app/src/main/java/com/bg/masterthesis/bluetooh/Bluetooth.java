@@ -40,7 +40,7 @@ import java.util.ArrayList;
 public class Bluetooth extends AppCompatActivity {
     final ArrayList<String> discoveredDevices = new ArrayList<>();
     ArrayAdapter<String> listAdapter;
-    final Logs.ListLog LOG = new Logs.ListLog();
+    final Logs LOG = new Logs();
     ServerBt server;
     DeclarationOfUIVar declarationUI;
     Intent fileToSend;
@@ -206,7 +206,7 @@ public class Bluetooth extends AppCompatActivity {
                     percentQualitySignal = Constants.maximumQualitySignal + rssi;
                 }
                 runOnUiThread(() ->
-                        declarationUI.textView_qualitySignal.setText(Integer.toString(percentQualitySignal)));
+                        DeclarationOfUIVar.textView_qualitySignal.setText(Integer.toString(percentQualitySignal)));
             } else {
                 LOG.addLog("There was an error reading the signal quality value");
             }
@@ -275,7 +275,7 @@ public class Bluetooth extends AppCompatActivity {
         }).start();
     }
 
-    void saveMeasurementData(){
+    void saveMeasurementData() {
         SendingData.saveMeasurementData(this, LOG);
     }
 

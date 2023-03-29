@@ -5,6 +5,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -21,8 +22,8 @@ import com.bg.masterthesis.bluetooh.Bluetooth;
 import com.bg.masterthesis.wifi.WiFi;
 
 public class MainActivity extends AppCompatActivity {
-    final Logs.ListLog LOG = new Logs.ListLog();
-    Permissions permissions = new Permissions(this);
+    final Logs LOG = new Logs();
+    Permissions permissions;
     WifiManager wifiManager;
     Button button_wifi, button_bt;
     @Override

@@ -17,7 +17,7 @@ public class ClientBt extends Thread {
     Context context;
     static BluetoothSocket socket;
     BluetoothDevice device;
-    final Logs.ListLog LOG = new Logs.ListLog();
+    final Logs LOG = new Logs();
     DeclarationOfUIVar declarationUI;
 
     public ClientBt(Context context, BluetoothDevice device)

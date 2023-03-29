@@ -96,10 +96,17 @@ public class Graph extends AppCompatActivity {
     {
         try {
             Integer.parseInt(sentFileNumberTable);
-            sentFileNumber.add(Integer.parseInt(sentFileNumberTable));
-            qualitySignal.add(Integer.parseInt(dataArrayFileMeasurement[3]));
-            fileUploadTime.add(Float.parseFloat(dataArrayFileMeasurement[4]));
-            uploadSpeed.add(Float.parseFloat(dataArrayFileMeasurement[5]));
+
+            if(SendingData.getModuleSelect().equals(Constants.connectionBt)) {
+                sentFileNumber.add(Integer.parseInt(sentFileNumberTable));
+                qualitySignal.add(Integer.parseInt(dataArrayFileMeasurement[3]));
+                fileUploadTime.add(Float.parseFloat(dataArrayFileMeasurement[4]));
+                uploadSpeed.add(Float.parseFloat(dataArrayFileMeasurement[5]));
+            } else {
+                sentFileNumber.add(Integer.parseInt(sentFileNumberTable));
+                fileUploadTime.add(Float.parseFloat(dataArrayFileMeasurement[3]));
+                uploadSpeed.add(Float.parseFloat(dataArrayFileMeasurement[4]));
+            }
         } catch (NumberFormatException ignored) {}
     }
 

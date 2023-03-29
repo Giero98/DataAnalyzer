@@ -12,7 +12,7 @@ public class NumberOfFileFromUI {
     @SuppressLint("SetTextI18n")
     public static void readNumberOfFilesToSent(Context context)
     {
-        Logs.ListLog LOG = new Logs.ListLog();
+        Logs LOG = new Logs();
         try {
             int number = getNumberFromUI();
             if(getNumberFromUI() < Constants.minimumNumberOfUploadFiles || number > Constants.maximumNumberOfUploadFiles)

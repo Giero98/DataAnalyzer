@@ -30,21 +30,24 @@ import java.util.Arrays;
 
 public class SendingData {
     public static ArrayList<String> measurementDataList = new ArrayList<>();
-    Logs.ListLog LOG;
+    static String moduleSelect;
+    Logs LOG;
     DeclarationOfUIVar declarationUI;
     static InputStream inputStream;
     static OutputStream outputStream;
     Context context;
-    public SendingData(Logs.ListLog LOG, Context context, BluetoothSocket socket, Intent fileToSend, int multipleFile)
+    public SendingData(Logs LOG, Context context, BluetoothSocket socket, Intent fileToSend, int multipleFile)
     {
+        moduleSelect = Constants.connectionBt;
         this.LOG = LOG;
         this.context = context;
         openStream(socket);
         startSendingData(fileToSend,multipleFile);
     }
 
-    public SendingData(Logs.ListLog LOG, Context context, Socket socket, Intent fileToSend, int multipleFile)
+    public SendingData(Logs LOG, Context context, Socket socket, Intent fileToSend, int multipleFile)
     {
+        moduleSelect = Constants.connectionWiFi;
         this.LOG = LOG;
         this.context = context;
         openStream(socket);
@@ -70,12 +73,7 @@ public class SendingData {
 
         try {
             measurementDataList.add(fileName);
-            measurementDataList.add("File upload number" + "," +
-                    "File size in bytes" + "," +
-                    "File size in " + FileInformation.getFileSizeUnit(FileInformation.getFileSizeBytes()) + "," +
-                    "Quality range" + "," +
-                    "Sending time [s]" + "," +
-                    "Upload speed [" + FileInformation.getFileSizeUnit(FileInformation.getFileSizeBytes()) + "/s]");
+            setTitleOfDataColumns(fileSizeUnit);
 
             String fileDetails = fileName + ";" + fileSizeUnit + ";" + fileSizeBytes + ";" +
                     bufferSize + ";" + multipleFile;
@@ -186,6 +184,24 @@ public class SendingData {
         }
     }
 
+    void setTitleOfDataColumns(String fileSizeUnit)
+    {
+        if(moduleSelect.equals(Constants.connectionBt)) {
+            measurementDataList.add("File upload number" + "," +
+                    "File size in bytes" + "," +
+                    "File size in " + fileSizeUnit + "," +
+                    "Quality range" + "," +
+                    "Sending time [s]" + "," +
+                    "Upload speed [" + fileSizeUnit + "/s]");
+        } else {
+            measurementDataList.add("File upload number" + "," +
+                    "File size in bytes" + "," +
+                    "File size in " + fileSizeUnit + "," +
+                    "Sending time [s]" + "," +
+                    "Upload speed [" + fileSizeUnit + "/s]");
+        }
+    }
+
     String setSpeedSendUnit(double speedSend, String fileSizeUnit)
     {
         if(fileSizeUnit.equals(Constants.fileSizeUnitBytes) && speedSend > Constants.size1Kb) {
@@ -218,23 +234,25 @@ public class SendingData {
 
     void saveMeasurementDataToList(long fileSizeBytes, int repeat, double fileSize, double resultTime, double speedSend)
     {
-        String qualitySignal;
 
-        try{
-            qualitySignal = (String) declarationUI.textView_qualitySignal.getText();
-        } catch (NullPointerException e) {
-            qualitySignal="0";
+        if(moduleSelect.equals(Constants.connectionBt)) {
+            String qualitySignal = (String) DeclarationOfUIVar.textView_qualitySignal.getText();
+            measurementDataList.add((repeat + 1) + "," +
+                    fileSizeBytes + "," +
+                    Constants.decimalFormat.format(fileSize).replace(",", ".") + "," +
+                    qualitySignal + "," +
+                    Constants.decimalFormat.format(resultTime).replace(",", ".") + "," +
+                    Constants.decimalFormat.format(speedSend).replace(",", "."));
+        } else {
+            measurementDataList.add((repeat + 1) + "," +
+                    fileSizeBytes + "," +
+                    Constants.decimalFormat.format(fileSize).replace(",", ".") + "," +
+                    Constants.decimalFormat.format(resultTime).replace(",", ".") + "," +
+                    Constants.decimalFormat.format(speedSend).replace(",", "."));
         }
-
-        measurementDataList.add((repeat + 1) + "," +
-                fileSizeBytes + "," +
-                Constants.decimalFormat.format(fileSize).replace(",", ".") + "," +
-                qualitySignal + "," +
-                Constants.decimalFormat.format(resultTime).replace(",", ".") + "," +
-                Constants.decimalFormat.format(speedSend).replace(",", "."));
     }
 
-    public static void saveMeasurementData(Context context, Logs.ListLog LOG)
+    public static void saveMeasurementData(Context context, Logs LOG)
     {
 
         AlertDialog.Builder viewToSaveData = new AlertDialog.Builder(context);
@@ -285,7 +303,12 @@ public class SendingData {
         return measurementDataList;
     }
 
-    public static void closeStream(Logs.ListLog LOG)
+    public static String getModuleSelect()
+    {
+        return moduleSelect;
+    }
+
+    public static void closeStream(Logs LOG)
     {
         try{
             if(inputStream != null)
