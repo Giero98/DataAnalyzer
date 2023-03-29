@@ -16,9 +16,11 @@ public class ClientWiFi extends Thread {
     static Socket socket = new Socket();
     String serverAddress;
     int port;
-    static Logs.ListLog LOG = new Logs.ListLog();
+    final Logs LOG = new Logs();
+    Context context;
 
-    public ClientWiFi(WifiP2pInfo wifiDirectInfo, String portNumber) {
+    public ClientWiFi(Context context, WifiP2pInfo wifiDirectInfo, String portNumber) {
+        this.context = context;
         this.serverAddress = wifiDirectInfo.groupOwnerAddress.getHostAddress();
         port = Integer.parseInt(portNumber);
     }
@@ -29,7 +31,8 @@ public class ClientWiFi extends Thread {
         try {
             socket.connect(new InetSocketAddress(serverAddress,port),5000);
 
-            DeclarationOfUIVar.updateViewWhenStartClientWifi();
+            DeclarationOfUIVar declarationUI = new DeclarationOfUIVar(context);
+            declarationUI.updateViewWhenStartClientWifi();
         } catch(IOException e) {
             LOG.addLog("Client socket creation error with host", e.getMessage());
         }

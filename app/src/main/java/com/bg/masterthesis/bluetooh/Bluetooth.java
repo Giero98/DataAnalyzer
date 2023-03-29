@@ -40,30 +40,24 @@ import java.util.ArrayList;
 public class Bluetooth extends AppCompatActivity {
     final ArrayList<String> discoveredDevices = new ArrayList<>();
     ArrayAdapter<String> listAdapter;
-    final Logs.ListLog LOG = new Logs.ListLog();
+    final Logs LOG = new Logs();
     ServerBt server;
+    DeclarationOfUIVar declarationUI;
     Intent fileToSend;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bt);
-        setTitle("Bluetooth");
+        setTitle(Constants.titleBtActivity);
 
-        new DeclarationOfUIVar(this);
+        declarationUI = new DeclarationOfUIVar(this);
         startSelectBufferSize();
         startServerBt();
+        buttonsResponse();
 
-        DeclarationOfUIVar.button_disconnectBack.setOnClickListener(v -> finish());
-        DeclarationOfUIVar.button_detect.setOnClickListener(v -> startDiscoverableBt());
-        DeclarationOfUIVar.button_devices.setOnClickListener(v -> startFoundDevicesBt());
-        DeclarationOfUIVar.button_chooseFile.setOnClickListener(v -> chooseFile());
-        DeclarationOfUIVar.multiple_file.setOnClickListener(v -> NumberOfFileFromUI.readNumberOfFilesToSent(this));
-        DeclarationOfUIVar.button_upMultipleFile.setOnClickListener(v -> NumberOfFileFromUI.increasingNumberOfFilesToSent());
-        DeclarationOfUIVar.button_downMultipleFile.setOnClickListener(v -> NumberOfFileFromUI.reducingNumberOfFilesToSent());
-        DeclarationOfUIVar.button_sendData.setOnClickListener(v -> startSendData());
-        DeclarationOfUIVar.button_saveMeasurementData.setOnClickListener(v -> saveMeasurementData());
-        DeclarationOfUIVar.button_graph.setOnClickListener(v -> drawGraph());
+
     }
+
     void startSelectBufferSize()
     {
         new Buffer(this, findViewById(R.id.buffer_size));
@@ -76,6 +70,20 @@ public class Bluetooth extends AppCompatActivity {
         server.start();
     }
 
+    void buttonsResponse()
+    {
+        declarationUI.button_disconnectBack.setOnClickListener(v -> finish());
+        declarationUI.button_detect.setOnClickListener(v -> startDiscoverableBt());
+        declarationUI.button_devices.setOnClickListener(v -> startFoundDevicesBt());
+        declarationUI.button_chooseFile.setOnClickListener(v -> chooseFile());
+        DeclarationOfUIVar.multiple_file.setOnClickListener(v -> NumberOfFileFromUI.readNumberOfFilesToSent(this));
+        declarationUI.button_upMultipleFile.setOnClickListener(v -> NumberOfFileFromUI.increasingNumberOfFilesToSent());
+        declarationUI.button_downMultipleFile.setOnClickListener(v -> NumberOfFileFromUI.reducingNumberOfFilesToSent());
+        declarationUI.button_sendData.setOnClickListener(v -> startSendData());
+        declarationUI.button_saveMeasurementData.setOnClickListener(v -> saveMeasurementData());
+        declarationUI.button_graph.setOnClickListener(v -> drawGraph());
+    }
+
     //region button_detect
 
     void startDiscoverableBt() {
@@ -83,7 +91,7 @@ public class Bluetooth extends AppCompatActivity {
         ActivityDiscoverableBt.launch(intent);
     }
 
-    final ActivityResultLauncher<Intent> ActivityDiscoverableBt = registerForActivityResult(
+    ActivityResultLauncher<Intent> ActivityDiscoverableBt = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() != 0)
@@ -111,26 +119,21 @@ public class Bluetooth extends AppCompatActivity {
     void startReceiverWithFilters()
     {
         IntentFilter intent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-        intent.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
         registerReceiver(receiver, intent);
     }
 
-    final BroadcastReceiver receiver = new BroadcastReceiver() {
+    BroadcastReceiver receiver = new BroadcastReceiver() {
         @SuppressLint("MissingPermission")
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 discoveredDevices.add(device.getName() + "\n" + device.getAddress());
+                listAdapter.notifyDataSetChanged();
             }
-            else if(BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)){
-                discoveredDevices.remove(device.getName() + "\n" + device.getAddress());
-            }
-            listAdapter.notifyDataSetChanged();
         }
     };
 
-    @SuppressLint("MissingPermission")
     void selectDeviceToConnection()
     {
         AlertDialog.Builder deviceSelection = new AlertDialog.Builder(this);
@@ -143,17 +146,23 @@ public class Bluetooth extends AppCompatActivity {
 
         deviceSelection.setAdapter(listAdapter, (dialog, which) -> {
             String deviceInfo = listAdapter.getItem(which);
-            //deviceAddress holds the 17 characters from the end of the deviceInfo string
-            String deviceAddress = deviceInfo.substring(deviceInfo.length() - 17);
-            BluetoothDevice device = Constants.bluetoothAdapter.getRemoteDevice(deviceAddress);
-            ServerBt.running = false;
-            startClientBt(device);
-            DeclarationOfUIVar.assignReferenceQualitySignal();
-            device.connectGatt(this, false, receivingChangesOfRssiValues);
+            startProcedureOfEstablishingBtConnection(deviceInfo);
         });
 
         showDeviceSelection(deviceSelection);
         showDurationDeviceSearch(titleView);
+    }
+
+    @SuppressLint("MissingPermission")
+    void startProcedureOfEstablishingBtConnection(String deviceInfo)
+    {
+        //deviceAddress holds the 17 characters from the end of the deviceInfo string
+        String deviceAddress = deviceInfo.substring(deviceInfo.length() - 17);
+        BluetoothDevice device = Constants.bluetoothAdapter.getRemoteDevice(deviceAddress);
+        closeServerBt();
+        startClientBt(device);
+        declarationUI.assignReferenceQualitySignal();
+        device.connectGatt(this, false, receivingChangesOfRssiValues);
     }
 
     void startClientBt(BluetoothDevice device)
@@ -162,7 +171,7 @@ public class Bluetooth extends AppCompatActivity {
         client.start();
     }
 
-    final BluetoothGattCallback receivingChangesOfRssiValues = new BluetoothGattCallback() {
+    BluetoothGattCallback receivingChangesOfRssiValues = new BluetoothGattCallback() {
         @SuppressLint("MissingPermission")
         @Override
         public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
@@ -235,19 +244,21 @@ public class Bluetooth extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == Constants.REQUEST_BT_SEND_DATA_FILE && resultCode == RESULT_OK) {
             LOG.addLog("Selected a file to upload");
+
             fileToSend = data;
             Double fileSize = FileInformation.getFileSize(fileToSend.getData(),this);
             String fileName = FileInformation.getFileName(fileToSend.getData(), this);
             String fileSizeUnit = FileInformation.getFileSizeUnit(FileInformation.getFileSizeBytes());
             displayFileInformation(fileSize, fileName, fileSizeUnit);
-            DeclarationOfUIVar.button_sendData.setVisibility(View.VISIBLE);
+
+            declarationUI.button_sendData.setVisibility(View.VISIBLE);
         }
     }
 
     @SuppressLint("SetTextI18n")
     void displayFileInformation(Double fileSize, String  fileName, String  fileSizeUnit)
     {
-        DeclarationOfUIVar.textView_inf.setText("The name of the uploaded file: " + fileName +
+        declarationUI.textView_inf.setText("The name of the uploaded file: " + fileName +
                 "\nFile size: " + Constants.decimalFormat.format(fileSize).replace(",", ".") +
                 " " + fileSizeUnit + "\n");
     }
@@ -262,8 +273,8 @@ public class Bluetooth extends AppCompatActivity {
         }).start();
     }
 
-    void saveMeasurementData(){
-        SendingData.saveMeasurementData(this);
+    void saveMeasurementData() {
+        SendingData.saveMeasurementData(this, LOG);
     }
 
     void drawGraph(){
@@ -285,7 +296,6 @@ public class Bluetooth extends AppCompatActivity {
         if(server != null)
             if(server.isAlive()) {
                 ServerBt.running = false;
-                LOG.addLog("The server Bt has ended");
             }
     }
     void endListening()
@@ -352,5 +362,4 @@ public class Bluetooth extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
 }

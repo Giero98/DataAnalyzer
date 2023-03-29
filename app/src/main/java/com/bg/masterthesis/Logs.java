@@ -13,59 +13,74 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class Logs extends AppCompatActivity {
-    static final ArrayList<String> listLog = new ArrayList<>(), listLogError = new ArrayList<>();
+    static final ArrayList<String> LIST_LOG = new ArrayList<>(), LIST_LOG_ERROR = new ArrayList<>();
+    ListView logListView;
+    Button buttonInfLog, buttonErrorLog;
+    ArrayAdapter<String> listAdapterLog, listAdapterLogError;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log);
-        setTitle("LOG");
+        setTitle(Constants.titleLogActivity);
 
-        ListView logListView = findViewById(R.id.logListView);
-        Button buttonInfLog = findViewById(R.id.button_inf_log);
-        Button buttonErrorLog = findViewById(R.id.button_error_log);
-
-        ArrayAdapter<String> listAdapterLog = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listLog);
-        ArrayAdapter<String> listAdapterLogError = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, listLogError);
-
-        logListView.setAdapter(listAdapterLog);
-        listAdapterLog.notifyDataSetChanged();
-
-
-        buttonInfLog.setOnClickListener(v ->{
-            logListView.setAdapter(listAdapterLog);
-            listAdapterLog.notifyDataSetChanged();
-        });
-
-        buttonErrorLog.setOnClickListener(v->{
-            logListView.setAdapter(listAdapterLogError);
-            listAdapterLogError.notifyDataSetChanged();
-        });
+        declarationButtonsAndListView();
+        declarationArrayAdapter();
+        setAndUpdateLogList();
+        buttonsResponses();
     }
 
-    public static class ListLog extends Logs
+    void declarationButtonsAndListView()
     {
-        public void addLog(String description, String errorCode)
-        {
-            listLogError.add(currentDate()  + "\n" + description + "\n" + errorCode);
-        }
+        logListView = findViewById(R.id.logListView);
+        buttonInfLog = findViewById(R.id.button_inf_log);
+        buttonErrorLog = findViewById(R.id.button_error_log);
+    }
 
-        public void addLog(String description)
-        {
-            listLog.add(currentDate() + "\n" + description);
-        }
+    void declarationArrayAdapter()
+    {
+        listAdapterLog = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, LIST_LOG);
+        listAdapterLogError = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, LIST_LOG_ERROR);
+    }
 
-        Date currentDate()
-        {
-            return new Date(System.currentTimeMillis());
-        }
+    void setAndUpdateLogList()
+    {
+        logListView.setAdapter(listAdapterLog);
+        listAdapterLog.notifyDataSetChanged();
+    }
+
+    void setAndUpdateErrorLogList()
+    {
+        logListView.setAdapter(listAdapterLogError);
+        listAdapterLogError.notifyDataSetChanged();
+    }
+
+    void buttonsResponses()
+    {
+        buttonInfLog.setOnClickListener(v -> setAndUpdateLogList());
+        buttonErrorLog.setOnClickListener(v-> setAndUpdateErrorLogList());
+    }
+
+    public void addLog(String description, String errorCode)
+    {
+        LIST_LOG_ERROR.add(currentDate()  + "\n" + description + "\n" + errorCode);
+    }
+
+    public void addLog(String description)
+    {
+        LIST_LOG.add(currentDate() + "\n" + description);
+    }
+
+    Date currentDate()
+    {
+        return new Date(System.currentTimeMillis());
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
         MenuItem showLog = menu.findItem(R.id.show_log);
-        showLog.setTitle(Constants.back);
+        showLog.setTitle(Constants.textBack);
         return true;
     }
 

@@ -15,21 +15,23 @@ import android.widget.Toast;
 
 import com.bg.masterthesis.R;
 
-@SuppressLint({"StaticFieldLeak","SetTextI18n"})
+@SuppressLint("SetTextI18n")
 public class DeclarationOfUIVar {
-    static Context context;
-    public static TextView textView_connected, textView_percent,
-            textView_inf, textView_qualitySignal;
+    Context context;
+    public TextView textView_connected, textView_percent, textView_inf;
+    @SuppressLint("StaticFieldLeak")
+    public static TextView textView_qualitySignal;
+    @SuppressLint("StaticFieldLeak")
     public static EditText multiple_file;
-    public static Button button_devices, button_detect, button_chooseFile, button_sendData,
+    public Button button_devices, button_detect, button_chooseFile, button_sendData,
             button_saveMeasurementData, button_graph, button_disconnectBack;
-    public static ImageButton button_upMultipleFile, button_downMultipleFile;
-    public static ProgressBar progressBar;
-    public static LinearLayout layoutPercent, parameterLayoutForFileUpload;
+    public ImageButton button_upMultipleFile, button_downMultipleFile;
+    public ProgressBar progressBar;
+    public LinearLayout layoutPercent, parameterLayoutForFileUpload;
 
     public DeclarationOfUIVar(Context context)
     {
-        DeclarationOfUIVar.context = context;
+        this.context = context;
         assignReferences();
     }
 
@@ -60,29 +62,29 @@ public class DeclarationOfUIVar {
 
     }
 
-    public static void assignReferenceQualitySignal()
+    public void assignReferenceQualitySignal()
     {
         textView_qualitySignal = ((Activity) context).findViewById(R.id.textView_qualitySignal);
         startVisibilityQualitySignal();
     }
 
-    static void startVisibilityQualitySignal()
+    void startVisibilityQualitySignal()
     {
         TextView qualitySignalText = ((Activity) context).findViewById(R.id.textView_qualitySignalText);
         qualitySignalText.setVisibility(View.VISIBLE);
     }
 
-    public static void viewAfterSuccessConnectionOnServerBt()
+    public void viewAfterSuccessConnectionOnServerBt()
     {
         ((Activity) context).runOnUiThread(() -> {
             textView_connected.setText("Connected as a Host");
             button_devices.setVisibility(View.INVISIBLE);
             button_detect.setVisibility(View.INVISIBLE);
-            button_disconnectBack.setVisibility(View.INVISIBLE);
+            button_disconnectBack.setText("Disconnect");
             layoutPercent.setVisibility(View.VISIBLE);});
     }
 
-    public static void viewAfterSuccessConnectionOnClientBt()
+    public void viewAfterSuccessConnectionOnClientBt()
     {
         ((Activity) context).runOnUiThread(() -> {
             textView_connected.setText("Connected as a Client");
@@ -94,7 +96,7 @@ public class DeclarationOfUIVar {
             layoutPercent.setVisibility(View.VISIBLE);});
     }
 
-    public static void updateViewWhenDisconnected()
+    public void updateViewWhenDisconnected()
     {
         ((Activity) context).runOnUiThread(() -> {
             textView_connected.setText("Disconnected");
@@ -103,7 +105,7 @@ public class DeclarationOfUIVar {
             button_disconnectBack.setVisibility(View.VISIBLE);});
     }
 
-    public static void updateViewWhenFileSent()
+    public void updateViewWhenFileSent()
     {
         ((Activity) context).runOnUiThread(() -> {
             textView_inf.setText(textView_inf.getText() + "\n");
@@ -113,7 +115,7 @@ public class DeclarationOfUIVar {
         });
     }
 
-    public static void updateViewWhenStartServerWifi()
+    public void updateViewWhenStartServerWifi()
     {
         ((Activity) context).runOnUiThread(() ->{
             textView_connected.setText("Connected as a Host");
@@ -123,7 +125,7 @@ public class DeclarationOfUIVar {
         });
     }
 
-    public static void updateViewWhenStartClientWifi()
+    public void updateViewWhenStartClientWifi()
     {
         ((Activity) context).runOnUiThread(() ->{
             textView_connected.setText("Connected as a Client");

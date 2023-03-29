@@ -3,9 +3,6 @@ package com.bg.masterthesis;
 import android.bluetooth.BluetoothAdapter;
 import android.graphics.DashPathEffect;
 
-import com.bg.masterthesis.file.FileInformation;
-
-import java.io.File;
 import java.text.DecimalFormat;
 import java.util.UUID;
 
@@ -35,16 +32,31 @@ public interface Constants {
             maximumNumberOfColumnsOnTheScreen = 4,
             rangePossiblePortsToConnect = 6000,
             smallestPortToConnect = 1024;
+
+    int[] bufferSizes = {
+            size1Kb * 4,
+            size1Kb * 8,
+            size1Kb * 16,
+            size1Kb * 32,
+            size1Kb * 64,
+            size1Kb * 128,
+            size1Kb * 256,
+            0
+            };
+
     float   axisValueSize = 16f,
             columnWidth = 0.7f,
             distanceBetweenXAxisData = 1f,
             distanceBetweenYAxisData = 0.001f,
             minimumYAxisValue = 0f;
-    DashPathEffect girdLineStyle = new DashPathEffect(new float[]{10f, 5f}, 0f);
 
     String  NAME = "MASTER_THESIS",
             titleLog = "Show LOG",
-            back = "Back",
+            titleLogActivity = "LOG",
+            titleGraphActivity = "Graph",
+            titleBtActivity = "Bluetooth",
+            titleWifiActivity = "Wi-Fi",
+            textBack = "Back",
             connectionBt = "BT",
             connectionWiFi = "WIFI",
             uploadTimeUnit = "[s]",
@@ -58,8 +70,7 @@ public interface Constants {
     //A unique UUID that will be used as a common identifier for both devices in Bluetooth
     //generated thanks to the website https://www.uuidgenerator.net/
     UUID MY_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
-
     DecimalFormat decimalFormat = new DecimalFormat("0.00");
-
+    DashPathEffect girdLineStyle = new DashPathEffect(new float[]{10f, 5f}, 0f);
     BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 }

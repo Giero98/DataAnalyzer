@@ -14,13 +14,13 @@ import java.io.IOException;
 
 public class ServerBt extends Thread {
     public static boolean running;
-    final Logs.ListLog LOG = new Logs.ListLog();
+    final Logs LOG = new Logs();
+    DeclarationOfUIVar declarationUI;
     final Context context;
     static BluetoothSocket socket;
     BluetoothServerSocket serverSocket;
 
-    public ServerBt(Context context)
-    {
+    public ServerBt(Context context) {
         this.context = context;
     }
 
@@ -31,26 +31,31 @@ public class ServerBt extends Thread {
         waitingForConnection();
         if (socket != null) {
             LOG.addLog("The connection by Bt attempt succeeded");
-            DeclarationOfUIVar.viewAfterSuccessConnectionOnServerBt();
+            declarationUI = new DeclarationOfUIVar(context);
+            declarationUI.viewAfterSuccessConnectionOnServerBt();
             savingData();
-            try {
-                serverSocket.close();
-            } catch (IOException e) {
-                LOG.addLog("Error closing output stream on Bt connection:", e.getMessage());
-            }
-            LOG.addLog("The server Bt has ended");
         }
+        closeServerSocket();
+        LOG.addLog("The server Bt has ended");
     }
 
     @SuppressLint("MissingPermission")
-    void startServerSocket()
-    {
+    void startServerSocket() {
         try {
             serverSocket = Constants.bluetoothAdapter.listenUsingRfcommWithServiceRecord(Constants.NAME, Constants.MY_UUID);
         } catch (IOException e) {
             LOG.addLog("Socket's Bt listen() method failed", e.getMessage());
         }
     }
+
+    void closeServerSocket() {
+        try {
+            serverSocket.close();
+        } catch (IOException e) {
+            LOG.addLog("Error closing output stream on Bt connection:", e.getMessage());
+        }
+    }
+
     void waitingForConnection()
     {
         try {
@@ -62,17 +67,20 @@ public class ServerBt extends Thread {
 
     void savingData()
     {
+        SavingData savingData = new SavingData(LOG, context, socket);
         while(running) {
-            new SavingData(LOG, context, socket);
-            if(!socket.isConnected())
-                try {
-                    DeclarationOfUIVar.updateViewWhenDisconnected();
-                    running = false;
-                    SavingData.closeStream();
-                    socket.close();
-                } catch (IOException ex) {
-                    LOG.addLog("Error closing input stream and socket's Bt", ex.getMessage());
-                }
+            savingData.startSavingData();
+        }
+        declarationUI.updateViewWhenDisconnected();
+        SavingData.closeStreams(LOG);
+        closeSocket();
+    }
+
+    void closeSocket() {
+        try {
+            socket.close();
+        } catch (IOException ex) {
+            LOG.addLog("Error closing socket's Bt", ex.getMessage());
         }
     }
 

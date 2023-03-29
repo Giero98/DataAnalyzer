@@ -14,15 +14,15 @@ import com.bg.masterthesis.Logs;
 import java.io.IOException;
 
 public class ClientBt extends Thread {
-    @SuppressLint("StaticFieldLeak")
-    static Context context;
+    Context context;
     static BluetoothSocket socket;
-    final BluetoothDevice device;
-    static Logs.ListLog LOG = new Logs.ListLog();
+    BluetoothDevice device;
+    final Logs LOG = new Logs();
+    DeclarationOfUIVar declarationUI;
 
     public ClientBt(Context context, BluetoothDevice device)
     {
-        ClientBt.context = context;
+        this.context = context;
         this.device = device;
     }
 
@@ -34,7 +34,8 @@ public class ClientBt extends Thread {
         tryConnecting();
 
         LOG.addLog("The connection attempt succeeded");
-        DeclarationOfUIVar.viewAfterSuccessConnectionOnClientBt();
+        declarationUI = new DeclarationOfUIVar(context);
+        declarationUI.viewAfterSuccessConnectionOnClientBt();
 
         if(!socket.isConnected()) {
             closeSocketClient();
@@ -64,7 +65,7 @@ public class ClientBt extends Thread {
         }
     }
 
-    public static void closeSocketClient() {
+    void closeSocketClient() {
         try {
             socket.close();
             LOG.addLog("Client socket closed");
