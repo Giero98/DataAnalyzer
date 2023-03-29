@@ -80,7 +80,7 @@ public class DeclarationOfUIVar {
             textView_connected.setText("Connected as a Host");
             button_devices.setVisibility(View.INVISIBLE);
             button_detect.setVisibility(View.INVISIBLE);
-            button_disconnectBack.setVisibility(View.INVISIBLE);
+            button_disconnectBack.setText("Disconnect");
             layoutPercent.setVisibility(View.VISIBLE);});
     }
 

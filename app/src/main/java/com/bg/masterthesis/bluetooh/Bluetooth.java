@@ -54,6 +54,8 @@ public class Bluetooth extends AppCompatActivity {
         startSelectBufferSize();
         startServerBt();
         buttonsResponse();
+
+
     }
 
     void startSelectBufferSize()
@@ -117,7 +119,6 @@ public class Bluetooth extends AppCompatActivity {
     void startReceiverWithFilters()
     {
         IntentFilter intent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-        intent.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
         registerReceiver(receiver, intent);
     }
 
@@ -125,14 +126,11 @@ public class Bluetooth extends AppCompatActivity {
         @SuppressLint("MissingPermission")
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 discoveredDevices.add(device.getName() + "\n" + device.getAddress());
+                listAdapter.notifyDataSetChanged();
             }
-            else if(BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)){
-                discoveredDevices.remove(device.getName() + "\n" + device.getAddress());
-            }
-            listAdapter.notifyDataSetChanged();
         }
     };
 
@@ -161,7 +159,7 @@ public class Bluetooth extends AppCompatActivity {
         //deviceAddress holds the 17 characters from the end of the deviceInfo string
         String deviceAddress = deviceInfo.substring(deviceInfo.length() - 17);
         BluetoothDevice device = Constants.bluetoothAdapter.getRemoteDevice(deviceAddress);
-        ServerBt.running = false;
+        closeServerBt();
         startClientBt(device);
         declarationUI.assignReferenceQualitySignal();
         device.connectGatt(this, false, receivingChangesOfRssiValues);
@@ -298,7 +296,6 @@ public class Bluetooth extends AppCompatActivity {
         if(server != null)
             if(server.isAlive()) {
                 ServerBt.running = false;
-                LOG.addLog("The server Bt has ended");
             }
     }
     void endListening()
@@ -365,5 +362,4 @@ public class Bluetooth extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
 }

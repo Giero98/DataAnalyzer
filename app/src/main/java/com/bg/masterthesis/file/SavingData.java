@@ -32,6 +32,7 @@ public class SavingData {
         this.LOG = LOG;
         this.context = context;
         openStreams(socket);
+        declarationUI = new DeclarationOfUIVar(context);
     }
 
     public SavingData(Logs LOG, Context context, Socket socket)
@@ -44,12 +45,10 @@ public class SavingData {
     @SuppressLint("SetTextI18n")
     public void startSavingData()
     {
-        declarationUI = new DeclarationOfUIVar(context);
         byte[] buffer = new byte[Constants.getBufferFirstInfOfFile];
-        int bytes;
 
         try {
-            bytes = inputStream.read(buffer);
+            int bytes = inputStream.read(buffer);
             if (bytes > 0) {
                 String fileDetails = new String(buffer, 0, bytes);
                 String[] dataArrayFileDetails = fileDetails.split(";");
@@ -122,8 +121,8 @@ public class SavingData {
                 ((Activity) context).runOnUiThread(() ->
                         Toast.makeText(context, "Downloaded file", Toast.LENGTH_SHORT).show());
             }
-        } catch (Exception ignored) {
-            //LOG.addLog("Data download error", e.getMessage());
+        }
+        catch (Exception ignored) {
         }
     }
 
