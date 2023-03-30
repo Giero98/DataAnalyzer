@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">Master Thesis</string>
-    <string name="about_app">An application created for the master thesis, where you can conduct
-        research on: transfer time, transfer speed, connection quality from one device that is a
-        client to another device that is a server.</string>
+    <string name="about_app">Author: Bartosz Gieras.\nAn application created for the needs of the master's thesis, 
+        in which you can conduct research on: transfer time, transfer speed, connection quality (BT module) 
+        by sending files while connected to another device with the same application.</string>
     <string name="button_wifi">CONNECT BY WI-FI</string>
     <string name="button_bt">CONNECT BY BLUETOOTH</string>
     <string name="button_back">BACK</string>
