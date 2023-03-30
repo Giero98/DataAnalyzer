@@ -20,8 +20,7 @@ public class ClientBt extends Thread {
     final Logs LOG = new Logs();
     DeclarationOfUIVar declarationUI;
 
-    public ClientBt(Context context, BluetoothDevice device)
-    {
+    public ClientBt(Context context, BluetoothDevice device) {
         this.context = context;
         this.device = device;
     }
@@ -45,21 +44,21 @@ public class ClientBt extends Thread {
     }
 
     @SuppressLint("MissingPermission")
-    void createSocket()
-    {
+    void createSocket() {
         try {
             socket = device.createRfcommSocketToServiceRecord(Constants.MY_UUID);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             LOG.addLog("Socket's create() method failed", e.getMessage());
         }
     }
 
     @SuppressLint("MissingPermission")
-    void tryConnecting()
-    {
+    void tryConnecting() {
         try {
             socket.connect();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             LOG.addLog("Unable to connect", e.getMessage());
             closeSocketClient();
         }
@@ -69,13 +68,13 @@ public class ClientBt extends Thread {
         try {
             socket.close();
             LOG.addLog("Client socket closed");
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             LOG.addLog("Could not close the client socket", e.getMessage());
         }
     }
 
-    public static BluetoothSocket getSocket()
-    {
+    public static BluetoothSocket getSocket() {
         return socket;
     }
 }

@@ -27,24 +27,21 @@ public class SavingData {
     static OutputStream outputStream;
     Context context;
 
-    public SavingData(Logs LOG, Context context, BluetoothSocket socket)
-    {
+    public SavingData(Logs LOG, Context context, BluetoothSocket socket) {
         this.LOG = LOG;
         this.context = context;
         openStreams(socket);
         declarationUI = new DeclarationOfUIVar(context);
     }
 
-    public SavingData(Logs LOG, Context context, Socket socket)
-    {
+    public SavingData(Logs LOG, Context context, Socket socket) {
         this.LOG = LOG;
         this.context = context;
         openStreams(socket);
     }
 
     @SuppressLint("SetTextI18n")
-    public void startSavingData()
-    {
+    public void startSavingData() {
         byte[] buffer = new byte[Constants.getBufferFirstInfOfFile];
 
         try {
@@ -93,16 +90,19 @@ public class SavingData {
                         fileToSave.flush();
                         LOG.addLog("The file has been downloaded and saved");
                         confirmMessage = "Confirmed";
-                    } catch (IOException e) {
+                    }
+                    catch (IOException e) {
                         LOG.addLog("Error downloaded and saving file", e.getMessage());
                         confirmMessage = "NoneConfirmed";
-                    } finally {
+                    }
+                    finally {
                         try {
                             if (fileToSave != null) {
                                 fileToSave.close();
                                 LOG.addLog("Stream to file closed");
                             }
-                        } catch (IOException e) {
+                        }
+                        catch (IOException e) {
                             LOG.addLog("Error closing output stream:", e.getMessage());
                         }
                     }
@@ -112,7 +112,8 @@ public class SavingData {
 
                     if (confirmMessage.equals("Confirmed")) {
                         updateTextInf(fileName,fileSizeBytes,fileSizeUnit);
-                    } else {
+                    }
+                    else {
                         ((Activity) context).runOnUiThread(() ->
                                 declarationUI.textView_inf.setText("Error downloaded and saving file"));
                         break;
@@ -126,28 +127,27 @@ public class SavingData {
         }
     }
 
-    void openStreams(Socket socket)
-    {
+    void openStreams(Socket socket) {
         try{
             inputStream = socket.getInputStream();
             outputStream = socket.getOutputStream();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             LOG.addLog("Open streams error", e.getMessage());
         }
     }
 
-    void openStreams(BluetoothSocket socket)
-    {
+    void openStreams(BluetoothSocket socket) {
         try{
             inputStream = socket.getInputStream();
             outputStream = socket.getOutputStream();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             LOG.addLog("Open streams error", e.getMessage());
         }
     }
 
-    File setFilePlace()
-    {
+    File setFilePlace() {
         File file = new File(
                 Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) +
                         "/" + fileName);
@@ -174,8 +174,7 @@ public class SavingData {
     }
 
     @SuppressLint("SetTextI18n")
-    void updateTextInf(String fileName, long fileSizeBytes, String fileSizeUnit)
-    {
+    void updateTextInf(String fileName, long fileSizeBytes, String fileSizeUnit) {
         double fileSize = conversionFileSize(fileSizeBytes, fileSizeUnit);
         ((Activity) context).runOnUiThread(() ->
                 declarationUI.textView_inf.setText(declarationUI.textView_inf.getText() +
@@ -185,8 +184,7 @@ public class SavingData {
                         " " + fileSizeUnit + "\n\n"));
     }
 
-    double conversionFileSize(long fileSizeLong, String fileUnit)
-    {
+    double conversionFileSize(long fileSizeLong, String fileUnit) {
         double fileSize = (double) fileSizeLong;
         switch (fileUnit) {
             case Constants.fileSizeUnitMB:
@@ -200,14 +198,14 @@ public class SavingData {
         return fileSize;
     }
 
-    public static void closeStreams(Logs LOG)
-    {
+    public static void closeStreams(Logs LOG) {
         try{
             if(inputStream != null)
                 inputStream.close();
             if(outputStream != null)
                 outputStream.close();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             LOG.addLog("Error close streams", e.getMessage());
         }
     }

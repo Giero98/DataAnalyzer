@@ -33,13 +33,13 @@ public class ClientWiFi extends Thread {
 
             DeclarationOfUIVar declarationUI = new DeclarationOfUIVar(context);
             declarationUI.updateViewWhenStartClientWifi();
-        } catch(IOException e) {
+        }
+        catch(IOException e) {
             LOG.addLog("Client socket creation error with host", e.getMessage());
         }
     }
 
-    public static Socket getSocket()
-    {
+    public static Socket getSocket() {
         return socket;
     }
 }

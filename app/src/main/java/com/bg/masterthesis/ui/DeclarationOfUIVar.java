@@ -29,14 +29,12 @@ public class DeclarationOfUIVar {
     public ProgressBar progressBar;
     public LinearLayout layoutPercent, parameterLayoutForFileUpload;
 
-    public DeclarationOfUIVar(Context context)
-    {
+    public DeclarationOfUIVar(Context context) {
         this.context = context;
         assignReferences();
     }
 
-    void assignReferences()
-    {
+    void assignReferences() {
         textView_connected = ((Activity) context).findViewById(R.id.textView_connected);
         textView_percent = ((Activity) context).findViewById(R.id.textView_percent);
         textView_inf = ((Activity) context).findViewById(R.id.textView_inf);
@@ -59,23 +57,19 @@ public class DeclarationOfUIVar {
         layoutPercent = ((Activity) context).findViewById(R.id.layoutPercent);
 
         progressBar = ((Activity) context).findViewById(R.id.progressBar);
-
     }
 
-    public void assignReferenceQualitySignal()
-    {
+    public void assignReferenceQualitySignal() {
         textView_qualitySignal = ((Activity) context).findViewById(R.id.textView_qualitySignal);
         startVisibilityQualitySignal();
     }
 
-    void startVisibilityQualitySignal()
-    {
+    void startVisibilityQualitySignal() {
         TextView qualitySignalText = ((Activity) context).findViewById(R.id.textView_qualitySignalText);
         qualitySignalText.setVisibility(View.VISIBLE);
     }
 
-    public void viewAfterSuccessConnectionOnServerBt()
-    {
+    public void viewAfterSuccessConnectionOnServerBt() {
         ((Activity) context).runOnUiThread(() -> {
             textView_connected.setText("Connected as a Host");
             button_devices.setVisibility(View.INVISIBLE);
@@ -84,8 +78,7 @@ public class DeclarationOfUIVar {
             layoutPercent.setVisibility(View.VISIBLE);});
     }
 
-    public void viewAfterSuccessConnectionOnClientBt()
-    {
+    public void viewAfterSuccessConnectionOnClientBt() {
         ((Activity) context).runOnUiThread(() -> {
             textView_connected.setText("Connected as a Client");
             button_chooseFile.setVisibility(View.VISIBLE);
@@ -96,8 +89,7 @@ public class DeclarationOfUIVar {
             layoutPercent.setVisibility(View.VISIBLE);});
     }
 
-    public void updateViewWhenDisconnected()
-    {
+    public void updateViewWhenDisconnected() {
         ((Activity) context).runOnUiThread(() -> {
             textView_connected.setText("Disconnected");
             Toast.makeText(context, "Disconnected", Toast.LENGTH_SHORT).show();
@@ -105,8 +97,7 @@ public class DeclarationOfUIVar {
             button_disconnectBack.setVisibility(View.VISIBLE);});
     }
 
-    public void updateViewWhenFileSent()
-    {
+    public void updateViewWhenFileSent() {
         ((Activity) context).runOnUiThread(() -> {
             textView_inf.setText(textView_inf.getText() + "\n");
             Toast.makeText(context, "File sent", Toast.LENGTH_SHORT).show();
@@ -115,8 +106,7 @@ public class DeclarationOfUIVar {
         });
     }
 
-    public void updateViewWhenStartServerWifi()
-    {
+    public void updateViewWhenStartServerWifi() {
         ((Activity) context).runOnUiThread(() ->{
             textView_connected.setText("Connected as a Host");
             button_devices.setVisibility(View.INVISIBLE);
@@ -125,8 +115,7 @@ public class DeclarationOfUIVar {
         });
     }
 
-    public void updateViewWhenStartClientWifi()
-    {
+    public void updateViewWhenStartClientWifi() {
         ((Activity) context).runOnUiThread(() ->{
             textView_connected.setText("Connected as a Client");
             button_devices.setVisibility(View.INVISIBLE);
