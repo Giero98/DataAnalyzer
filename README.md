@@ -1,7 +1,7 @@
 # MasterThesis
 
 ![alt text][app_logo]\
-Original image created on the [Canva][canva] platform under license [CC-BY-4.0][cc-by-4.0]
+The ic_launcher.png image is an original image created on the [Canva][canva] platform under license [CC-BY-4.0][cc-by-4.0]
 
 ## Overview
 An application in which a device using Bluetooth and Wi-Fi transfers files to another and measures the transfer time.
@@ -38,9 +38,12 @@ An application in which a device using Bluetooth and Wi-Fi transfers files to an
 
 ## Used technologies/libraries
 
-## Screenshots
+Other icons used in the project are used under the [Apache License, Version 2.0][apache_license]
 
-## How to install
+The following were used to display the charts:
+- [MPAndroidChart v3.1.0][mpandroidchart] library by [PhilJay][philjay] licensed under [Apache License, Version 2.0][apache_license]
+
+## Screenshots
 
 ## License
 [License][license] © Bartosz Gieras
@@ -48,4 +51,7 @@ An application in which a device using Bluetooth and Wi-Fi transfers files to an
 [app_logo]: https://github.com/Giero98/MasterThesis/blob/main/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
 [canva]: https://www.canva.com/
 [cc-by-4.0]: https://creativecommons.org/licenses/by/4.0/deed.en
+[mpandroidchart]: https://github.com/PhilJay/MPAndroidChart
+[philjay]: https://github.com/PhilJay
+[apache_license]: https://www.apache.org/licenses/LICENSE-2.0
 [license]: https://github.com/Giero98/MasterThesis/blob/main/LICENSE
