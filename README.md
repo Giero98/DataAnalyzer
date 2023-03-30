@@ -1,5 +1,8 @@
 # MasterThesis
 
+![alt text][app_logo]\
+Original image created on the [Canva][canva] platform under license [CC-BY-4.0][
+
 ## Overview
 An application in which a device using Bluetooth and Wi-Fi transfers files to another and measures the transfer time.
 
@@ -40,4 +43,9 @@ An application in which a device using Bluetooth and Wi-Fi transfers files to an
 ## How to install
 
 ## License
-[License](https://github.com/Giero98/MasterThesis/blob/main/LICENSE) © Bartosz Gieras
+[License][license] © Bartosz Gieras
+
+[app_logo]: https://github.com/Giero98/MasterThesis/blob/main/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
+[canva]: https://www.canva.com/
+[cc-by-4.0]: 
+[license]: https://github.com/Giero98/MasterThesis/blob/main/LICENSE
