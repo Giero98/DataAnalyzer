@@ -15,8 +15,7 @@ public class FileInformation {
     static String fileSizeUnit;
 
     @SuppressLint("Range")
-    public static String getFileName(Uri uri, Context context)
-    {
+    public static String getFileName(Uri uri, Context context) {
         String fileName = null;
         if (uri.getScheme().equals("content")) {
             try (Cursor cursor = context.getContentResolver().query(uri, null, null, null, null)) {
@@ -35,8 +34,7 @@ public class FileInformation {
     }
 
     @SuppressLint("Range")
-    public static double getFileSize(Uri uri, Context context)
-    {
+    public static double getFileSize(Uri uri, Context context) {
         File file = new File(uri.getPath());
         double fileSize = 0;
         try (Cursor cursor = context.getContentResolver().query(uri, null, null, null, null)) {
@@ -56,13 +54,11 @@ public class FileInformation {
         return fileSize;
     }
 
-    public static long getFileSizeBytes()
-    {
+    public static long getFileSizeBytes() {
         return fileSizeBytes;
     }
 
-    public static String getFileSizeUnit(double fileSize)
-    {
+    public static String getFileSizeUnit(double fileSize) {
         fileSizeUnit = Constants.fileSizeUnitBytes;
         if(fileSize > Constants.size1Kb) {
             fileSize /= Constants.size1Kb;
@@ -71,7 +67,6 @@ public class FileInformation {
                 fileSizeUnit = Constants.fileSizeUnitMB;
             }
         }
-
         return fileSizeUnit;
     }
 }

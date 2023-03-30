@@ -36,8 +36,7 @@ public class SendingData {
     static InputStream inputStream;
     static OutputStream outputStream;
     Context context;
-    public SendingData(Logs LOG, Context context, BluetoothSocket socket, Intent fileToSend, int multipleFile)
-    {
+    public SendingData(Logs LOG, Context context, BluetoothSocket socket, Intent fileToSend, int multipleFile) {
         moduleSelect = Constants.connectionBt;
         this.LOG = LOG;
         this.context = context;
@@ -45,8 +44,7 @@ public class SendingData {
         startSendingData(fileToSend,multipleFile);
     }
 
-    public SendingData(Logs LOG, Context context, Socket socket, Intent fileToSend, int multipleFile)
-    {
+    public SendingData(Logs LOG, Context context, Socket socket, Intent fileToSend, int multipleFile) {
         moduleSelect = Constants.connectionWiFi;
         this.LOG = LOG;
         this.context = context;
@@ -55,8 +53,7 @@ public class SendingData {
     }
 
     @SuppressLint("SetTextI18n")
-    void startSendingData(Intent fileToSend, int multipleFile)
-    {
+    void startSendingData(Intent fileToSend, int multipleFile) {
         declarationUI = new DeclarationOfUIVar(context);
 
         double fileSize = FileInformation.getFileSize(fileToSend.getData(),context);
@@ -80,7 +77,6 @@ public class SendingData {
             outputStream.write(fileDetails.getBytes());
             outputStream.flush();
 
-
             byte[] confirmBuffer = new byte[Constants.confirmBufferBytes];
             try {
                 int bytesLoad = inputStream.read(confirmBuffer);
@@ -88,10 +84,12 @@ public class SendingData {
 
                 if (confirmMessage.equals("Confirmed")) {
                     LOG.addLog("Sending file information");
-                } else {
+                }
+                else {
                     LOG.addLog("Error sending file information");
                 }
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 LOG.addLog("Failed to create stream to receive message whether file information was delivered", e.getMessage());
             }
             Arrays.fill(confirmBuffer, 0, confirmBuffer.length, (byte) 0);
@@ -131,7 +129,8 @@ public class SendingData {
                                 updateTextInf(context,bufferSize,repeat,resultTime,speedSend,sizeUnit);
                                 saveMeasurementDataToList(fileSizeBytes,repeat,fileSize,resultTime,speedSend);
                                 break;
-                            } else if (confirmMessage.equals("NoneConfirmed")) {
+                            }
+                            else if (confirmMessage.equals("NoneConfirmed")) {
                                 LOG.addLog("Failed to save to the server");
                                 ((Activity) context).runOnUiThread(() ->
                                         declarationUI.textView_inf.setText(declarationUI.textView_inf.getText() +
@@ -140,10 +139,12 @@ public class SendingData {
                             }
                             Arrays.fill(confirmBuffer, 0, confirmBuffer.length, (byte) 0);
                         }
-                    } catch (IOException e) {
+                    }
+                    catch (IOException e) {
                         LOG.addLog("Failed to create stream to receive message whether file was delivered", e.getMessage());
                     }
-                } catch (IOException e) {
+                }
+                catch (IOException e) {
                     LOG.addLog("Failed to send file", e.getMessage());
                 }
             }
@@ -154,38 +155,37 @@ public class SendingData {
                     file.close();
                     LOG.addLog("Stream to file closed");
                 }
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 LOG.addLog("Failed to close stream to file", e.getMessage());
             }
         }
-        catch (IOException e)
-        {
+        catch (IOException e) {
             LOG.addLog("Failed to send basic file information", e.getMessage());
         }
     }
 
-    void openStream(Socket socket)
-    {
+    void openStream(Socket socket) {
         try{
             inputStream = socket.getInputStream();
             outputStream = socket.getOutputStream();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             LOG.addLog("Open stream error", e.getMessage());
         }
     }
 
-    void openStream(BluetoothSocket socket)
-    {
+    void openStream(BluetoothSocket socket) {
         try{
             inputStream = socket.getInputStream();
             outputStream = socket.getOutputStream();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             LOG.addLog("Open stream error", e.getMessage());
         }
     }
 
-    void setTitleOfDataColumns(String fileSizeUnit)
-    {
+    void setTitleOfDataColumns(String fileSizeUnit) {
         if(moduleSelect.equals(Constants.connectionBt)) {
             measurementDataList.add("File upload number" + "," +
                     "File size in bytes" + "," +
@@ -193,7 +193,8 @@ public class SendingData {
                     "Quality range" + "," +
                     "Sending time [s]" + "," +
                     "Upload speed [" + fileSizeUnit + "/s]");
-        } else {
+        }
+        else {
             measurementDataList.add("File upload number" + "," +
                     "File size in bytes" + "," +
                     "File size in " + fileSizeUnit + "," +
@@ -202,8 +203,7 @@ public class SendingData {
         }
     }
 
-    String setSpeedSendUnit(double speedSend, String fileSizeUnit)
-    {
+    String setSpeedSendUnit(double speedSend, String fileSizeUnit) {
         if(fileSizeUnit.equals(Constants.fileSizeUnitBytes) && speedSend > Constants.size1Kb) {
             speedSend /= Constants.size1Kb;
             fileSizeUnit = Constants.fileSizeUnitKB;
@@ -211,16 +211,14 @@ public class SendingData {
                 fileSizeUnit = Constants.fileSizeUnitMB;
             }
         }
-        else if (fileSizeUnit.equals(Constants.fileSizeUnitKB) && speedSend > Constants.size1Kb)
-        {
+        else if (fileSizeUnit.equals(Constants.fileSizeUnitKB) && speedSend > Constants.size1Kb) {
             fileSizeUnit = Constants.fileSizeUnitMB;
         }
         return fileSizeUnit;
     }
 
     @SuppressLint("SetTextI18n")
-    void updateTextInf(Context context, int bufferSize, int repeat, double resultTime, double speedSend, String sizeUnit)
-    {
+    void updateTextInf(Context context, int bufferSize, int repeat, double resultTime, double speedSend, String sizeUnit) {
         ((Activity) context).runOnUiThread(() ->
                 declarationUI.textView_inf.setText(declarationUI.textView_inf.getText() +
                         "\nThe size of the set buffer: " + bufferSize + " Bytes" +
@@ -232,9 +230,7 @@ public class SendingData {
                         " " + sizeUnit + "/s"));
     }
 
-    void saveMeasurementDataToList(long fileSizeBytes, int repeat, double fileSize, double resultTime, double speedSend)
-    {
-
+    void saveMeasurementDataToList(long fileSizeBytes, int repeat, double fileSize, double resultTime, double speedSend) {
         if(moduleSelect.equals(Constants.connectionBt)) {
             String qualitySignal = (String) DeclarationOfUIVar.textView_qualitySignal.getText();
             measurementDataList.add((repeat + 1) + "," +
@@ -243,7 +239,8 @@ public class SendingData {
                     qualitySignal + "," +
                     Constants.decimalFormat.format(resultTime).replace(",", ".") + "," +
                     Constants.decimalFormat.format(speedSend).replace(",", "."));
-        } else {
+        }
+        else {
             measurementDataList.add((repeat + 1) + "," +
                     fileSizeBytes + "," +
                     Constants.decimalFormat.format(fileSize).replace(",", ".") + "," +
@@ -252,9 +249,7 @@ public class SendingData {
         }
     }
 
-    public static void saveMeasurementData(Context context, Logs LOG)
-    {
-
+    public static void saveMeasurementData(Context context, Logs LOG) {
         AlertDialog.Builder viewToSaveData = new AlertDialog.Builder(context);
         viewToSaveData.setTitle(Constants.titleDialogToSaveData);
         EditText editText = new EditText(context);
@@ -286,11 +281,12 @@ public class SendingData {
                     }
 
                     ((Activity) context).runOnUiThread(() -> Toast.makeText(context, "The data has been saved", Toast.LENGTH_SHORT).show());
-                } catch (IOException e) {
+                }
+                catch (IOException e) {
                     LOG.addLog("Error writing measurement data to the file", e.getMessage());
                 }
             }
-            else{
+            else {
                 ((Activity) context).runOnUiThread(() -> Toast.makeText(context, "Enter the name of the file to save", Toast.LENGTH_SHORT).show());
             }
         });
@@ -298,24 +294,22 @@ public class SendingData {
     }
 
     @SuppressWarnings("SameReturnValue")
-    public static ArrayList<String> getMeasurementDataList()
-    {
+    public static ArrayList<String> getMeasurementDataList() {
         return measurementDataList;
     }
 
-    public static String getModuleSelect()
-    {
+    public static String getModuleSelect() {
         return moduleSelect;
     }
 
-    public static void closeStream(Logs LOG)
-    {
+    public static void closeStream(Logs LOG) {
         try{
             if(inputStream != null)
                 inputStream.close();
             if(outputStream != null)
                 outputStream.close();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             LOG.addLog("Error close stream", e.getMessage());
         }
     }

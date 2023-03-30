@@ -17,8 +17,7 @@ public class Buffer {
         settingBufferValue();
     }
 
-    void settingBufferValue()
-    {
+    void settingBufferValue() {
         ArrayAdapter<CharSequence> adapterBufferSize = createAndCustomizeAdapterForBufferList();
 
         selectBuffer.setAdapter(adapterBufferSize);
@@ -32,8 +31,7 @@ public class Buffer {
         });
     }
 
-    ArrayAdapter<CharSequence> createAndCustomizeAdapterForBufferList()
-    {
+    ArrayAdapter<CharSequence> createAndCustomizeAdapterForBufferList() {
         int     textArray = R.array.buffer_size_array,
                 textView = android.R.layout.simple_spinner_item,
                 resource = android.R.layout.simple_spinner_dropdown_item;

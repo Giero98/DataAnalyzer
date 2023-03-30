@@ -43,7 +43,8 @@ public class ServerBt extends Thread {
     void startServerSocket() {
         try {
             serverSocket = Constants.bluetoothAdapter.listenUsingRfcommWithServiceRecord(Constants.NAME, Constants.MY_UUID);
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             LOG.addLog("Socket's Bt listen() method failed", e.getMessage());
         }
     }
@@ -51,22 +52,22 @@ public class ServerBt extends Thread {
     void closeServerSocket() {
         try {
             serverSocket.close();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             LOG.addLog("Error closing output stream on Bt connection:", e.getMessage());
         }
     }
 
-    void waitingForConnection()
-    {
+    void waitingForConnection() {
         try {
             socket = serverSocket.accept();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             LOG.addLog("Socket's Bt accept() method failed", e.getMessage());
         }
     }
 
-    void savingData()
-    {
+    void savingData() {
         SavingData savingData = new SavingData(LOG, context, socket);
         while(running) {
             savingData.startSavingData();
@@ -79,10 +80,13 @@ public class ServerBt extends Thread {
     void closeSocket() {
         try {
             socket.close();
-        } catch (IOException ex) {
+        }
+        catch (IOException ex) {
             LOG.addLog("Error closing socket's Bt", ex.getMessage());
         }
     }
 
-    public static BluetoothSocket getSocket() {return socket;}
+    public static BluetoothSocket getSocket() {
+        return socket;
+    }
 }

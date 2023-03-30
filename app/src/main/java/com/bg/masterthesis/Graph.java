@@ -53,8 +53,7 @@ public class Graph extends AppCompatActivity {
         setupYAxis();
     }
 
-    void declarationButtonsAndChart()
-    {
+    void declarationButtonsAndChart() {
         buttonBack = findViewById(R.id.button_back);
         barChart = findViewById(R.id.barChart);
         graphUploadTime = findViewById(R.id.radioButton_uploadTime);
@@ -62,38 +61,34 @@ public class Graph extends AppCompatActivity {
         graphUploadSpeed = findViewById(R.id.radioButton_uploadSpeed);
     }
 
-    void hideSignalQualityGraphForWifi()
-    {
+    void hideSignalQualityGraphForWifi() {
         if(connectionDetails.equals(Constants.connectionWiFi))
             graphQualitySignal.setVisibility(View.INVISIBLE);
     }
 
-    void buttonsResponse()
-    {
+    void buttonsResponse() {
         buttonBack.setOnClickListener(v -> finish());
         graphUploadTime.setOnClickListener(v -> selectDataUploadTime());
         graphQualitySignal.setOnClickListener(v -> selectDataQualitySignal());
         graphUploadSpeed.setOnClickListener(v -> selectDataUploadSpeed());
     }
 
-    void allocationData()
-    {
+    void allocationData() {
         for(String measurementData : SendingData.getMeasurementDataList())
         {
-            if(measurementData.contains(","))
-            {
+            if(measurementData.contains(",")) {
                 String[] dataArrayFileMeasurement = measurementData.split(",");
                 String sentFileNumberTable = dataArrayFileMeasurement[0];
                 loadingIntoTheDataList(sentFileNumberTable, dataArrayFileMeasurement);
-            } else {
+            }
+            else {
                 clearingDataInLists();
                 fileName = measurementData;
             }
         }
     }
 
-    void loadingIntoTheDataList (String sentFileNumberTable, String[] dataArrayFileMeasurement)
-    {
+    void loadingIntoTheDataList (String sentFileNumberTable, String[] dataArrayFileMeasurement) {
         try {
             Integer.parseInt(sentFileNumberTable);
 
@@ -102,16 +97,17 @@ public class Graph extends AppCompatActivity {
                 qualitySignal.add(Integer.parseInt(dataArrayFileMeasurement[3]));
                 fileUploadTime.add(Float.parseFloat(dataArrayFileMeasurement[4]));
                 uploadSpeed.add(Float.parseFloat(dataArrayFileMeasurement[5]));
-            } else {
+            }
+            else {
                 sentFileNumber.add(Integer.parseInt(sentFileNumberTable));
                 fileUploadTime.add(Float.parseFloat(dataArrayFileMeasurement[3]));
                 uploadSpeed.add(Float.parseFloat(dataArrayFileMeasurement[4]));
             }
-        } catch (NumberFormatException ignored) {}
+        }
+        catch (NumberFormatException ignored) {}
     }
 
-    void clearingDataInLists()
-    {
+    void clearingDataInLists() {
         if(!sentFileNumber.isEmpty())
             sentFileNumber.clear();
         if(!qualitySignal.isEmpty())
@@ -122,8 +118,7 @@ public class Graph extends AppCompatActivity {
             uploadSpeed.clear();
     }
 
-    void setupGraph()
-    {
+    void setupGraph() {
         barChart.getDescription().setEnabled(false);
         barChart.setDrawValueAboveBar(true);
         barChart.setBackgroundColor(Color.WHITE);
@@ -131,8 +126,7 @@ public class Graph extends AppCompatActivity {
         barChart.getAxisRight().setEnabled(false);
     }
 
-    void setupXAxis()
-    {
+    void setupXAxis() {
         XAxis xAxis = barChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setDrawGridLines(false);
@@ -142,8 +136,7 @@ public class Graph extends AppCompatActivity {
         xAxis.setLabelCount(sentFileNumber.size());
     }
 
-    void setupYAxis()
-    {
+    void setupYAxis() {
         YAxis leftAxis = barChart.getAxisLeft();
         leftAxis.setGridDashedLine(Constants.girdLineStyle);
         leftAxis.setAxisMinimum(Constants.minimumYAxisValue);
@@ -154,8 +147,7 @@ public class Graph extends AppCompatActivity {
 
     void selectDataUploadTime() {
         List<BarEntry> graphData = new ArrayList<>();
-        for(int i=0; i < sentFileNumber.size(); i++)
-        {
+        for(int i=0; i < sentFileNumber.size(); i++) {
             graphData.add(new BarEntry(sentFileNumber.get(i),fileUploadTime.get(i)));
         }
         columnUnit = Constants.uploadTimeUnit;
@@ -164,8 +156,7 @@ public class Graph extends AppCompatActivity {
 
     void selectDataQualitySignal() {
         List<BarEntry> graphData = new ArrayList<>();
-        for(int i=0; i < sentFileNumber.size(); i++)
-        {
+        for(int i=0; i < sentFileNumber.size(); i++) {
             graphData.add(new BarEntry(sentFileNumber.get(i),qualitySignal.get(i)));
         }
         columnUnit = Constants.qualitySignalUnit;
@@ -174,8 +165,7 @@ public class Graph extends AppCompatActivity {
 
     void selectDataUploadSpeed() {
         List<BarEntry> graphData = new ArrayList<>();
-        for(int i=0; i < sentFileNumber.size(); i++)
-        {
+        for(int i=0; i < sentFileNumber.size(); i++) {
             graphData.add(new BarEntry(sentFileNumber.get(i),uploadSpeed.get(i)));
         }
         columnUnit = "[" + FileInformation.getFileSizeUnit(FileInformation.getFileSizeBytes()) + "/s]";
@@ -183,7 +173,7 @@ public class Graph extends AppCompatActivity {
     }
 
     @SuppressLint("SetTextI18n")
-    void drawGraph(List<BarEntry> graphData){
+    void drawGraph(List<BarEntry> graphData) {
         TextView textViewGraph = findViewById(R.id.textView_graph);
         textViewGraph.setText("File details: " + fileName);
         textViewGraph.setGravity(Gravity.CENTER);
@@ -193,8 +183,7 @@ public class Graph extends AppCompatActivity {
         lastSettingGraph(barData);
     }
 
-    BarDataSet formatDataSet(List<BarEntry> graphData)
-    {
+    BarDataSet formatDataSet(List<BarEntry> graphData) {
         BarDataSet totalGraphData = new BarDataSet(graphData, columnUnit);
         totalGraphData.setColors(ColorTemplate.MATERIAL_COLORS);
         totalGraphData.setValueTextColor(Color.BLACK);
@@ -209,15 +198,13 @@ public class Graph extends AppCompatActivity {
         return totalGraphData;
     }
 
-    BarData formatData(BarDataSet totalGraphData)
-    {
+    BarData formatData(BarDataSet totalGraphData) {
         BarData barData = new BarData(totalGraphData);
         barData.setBarWidth(Constants.columnWidth);
         return barData;
     }
 
-    void lastSettingGraph(BarData barData)
-    {
+    void lastSettingGraph(BarData barData) {
         barChart.setData(barData);
         barChart.animateY(Constants.graphAnimationDuration);
         barChart.setVisibleXRangeMaximum(Constants.maximumNumberOfColumnsOnTheScreen);

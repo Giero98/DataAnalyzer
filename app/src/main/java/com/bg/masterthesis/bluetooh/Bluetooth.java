@@ -54,24 +54,19 @@ public class Bluetooth extends AppCompatActivity {
         startSelectBufferSize();
         startServerBt();
         buttonsResponse();
-
-
     }
 
-    void startSelectBufferSize()
-    {
+    void startSelectBufferSize() {
         new Buffer(this, findViewById(R.id.buffer_size));
     }
 
-    void startServerBt()
-    {
+    void startServerBt() {
         server = new ServerBt(this);
         ServerBt.running = true;
         server.start();
     }
 
-    void buttonsResponse()
-    {
+    void buttonsResponse() {
         declarationUI.button_disconnectBack.setOnClickListener(v -> finish());
         declarationUI.button_detect.setOnClickListener(v -> startDiscoverableBt());
         declarationUI.button_devices.setOnClickListener(v -> startFoundDevicesBt());
@@ -110,14 +105,12 @@ public class Bluetooth extends AppCompatActivity {
         selectDeviceToConnection();
     }
 
-    void createListDiscoverableDevices()
-    {
+    void createListDiscoverableDevices() {
         listAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, discoveredDevices);
         listAdapter.clear();
     }
 
-    void startReceiverWithFilters()
-    {
+    void startReceiverWithFilters() {
         IntentFilter intent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         registerReceiver(receiver, intent);
     }
@@ -134,8 +127,7 @@ public class Bluetooth extends AppCompatActivity {
         }
     };
 
-    void selectDeviceToConnection()
-    {
+    void selectDeviceToConnection() {
         AlertDialog.Builder deviceSelection = new AlertDialog.Builder(this);
         @SuppressLint("InflateParams")
         View titleView = getLayoutInflater().inflate(R.layout.window_device_selection, null);
@@ -154,8 +146,7 @@ public class Bluetooth extends AppCompatActivity {
     }
 
     @SuppressLint("MissingPermission")
-    void startProcedureOfEstablishingBtConnection(String deviceInfo)
-    {
+    void startProcedureOfEstablishingBtConnection(String deviceInfo) {
         //deviceAddress holds the 17 characters from the end of the deviceInfo string
         String deviceAddress = deviceInfo.substring(deviceInfo.length() - 17);
         BluetoothDevice device = Constants.bluetoothAdapter.getRemoteDevice(deviceAddress);
@@ -165,8 +156,7 @@ public class Bluetooth extends AppCompatActivity {
         device.connectGatt(this, false, receivingChangesOfRssiValues);
     }
 
-    void startClientBt(BluetoothDevice device)
-    {
+    void startClientBt(BluetoothDevice device) {
         ClientBt client = new ClientBt(this, device);
         client.start();
     }
@@ -183,11 +173,12 @@ public class Bluetooth extends AppCompatActivity {
                         try {
                             //noinspection BusyWait
                             Thread.sleep(Constants.delayReadingSignal);
-                        } catch (InterruptedException e) {
+                        }
+                        catch (InterruptedException e) {
                             LOG.addLog("RSSI read hold error", e.getMessage());
                             break;
                         }
-                    } while (ClientBt.getSocket().isConnected());
+                    } while(ClientBt.getSocket().isConnected());
                 }).start();
             }
         }
@@ -205,20 +196,19 @@ public class Bluetooth extends AppCompatActivity {
                 }
                 runOnUiThread(() ->
                         DeclarationOfUIVar.textView_qualitySignal.setText(Integer.toString(percentQualitySignal)));
-            } else {
+            }
+            else {
                 LOG.addLog("There was an error reading the signal quality value");
             }
         }
     };
 
-    void showDeviceSelection(AlertDialog.Builder deviceSelection)
-    {
+    void showDeviceSelection(AlertDialog.Builder deviceSelection) {
         AlertDialog dialog = deviceSelection.create();
         dialog.show();
     }
 
-    void showDurationDeviceSearch(View titleView)
-    {
+    void showDurationDeviceSearch(View titleView) {
         ProgressBar progressBar = titleView.findViewById(R.id.progressBar_search);
         ImageView imageView = titleView.findViewById(R.id.imageView_done);
         progressBar.postDelayed(() -> {
@@ -256,8 +246,7 @@ public class Bluetooth extends AppCompatActivity {
     }
 
     @SuppressLint("SetTextI18n")
-    void displayFileInformation(Double fileSize, String  fileName, String  fileSizeUnit)
-    {
+    void displayFileInformation(Double fileSize, String  fileName, String  fileSizeUnit) {
         declarationUI.textView_inf.setText("The name of the uploaded file: " + fileName +
                 "\nFile size: " + Constants.decimalFormat.format(fileSize).replace(",", ".") +
                 " " + fileSizeUnit + "\n");
@@ -265,8 +254,7 @@ public class Bluetooth extends AppCompatActivity {
 
     //endregion
 
-    void startSendData()
-    {
+    void startSendData() {
         new Thread(() -> {
             int multipleFile = NumberOfFileFromUI.getNumberFromUI();
             new SendingData(LOG, this, ClientBt.getSocket(),fileToSend,multipleFile);
@@ -277,63 +265,59 @@ public class Bluetooth extends AppCompatActivity {
         SendingData.saveMeasurementData(this, LOG);
     }
 
-    void drawGraph(){
+    void drawGraph() {
         Graph.connectionDetails = Constants.connectionBt;
         Intent intent = new Intent(this, Graph.class);
         startActivity(intent);
     }
 
-    void closeBtConnection()
-    {
+    void closeBtConnection() {
         closeServerBt();
         endListening();
         closeBtAdapter();
         closeClientBtSocket();
         closeServerBtSocket();
     }
-    void closeServerBt()
-    {
+    void closeServerBt() {
         if(server != null)
             if(server.isAlive()) {
                 ServerBt.running = false;
             }
     }
-    void endListening()
-    {
+    void endListening() {
         if(receiver.isOrderedBroadcast()) {
             unregisterReceiver(receiver);
             LOG.addLog("Broadcast on Bt was closed");
         }
     }
     @SuppressLint("MissingPermission")
-    void closeBtAdapter()
-    {
+    void closeBtAdapter() {
         if(Constants.bluetoothAdapter.isDiscovering()) {
             Constants.bluetoothAdapter.cancelDiscovery();
             LOG.addLog("bluetoothAdapter was closed");
         }
     }
 
-    void closeClientBtSocket()
-    {
+    void closeClientBtSocket() {
         if(ClientBt.getSocket() != null)
             if(ClientBt.getSocket().isConnected()) {
                 try {
                     ClientBt.getSocket().close();
                     LOG.addLog("Socket client Bt was closed");
-                } catch (IOException e) {
+                }
+                catch (IOException e) {
                     LOG.addLog("Error closing socket client Bt", e.getMessage());
                 }
             }
     }
-    void closeServerBtSocket()
-    {
+    void closeServerBtSocket() {
         if(ServerBt.getSocket() != null)
             if(ServerBt.getSocket().isConnected()) {
                 try {
                     ServerBt.getSocket().close();
                     LOG.addLog("Socket server Bt was closed");
-                } catch (IOException e) {
+                }
+                catch (IOException e) {
                     LOG.addLog("Error closing socket server Bt", e.getMessage());
                 }
             }

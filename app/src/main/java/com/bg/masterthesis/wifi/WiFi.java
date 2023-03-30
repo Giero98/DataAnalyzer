@@ -59,19 +59,16 @@ public class WiFi extends AppCompatActivity {
         startReceiverWithFilters();
     }
 
-    void startSelectBufferSize()
-    {
+    void startSelectBufferSize() {
         new Buffer(this, findViewById(R.id.buffer_size));
     }
 
-    void settingVariableManagingConnect()
-    {
+    void settingVariableManagingConnect() {
         wifiDirectManager = (WifiP2pManager) getSystemService(WIFI_P2P_SERVICE);
         wifiDirectChannel = wifiDirectManager.initialize(this,getMainLooper(),null);
     }
 
-    void buttonsResponse()
-    {
+    void buttonsResponse() {
         declarationUI.button_disconnectBack.setOnClickListener(v -> finish());
         declarationUI.button_detect.setOnClickListener(v -> startDiscoversDevices());
         declarationUI.button_devices.setOnClickListener(v -> displayWiFiDirectDevices());
@@ -84,8 +81,7 @@ public class WiFi extends AppCompatActivity {
         declarationUI.button_graph.setOnClickListener(v -> drawGraph());
     }
 
-    void startReceiverWithFilters()
-    {
+    void startReceiverWithFilters() {
         createListDiscoverableDevices();
         IntentFilter intent = new IntentFilter();
         intent.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
@@ -93,8 +89,7 @@ public class WiFi extends AppCompatActivity {
         registerReceiver(receiver, intent);
     }
 
-    void createListDiscoverableDevices()
-    {
+    void createListDiscoverableDevices() {
         listAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, discoveredDevices);
         listAdapter.clear();
     }
@@ -102,16 +97,13 @@ public class WiFi extends AppCompatActivity {
     BroadcastReceiver receiver = new BroadcastReceiver() {
         @SuppressLint("SetTextI18n")
         @Override
-        public void onReceive(Context context, Intent intent)
-        {
+        public void onReceive(Context context, Intent intent) {
             if(wifiDirectManager!=null) {
                 String action = intent.getAction();
-                if (WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION.equals(action))
-                {
+                if (WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION.equals(action)) {
                     wifiDirectManager.requestPeers(wifiDirectChannel, peerListListener);
                 }
-                else if(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action))
-                {
+                else if(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action)) {
                     NetworkInfo networkInfo = intent.getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
                     if(networkInfo.isConnected()) {
                         wifiDirectManager.requestConnectionInfo(wifiDirectChannel, connectionInfoListener);
@@ -125,27 +117,25 @@ public class WiFi extends AppCompatActivity {
     };
 
     WifiP2pManager.PeerListListener peerListListener = peerList -> {
-        if(peerList.getDeviceList() != null)
-        {
+        if(peerList.getDeviceList() != null) {
             discoveredDevices.clear();
-            for(WifiP2pDevice device : peerList.getDeviceList())
-            {
+            for(WifiP2pDevice device : peerList.getDeviceList()) {
                 discoveredDevices.add(device.deviceName + "\n" + device.deviceAddress);
                 listAdapter.notifyDataSetChanged();
             }
-        } else {
+        }
+        else {
             Toast.makeText(getApplicationContext(), "No Devices Found", Toast.LENGTH_SHORT).show();
         }
     };
 
     @SuppressLint("SetTextI18n")
     WifiP2pManager.ConnectionInfoListener connectionInfoListener = wifiDirectInfo -> {
-        if(wifiDirectInfo.groupFormed && wifiDirectInfo.isGroupOwner)
-        {
+        if(wifiDirectInfo.groupFormed && wifiDirectInfo.isGroupOwner) {
             ServerWiFi server = new ServerWiFi(this);
             server.start();
-        } else if(wifiDirectInfo.groupFormed)
-        {
+        }
+        else if(wifiDirectInfo.groupFormed) {
             discoverService(wifiDirectInfo);
         }
     };
@@ -183,7 +173,9 @@ public class WiFi extends AppCompatActivity {
                 });
         wifiDirectManager.discoverServices(wifiDirectChannel, new WifiP2pManager.ActionListener() {
                 @Override
-                public void onSuccess() {}
+                public void onSuccess() {
+
+                }
                 @Override
                 public void onFailure(int code) {
                     LOG.addLog("", String.valueOf(code));
@@ -206,15 +198,13 @@ public class WiFi extends AppCompatActivity {
         });
     }
 
-    void displayWiFiDirectDevices()
-    {
+    void displayWiFiDirectDevices() {
         startDiscoversDevices();
         selectDeviceToConnection();
     }
 
     @SuppressLint("MissingPermission")
-    void selectDeviceToConnection()
-    {
+    void selectDeviceToConnection() {
         AlertDialog.Builder deviceSelection = new AlertDialog.Builder(this);
         @SuppressLint("InflateParams")
         View titleView = getLayoutInflater().inflate(R.layout.window_device_selection, null);
@@ -232,8 +222,7 @@ public class WiFi extends AppCompatActivity {
         showDeviceSelection(deviceSelection);
     }
 
-    void initiateConnection(String selectedDeviceAddress)
-    {
+    void initiateConnection(String selectedDeviceAddress) {
         WifiP2pConfig config = new WifiP2pConfig();
         config.deviceAddress = selectedDeviceAddress;
         config.groupOwnerIntent = 0; //connect as a client
@@ -252,8 +241,7 @@ public class WiFi extends AppCompatActivity {
         });
     }
 
-    void showDeviceSelection(AlertDialog.Builder deviceSelection)
-    {
+    void showDeviceSelection(AlertDialog.Builder deviceSelection) {
         AlertDialog dialog = deviceSelection.create();
         dialog.show();
     }
@@ -284,8 +272,7 @@ public class WiFi extends AppCompatActivity {
     }
 
     @SuppressLint("SetTextI18n")
-    void displayFileInformation(Double fileSize)
-    {
+    void displayFileInformation(Double fileSize) {
         declarationUI.textView_inf.setText("The name of the uploaded file: " + fileName +
                 "\nFile size: " + Constants.decimalFormat.format(fileSize).replace(",", ".") +
                 " " + FileInformation.getFileSizeUnit(FileInformation.getFileSizeBytes()) + "\n");
@@ -293,26 +280,24 @@ public class WiFi extends AppCompatActivity {
 
     //endregion
 
-    void sendData()
-    {
+    void sendData() {
         new Thread(() -> {
                 int multipleFile = NumberOfFileFromUI.getNumberFromUI();
                 new SendingData(LOG, this,ClientWiFi.getSocket(),fileToSend,multipleFile);
         }).start();
     }
 
-    void saveMeasurementData(){
+    void saveMeasurementData() {
         SendingData.saveMeasurementData(this, LOG);
     }
 
-    void drawGraph(){
+    void drawGraph() {
         Graph.connectionDetails = Constants.connectionWiFi;
         Intent intent = new Intent(this, Graph.class);
         startActivity(intent);
     }
 
-    void disconnectTheConnection()
-    {
+    void disconnectTheConnection() {
         closeAllAboutWifiManager();
         endListening();
         closeClientWifiSocket();
@@ -320,8 +305,7 @@ public class WiFi extends AppCompatActivity {
         closeServerWifiServerSocket();
     }
 
-    void closeAllAboutWifiManager()
-    {
+    void closeAllAboutWifiManager() {
         if(wifiDirectManager!=null) {
             wifiDirectManager.requestConnectionInfo(wifiDirectChannel, info -> {
                 if (info.groupFormed) {
@@ -345,16 +329,14 @@ public class WiFi extends AppCompatActivity {
         }
     }
 
-    void endListening()
-    {
+    void endListening() {
         if(receiver.isOrderedBroadcast()) {
             unregisterReceiver(receiver);
             LOG.addLog("Broadcast on Bt was closed");
         }
     }
 
-    void closeClientWifiSocket()
-    {
+    void closeClientWifiSocket() {
         if(ClientWiFi.getSocket() != null)
             if(ClientWiFi.getSocket().isConnected()) {
                 try {
@@ -367,8 +349,7 @@ public class WiFi extends AppCompatActivity {
             }
     }
 
-    void closeServerWifiSocket()
-    {
+    void closeServerWifiSocket() {
         if(ServerWiFi.getSocket() != null)
             if(ServerWiFi.getSocket().isConnected()) {
                 try {
@@ -387,7 +368,8 @@ public class WiFi extends AppCompatActivity {
             try {
                 ServerWiFi.getServerSocket().close();
                 LOG.addLog("ServerSocket server was closed");
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 LOG.addLog("Error closing ServerSocket server", e.getMessage());
             }
         }

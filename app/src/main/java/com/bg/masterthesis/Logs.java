@@ -30,49 +30,41 @@ public class Logs extends AppCompatActivity {
         buttonsResponses();
     }
 
-    void declarationButtonsAndListView()
-    {
+    void declarationButtonsAndListView() {
         logListView = findViewById(R.id.logListView);
         buttonInfLog = findViewById(R.id.button_inf_log);
         buttonErrorLog = findViewById(R.id.button_error_log);
     }
 
-    void declarationArrayAdapter()
-    {
+    void declarationArrayAdapter() {
         listAdapterLog = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, LIST_LOG);
         listAdapterLogError = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, LIST_LOG_ERROR);
     }
 
-    void setAndUpdateLogList()
-    {
+    void setAndUpdateLogList() {
         logListView.setAdapter(listAdapterLog);
         listAdapterLog.notifyDataSetChanged();
     }
 
-    void setAndUpdateErrorLogList()
-    {
+    void setAndUpdateErrorLogList() {
         logListView.setAdapter(listAdapterLogError);
         listAdapterLogError.notifyDataSetChanged();
     }
 
-    void buttonsResponses()
-    {
+    void buttonsResponses() {
         buttonInfLog.setOnClickListener(v -> setAndUpdateLogList());
         buttonErrorLog.setOnClickListener(v-> setAndUpdateErrorLogList());
     }
 
-    public void addLog(String description, String errorCode)
-    {
+    public void addLog(String description, String errorCode) {
         LIST_LOG_ERROR.add(currentDate()  + "\n" + description + "\n" + errorCode);
     }
 
-    public void addLog(String description)
-    {
+    public void addLog(String description) {
         LIST_LOG.add(currentDate() + "\n" + description);
     }
 
-    Date currentDate()
-    {
+    Date currentDate() {
         return new Date(System.currentTimeMillis());
     }
 

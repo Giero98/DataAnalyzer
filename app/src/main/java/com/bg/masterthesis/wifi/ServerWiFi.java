@@ -19,6 +19,7 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 
+@SuppressWarnings("rawtypes")
 public class ServerWiFi extends Thread{
     static Socket socket;
     static ServerSocket serverSocket;
@@ -26,26 +27,24 @@ public class ServerWiFi extends Thread{
     int port;
     Context context;
 
-    public ServerWiFi(Context context){
+    public ServerWiFi(Context context) {
         this.context = context;
-
     }
 
     @Override
-    public void run(){
+    public void run() {
         LOG.addLog("A server Wifi has started");
         generatePort();
     }
 
-    void generatePort()
-    {
+    void generatePort() {
         int i=0;
         do {
             i++;
             port = (int) (Math.random() * Constants.rangePossiblePortsToConnect +
                     Constants.smallestPortToConnect);
             LOG.addLog("Port number "+i+" = "+port);
-        }while(!createServerSocket());
+        } while(!createServerSocket());
     }
 
     boolean createServerSocket() {
@@ -54,12 +53,14 @@ public class ServerWiFi extends Thread{
             startRegistration();
             startConnect();
             return true;
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             return false;
         }
     }
 
     public void startRegistration() {
+        @SuppressWarnings("rawtypes")
         Map record = new HashMap();
         record.put("PORT", String.valueOf(port));
 
@@ -79,8 +80,7 @@ public class ServerWiFi extends Thread{
     }
 
     @SuppressLint("SetTextI18n")
-    void startConnect()
-    {
+    void startConnect() {
         do {
             try {
                 socket = serverSocket.accept();
@@ -88,27 +88,25 @@ public class ServerWiFi extends Thread{
                 DeclarationOfUIVar declarationUI = new DeclarationOfUIVar(context);
                 declarationUI.updateViewWhenStartServerWifi();
                 savingData();
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 LOG.addLog("Connection by Wifi Direct error", e.getMessage());
             }
-        }while(socket==null);
+        } while(socket==null);
     }
 
     void savingData() {
         SavingData savingData = new SavingData(LOG, context, socket);
-        while (socket!=null)
-        {
+        while (socket!=null) {
             savingData.startSavingData();
         }
     }
 
-    public static Socket getSocket()
-    {
+    public static Socket getSocket() {
         return socket;
     }
 
-    public static ServerSocket getServerSocket()
-    {
+    public static ServerSocket getServerSocket() {
         return serverSocket;
     }
 }

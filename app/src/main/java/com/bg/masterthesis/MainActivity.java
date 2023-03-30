@@ -5,7 +5,6 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -36,39 +35,32 @@ public class MainActivity extends AppCompatActivity {
         buttonsResponses();
     }
 
-    void initializePermissionAndGetWifiManager()
-    {
+    void initializePermissionAndGetWifiManager() {
         permissions = new Permissions(this);
         checkAndRequestPermissionForAccessFineLocation();
         wifiManager = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
     }
 
-    void checkAndRequestPermissionForAccessFineLocation()
-    {
+    void checkAndRequestPermissionForAccessFineLocation() {
         if (!permissions.checkAccessFineLocation())
             permissions.getPermissionAccessFineLocation();
     }
 
-    void declarationFirstButtons()
-    {
+    void declarationFirstButtons() {
         button_wifi = findViewById(R.id.button_wifi);
         button_bt = findViewById(R.id.button_bt);
     }
 
-    void buttonsResponses()
-    {
+    void buttonsResponses() {
         button_bt.setOnClickListener(v -> checkingBtSetting());
         button_wifi.setOnClickListener(v -> checkingWifiSetting());
     }
 
     //region configureBT
 
-    void checkingBtSetting()
-    {
-        if (checkSupportBt())
-        {
-            if(permissions.checkPermissionBt())
-            {
+    void checkingBtSetting() {
+        if (checkSupportBt()) {
+            if(permissions.checkPermissionBt()) {
                 checkBtIsOn();
             }
         }
@@ -78,7 +70,8 @@ public class MainActivity extends AppCompatActivity {
         if (Constants.bluetoothAdapter == null) {
             Toast.makeText(this, "Device doesn't support Bluetooth", Toast.LENGTH_SHORT).show();
             return false;
-        } else return true;
+        }
+        else return true;
     }
 
     void checkBtIsOn() {
@@ -103,8 +96,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(this, "Bluetooth not enabled", Toast.LENGTH_SHORT).show();
             });
 
-    void goToBtActivity()
-    {
+    void goToBtActivity() {
         Intent intent = new Intent(this, Bluetooth.class);
         startActivity(intent);
     }
@@ -113,15 +105,13 @@ public class MainActivity extends AppCompatActivity {
 
     //region configureWiFi
 
-    void checkingWifiSetting()
-    {
+    void checkingWifiSetting() {
         if(permissions.checkPermissionWifi()) {
             checkWifiIsOnIfNotTurnOn();
         }
     }
 
-    void checkWifiIsOnIfNotTurnOn()
-    {
+    void checkWifiIsOnIfNotTurnOn() {
         if (!wifiManager.isWifiEnabled()) {
             enableWiFi();
         }
@@ -132,7 +122,8 @@ public class MainActivity extends AppCompatActivity {
         if(permissions.checkAPI29()) {
             Intent intent = new Intent(Settings.Panel.ACTION_WIFI);
             ActivityEnableWiFi.launch(intent);
-        } else {
+        }
+        else {
             wifiManager.setWifiEnabled(true);
             Toast.makeText(this, "WiFi started", Toast.LENGTH_SHORT).show();
             checkWifiDirectAvailableIfYesStartWifiActivity();
@@ -150,8 +141,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(this, "WiFi not enabled", Toast.LENGTH_SHORT).show();
             });
 
-    void checkWifiDirectAvailableIfYesStartWifiActivity()
-    {
+    void checkWifiDirectAvailableIfYesStartWifiActivity() {
         if (checkSupportWiFiDirect()) {
             goToWiFiActivity();
         }

@@ -12,8 +12,7 @@ import androidx.core.content.ContextCompat;
 public class Permissions extends MainActivity{
     Context context;
 
-    public Permissions (Context context)
-    {
+    public Permissions (Context context) {
         this.context = context;
     }
     public boolean checkAPI29() {
@@ -24,57 +23,48 @@ public class Permissions extends MainActivity{
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.S;
     }
 
-    boolean checkAPI33() {return Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU;}
+    boolean checkAPI33() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU;
+    }
 
-    public boolean checkPermissionBt()
-    {
-        if (!checkBtConnect())
-        {
+    public boolean checkPermissionBt() {
+        if (!checkBtConnect()) {
             getPermissionBtConnect();
             return false;
         }
-        else if (!checkBtScan())
-        {
+        else if (!checkBtScan()) {
             getPermissionBtScan();
             return false;
         }
-        else if (!checkBtAdvertise())
-        {
+        else if (!checkBtAdvertise()) {
             getPermissionBtAdvertise();
             return false;
         }
         else return true;
     }
 
-    public boolean checkPermissionWifi()
-    {
-        if(!checkAccessWiFiState())
-        {
+    public boolean checkPermissionWifi() {
+        if(!checkAccessWiFiState()) {
             getPermissionAccessWiFiState();
             return false;
         }
-        else if(!checkChangeWiFiState())
-        {
+        else if(!checkChangeWiFiState()) {
             getPermissionChangeWiFiState();
             return false;
         }
-        else if(!checkInternet())
-        {
+        else if(!checkInternet()) {
             getPermissionInternet();
             return false;
         }
-        else if(!checkAccessNetworkState())
-        {
+        else if(!checkAccessNetworkState()) {
             getPermissionAccessNetworkState();
             return false;
         }
-        else if(!checkChangeNetworkState())
-        {
+        else if(!checkChangeNetworkState()) {
             getPermissionChangeNetworkState();
             return false;
         }
-        else if(!checkNearbyWiFiDevices())
-        {
+        else if(!checkNearbyWiFiDevices()) {
             getPermissionNearbyWiFiDevices();
             return false;
         }
@@ -173,13 +163,11 @@ public class Permissions extends MainActivity{
         }
     }
 
-    void getPermissionAccessNetworkState()
-    {
+    void getPermissionAccessNetworkState() {
         ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.ACCESS_NETWORK_STATE}, Constants.REQUEST_ACCESS_NETWORK_STATE);
     }
 
-    void getPermissionChangeNetworkState()
-    {
+    void getPermissionChangeNetworkState() {
         ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.CHANGE_NETWORK_STATE}, Constants.REQUEST_CHANGE_NETWORK_STATE);
     }
 
