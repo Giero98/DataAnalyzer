@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -52,8 +53,27 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void buttonsResponses() {
-        button_bt.setOnClickListener(v -> checkingBtSetting());
-        button_wifi.setOnClickListener(v -> checkingWifiSetting());
+        button_bt.setOnClickListener(v -> checkAndDoAction(this::checkingBtSetting));
+        button_wifi.setOnClickListener(v -> checkAndDoAction(this::checkingWifiSetting));
+    }
+
+    void checkAndDoAction(Runnable action) {
+        if (checkLocationIsOn()) {
+            action.run();
+        } else {
+            requestToTurnOnLocation();
+        }
+    }
+
+    boolean checkLocationIsOn() {
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+    }
+
+    void requestToTurnOnLocation() {
+        Toast.makeText(this,"Please Turn On Location", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+        startActivity(intent);
     }
 
     //region configureBT
@@ -165,76 +185,22 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case Constants.REQUEST_BT_CONNECT:
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    LOG.addLog("BLUETOOTH_CONNECT permission granted");
-                    checkingBtSetting();
-                }
-                else LOG.addLog("BLUETOOTH_CONNECT permission denied");
-                break;
-            case Constants.REQUEST_BT_SCAN:
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    LOG.addLog("BLUETOOTH_SCAN permission granted");
-                    checkingBtSetting();
-                }
-                else LOG.addLog("BLUETOOTH_SCAN permission denied");
-                break;
-            case Constants.REQUEST_BT_ADVERTISE:
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    LOG.addLog("BLUETOOTH_ADVERTISE permission granted");
-                    checkingBtSetting();
-                }
-                else LOG.addLog("BLUETOOTH_ADVERTISE permission denied");
-                break;
-            case Constants.REQUEST_ACCESS_FINE_LOCATION:
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                    LOG.addLog("ACCESS_FINE_LOCATION permission granted");
-                else
-                    LOG.addLog("ACCESS_FINE_LOCATION permission denied");
-                break;
-            case Constants.REQUEST_CHANGE_WIFI_STATE:
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    LOG.addLog("CHANGE_WIFI_STATE permission granted");
-                    checkingWifiSetting();
-                }
-                else LOG.addLog("CHANGE_WIFI_STATE permission denied");
-                break;
-            case Constants.REQUEST_ACCESS_WIFI_STATE:
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    LOG.addLog("ACCESS_WIFI_STATE permission granted");
-                    checkingWifiSetting();
-                }
-                else LOG.addLog("ACCESS_WIFI_STATE permission denied");
-                break;
-            case Constants.REQUEST_INTERNET:
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    LOG.addLog("INTERNET permission granted");
-                    checkingWifiSetting();
-                }
-                else LOG.addLog("INTERNET permission denied");
-                break;
-            case Constants.REQUEST_NEARBY_WIFI_DEVICES:
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    LOG.addLog("NEARBY_WIFI_DEVICES permission granted");
-                    checkingWifiSetting();
-                }
-                else LOG.addLog("NEARBY_WIFI_DEVICES permission denied");
-                break;
-            case Constants.REQUEST_ACCESS_NETWORK_STATE:
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    LOG.addLog("ACCESS_NETWORK_STATE permission granted");
-                    checkingWifiSetting();
-                }
-                else LOG.addLog("ACCESS_NETWORK_STATE permission denied");
-                break;
-            case Constants.REQUEST_CHANGE_NETWORK_STATE:
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    LOG.addLog("CHANGE_NETWORK_STATE permission granted");
-                    checkingWifiSetting();
-                }
-                else LOG.addLog("CHANGE_NETWORK_STATE permission denied");
-                break;
+
+        if(Constants.REQUEST_ACCESS_FINE_LOCATION==requestCode) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                LOG.addLog("ACCESS_FINE_LOCATION permission granted");
+            else
+                LOG.addLog("ACCESS_FINE_LOCATION permission denied");
+        }
+        else if(Constants.requestBtCodes.contains(requestCode)) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                checkingBtSetting();
+            }
+        }
+        else if(Constants.requestWifiCodes.contains(requestCode)) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                checkingWifiSetting();
+            }
         }
     }
 

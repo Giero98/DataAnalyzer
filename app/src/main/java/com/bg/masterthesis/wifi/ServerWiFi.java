@@ -17,9 +17,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
-import java.util.Map;
 
-@SuppressWarnings("rawtypes")
 public class ServerWiFi extends Thread{
     static Socket socket;
     static ServerSocket serverSocket;
@@ -60,8 +58,7 @@ public class ServerWiFi extends Thread{
     }
 
     public void startRegistration() {
-        @SuppressWarnings("rawtypes")
-        Map record = new HashMap();
+        HashMap<String,String> record = new HashMap<>();
         record.put("PORT", String.valueOf(port));
 
         WifiP2pDnsSdServiceInfo serviceInfo =
