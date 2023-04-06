@@ -16,7 +16,7 @@ public class ServerBt extends Thread {
     public static boolean running;
     final Logs LOG = new Logs();
     DeclarationOfUIVar declarationUI;
-    final Context context;
+    Context context;
     static BluetoothSocket socket;
     BluetoothServerSocket serverSocket;
 

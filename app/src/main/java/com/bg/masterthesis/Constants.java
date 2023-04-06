@@ -4,6 +4,8 @@ import android.bluetooth.BluetoothAdapter;
 import android.graphics.DashPathEffect;
 
 import java.text.DecimalFormat;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 public interface Constants {
@@ -11,14 +13,18 @@ public interface Constants {
     int     REQUEST_BT_CONNECT = 0,
             REQUEST_BT_SCAN = 1,
             REQUEST_BT_ADVERTISE = 2,
-            REQUEST_ACCESS_FINE_LOCATION = 3,
-            REQUEST_BT_SEND_DATA_FILE = 4,
+            REQUEST_BT_SEND_DATA_FILE = 3,
+            REQUEST_ACCESS_FINE_LOCATION = 4,
             REQUEST_CHANGE_WIFI_STATE = 5,
             REQUEST_ACCESS_WIFI_STATE = 6,
             REQUEST_INTERNET = 7,
             REQUEST_NEARBY_WIFI_DEVICES = 8,
             REQUEST_ACCESS_NETWORK_STATE = 9,
             REQUEST_CHANGE_NETWORK_STATE = 10;
+
+    List<Integer>   requestBtCodes = Arrays.asList(REQUEST_BT_CONNECT, REQUEST_BT_SCAN, REQUEST_BT_ADVERTISE, REQUEST_BT_SEND_DATA_FILE),
+                    requestWifiCodes = Arrays.asList(REQUEST_CHANGE_WIFI_STATE, REQUEST_ACCESS_WIFI_STATE, REQUEST_INTERNET,
+                            REQUEST_NEARBY_WIFI_DEVICES, REQUEST_ACCESS_NETWORK_STATE, REQUEST_CHANGE_NETWORK_STATE);
 
     int     minimumNumberOfUploadFiles = 1,
             maximumNumberOfUploadFiles = 100,

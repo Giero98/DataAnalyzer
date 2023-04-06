@@ -38,6 +38,7 @@ public class SavingData {
         this.LOG = LOG;
         this.context = context;
         openStreams(socket);
+        declarationUI = new DeclarationOfUIVar(context);
     }
 
     @SuppressLint("SetTextI18n")
@@ -78,9 +79,10 @@ public class SavingData {
                             fullBytes += bytes;
                             long percent = 100 * (fullBytes + fileSizeBytes * repeat) /
                                     (fileSizeBytes * multipleFile);
-                            ((Activity) context).runOnUiThread(() ->
-                                    declarationUI.textView_percent.setText("Download: " + percent + " %"));
-                            declarationUI.progressBar.setProgress((int) percent);
+                            ((Activity) context).runOnUiThread(() -> {
+                                declarationUI.textView_percent.setText("Download: " + percent + " %");
+                                declarationUI.progressBar.setProgress((int) percent);
+                            });
                             if (fullBytes == fileSizeBytes) {
                                 LOG.addLog("End of download file number " + (repeat + 1));
                                 Arrays.fill(bufferData, 0, bufferData.length, (byte) 0);
