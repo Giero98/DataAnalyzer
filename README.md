@@ -9,7 +9,8 @@ An application in which a device using Bluetooth and Wi-Fi transfers files to an
 ### Features
 
 **Common to the entire application:**
-- displaying information and error logs
+- Displaying information and error logs
+- Enable Location if it is disabled
 
 **Common for BT and Wi-Fi module:**
 - Connecting the Server(Host)/Client type with the device listed as Client
