@@ -125,7 +125,7 @@ public class SendingData {
                                 long endTime = System.currentTimeMillis();
                                 double resultTime = (double) (endTime - startTime) / 1000; //time change ms to s
                                 double speedSend = fileSize / resultTime;
-                                String sizeUnit = setSpeedSendUnit(speedSend, fileSizeUnit);
+                                String sizeUnit = FileInformation.getFileSizeUnit(FileInformation.getFileSizeBytes());
                                 updateTextInf(context,bufferSize,repeat,resultTime,speedSend,sizeUnit);
                                 saveMeasurementDataToList(fileSizeBytes,repeat,fileSize,resultTime,speedSend);
                                 break;
@@ -201,20 +201,6 @@ public class SendingData {
                     "Sending time [s]" + "," +
                     "Upload speed [" + fileSizeUnit + "/s]");
         }
-    }
-
-    String setSpeedSendUnit(double speedSend, String fileSizeUnit) {
-        if(fileSizeUnit.equals(Constants.fileSizeUnitBytes) && speedSend > Constants.size1Kb) {
-            speedSend /= Constants.size1Kb;
-            fileSizeUnit = Constants.fileSizeUnitKB;
-            if(speedSend > Constants.size1Kb) {
-                fileSizeUnit = Constants.fileSizeUnitMB;
-            }
-        }
-        else if (fileSizeUnit.equals(Constants.fileSizeUnitKB) && speedSend > Constants.size1Kb) {
-            fileSizeUnit = Constants.fileSizeUnitMB;
-        }
-        return fileSizeUnit;
     }
 
     @SuppressLint("SetTextI18n")
