@@ -71,36 +71,36 @@ public class DeclarationOfUIVar {
 
     public void viewAfterSuccessConnectionOnServerBt() {
         ((Activity) context).runOnUiThread(() -> {
-            textView_connected.setText("Connected as a Host");
+            textView_connected.setText(context.getString(R.string.connect_as_host));
             button_devices.setVisibility(View.INVISIBLE);
             button_detect.setVisibility(View.INVISIBLE);
-            button_disconnectBack.setText("Disconnect");
+            button_disconnectBack.setText(context.getString(R.string.disconnect));
             layoutPercent.setVisibility(View.VISIBLE);});
     }
 
     public void viewAfterSuccessConnectionOnClientBt() {
         ((Activity) context).runOnUiThread(() -> {
-            textView_connected.setText("Connected as a Client");
+            textView_connected.setText(context.getString(R.string.connect_as_client));
             button_chooseFile.setVisibility(View.VISIBLE);
             button_devices.setVisibility(View.INVISIBLE);
             button_detect.setVisibility(View.INVISIBLE);
-            button_disconnectBack.setText("Disconnect");
+            button_disconnectBack.setText(context.getString(R.string.disconnect));
             parameterLayoutForFileUpload.setVisibility(View.VISIBLE);
             layoutPercent.setVisibility(View.VISIBLE);});
     }
 
     public void updateViewWhenDisconnected() {
         ((Activity) context).runOnUiThread(() -> {
-            textView_connected.setText("Disconnected");
-            Toast.makeText(context, "Disconnected", Toast.LENGTH_SHORT).show();
-            button_disconnectBack.setText("Back");
+            textView_connected.setText(context.getString(R.string.disconnect));
+            Toast.makeText(context, context.getString(R.string.disconnect), Toast.LENGTH_SHORT).show();
+            button_disconnectBack.setText(context.getString(R.string.back));
             button_disconnectBack.setVisibility(View.VISIBLE);});
     }
 
     public void updateViewWhenFileSent() {
         ((Activity) context).runOnUiThread(() -> {
             textView_inf.setText(textView_inf.getText() + "\n");
-            Toast.makeText(context, "File sent", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, context.getString(R.string.file_sent), Toast.LENGTH_SHORT).show();
             button_saveMeasurementData.setVisibility(View.VISIBLE);
             button_graph.setVisibility(View.VISIBLE);
         });
@@ -108,7 +108,7 @@ public class DeclarationOfUIVar {
 
     public void updateViewWhenStartServerWifi() {
         ((Activity) context).runOnUiThread(() ->{
-            textView_connected.setText("Connected as a Host");
+            textView_connected.setText(context.getString(R.string.connect_as_host));
             button_devices.setVisibility(View.INVISIBLE);
             button_detect.setVisibility(View.INVISIBLE);
             layoutPercent.setVisibility(View.VISIBLE);
@@ -117,7 +117,7 @@ public class DeclarationOfUIVar {
 
     public void updateViewWhenStartClientWifi() {
         ((Activity) context).runOnUiThread(() ->{
-            textView_connected.setText("Connected as a Client");
+            textView_connected.setText(context.getString(R.string.connect_as_client));
             button_devices.setVisibility(View.INVISIBLE);
             button_detect.setVisibility(View.INVISIBLE);
             button_chooseFile.setVisibility(View.VISIBLE);

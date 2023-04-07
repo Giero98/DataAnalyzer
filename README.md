@@ -3,14 +3,26 @@
 ![alt text][app_logo]\
 The ic_launcher.png image is an original image created on the [Canva][canva] platform under license [CC-BY-4.0][cc-by-4.0]
 
+## Screenshots
+![alt text][main_menu]
+![alt text][languages]
+![alt text][bt_module]
+![alt text][wifi_module]
+![alt text][after_send_file]
+![alt text][graph]
+
 ## Overview
-An application in which a device using Bluetooth and Wi-Fi transfers files to another and measures the transfer time.
+
+An application created for the needs of the master's thesis,
+in which you can conduct research on: transfer time, transfer speed, connection quality (BT module) 
+by sending files while connected to another device via the same app.
 
 ### Features
 
 **Common to the entire application:**
 - Displaying information and error logs
 - Enable Location if it is disabled
+- Changing the language to: Polish, English
 
 **Common for BT and Wi-Fi module:**
 - Connecting the Server(Host)/Client type with the device listed as Client
@@ -42,14 +54,20 @@ An application in which a device using Bluetooth and Wi-Fi transfers files to an
 Other icons used in the project are used under the [Apache License, Version 2.0][apache_license]
 
 The following were used to display the charts:
-- [MPAndroidChart v3.1.0][mpandroidchart] library by [PhilJay][philjay] licensed under [Apache License, Version 2.0][apache_license]
-
-## Screenshots
+- [MPAndroidChart v3.1.0][mpandroidchart] library by [PhilJay][philjay] licensed under
+[Apache License, Version 2.0][apache_license]
 
 ## License
 [License][license] © Bartosz Gieras
 
 [app_logo]: https://github.com/Giero98/MasterThesis/blob/main/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
+[main_menu]:  https://github.com/Giero98/MasterThesis/blob/main/app_screens/main_menu.png
+[languages]: https://github.com/Giero98/MasterThesis/blob/main/app_screens/languages.png
+[bt_module]: https://github.com/Giero98/MasterThesis/blob/main/app_screens/bt_module.png
+[wifi_module]: https://github.com/Giero98/MasterThesis/blob/main/app_screens/wifi_module.png
+[after_send_file]: https://github.com/Giero98/MasterThesis/blob/main/app_screens/after_send_file.png
+[graph]: https://github.com/Giero98/MasterThesis/blob/main/app_screens/graph.png
+
 [canva]: https://www.canva.com/
 [cc-by-4.0]: https://creativecommons.org/licenses/by/4.0/deed.en
 [mpandroidchart]: https://github.com/PhilJay/MPAndroidChart

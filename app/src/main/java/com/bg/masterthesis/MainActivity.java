@@ -3,8 +3,10 @@ package com.bg.masterthesis;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -22,7 +24,6 @@ import com.bg.masterthesis.bluetooh.Bluetooth;
 import com.bg.masterthesis.wifi.WiFi;
 
 public class MainActivity extends AppCompatActivity {
-    final Logs LOG = new Logs();
     Permissions permissions;
     WifiManager wifiManager;
     Button button_wifi, button_bt;
@@ -71,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void requestToTurnOnLocation() {
-        Toast.makeText(this,"Please Turn On Location", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this,getString(R.string.turn_on_location), Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
         startActivity(intent);
     }
@@ -88,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
 
     boolean checkSupportBt() {
         if (Constants.bluetoothAdapter == null) {
-            Toast.makeText(this, "Device doesn't support Bluetooth", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.doesnt_support_bt), Toast.LENGTH_SHORT).show();
             return false;
         }
         else return true;
@@ -109,11 +110,11 @@ public class MainActivity extends AppCompatActivity {
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == Activity.RESULT_OK) {
-                    Toast.makeText(this, "Bluetooth started", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.bt_on), Toast.LENGTH_SHORT).show();
                     goToBtActivity();
                 }
                 else
-                    Toast.makeText(this, "Bluetooth not enabled", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.bt_off), Toast.LENGTH_SHORT).show();
             });
 
     void goToBtActivity() {
@@ -145,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
         }
         else {
             wifiManager.setWifiEnabled(true);
-            Toast.makeText(this, "WiFi started", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.wifi_on), Toast.LENGTH_SHORT).show();
             checkWifiDirectAvailableIfYesStartWifiActivity();
         }
     }
@@ -154,11 +155,11 @@ public class MainActivity extends AppCompatActivity {
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (wifiManager.isWifiEnabled()) {
-                    Toast.makeText(this, "WiFi started", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.wifi_on), Toast.LENGTH_SHORT).show();
                     checkWifiDirectAvailableIfYesStartWifiActivity();
                 }
                 else
-                    Toast.makeText(this, "WiFi not enabled", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.wifi_off), Toast.LENGTH_SHORT).show();
             });
 
     void checkWifiDirectAvailableIfYesStartWifiActivity() {
@@ -169,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
 
     boolean checkSupportWiFiDirect() {
         if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_WIFI_DIRECT)) {
-            Toast.makeText(this, "Device doesn't support WiFi Direct", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.wifi_direct_doesnt_support), Toast.LENGTH_SHORT).show();
             return false;
         } else return true;
     }
@@ -185,14 +186,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if(Constants.REQUEST_ACCESS_FINE_LOCATION==requestCode) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                LOG.addLog("ACCESS_FINE_LOCATION permission granted");
-            else
-                LOG.addLog("ACCESS_FINE_LOCATION permission denied");
-        }
-        else if(Constants.requestBtCodes.contains(requestCode)) {
+        if(Constants.requestBtCodes.contains(requestCode)) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 checkingBtSetting();
             }
@@ -208,16 +202,29 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
         MenuItem showLog = menu.findItem(R.id.show_log);
-        showLog.setTitle(Constants.titleLog);
+        showLog.setTitle(getString(R.string.title_log));
         return true;
     }
+    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.show_log) {
-            Intent intent = new Intent(this, Logs.class);
-            startActivity(intent);
-            return true;
+        switch(item.getItemId()) {
+            case R.id.show_log:
+                Intent intent = new Intent(this, Logs.class);
+                startActivity(intent);
+                break;
+            case R.id.about_author:
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle(getString(R.string.about_author))
+                        .setMessage(getString(R.string.text_about_author))
+                        .setPositiveButton("OK", null);
+                AlertDialog dialog = builder.create();
+                dialog.show();
+                break;
+            case R.id.change_language:
+                ChangeLanguage changeLanguage = new ChangeLanguage(this,this);
+                changeLanguage.chooseLanguage();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }

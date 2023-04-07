@@ -2,6 +2,7 @@ package com.bg.masterthesis;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -71,17 +72,20 @@ public class Logs extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
-        MenuItem showLog = menu.findItem(R.id.show_log);
-        showLog.setTitle(Constants.textBack);
+        MenuItem    showLog = menu.findItem(R.id.show_log),
+                    aboutAuthor = menu.findItem(R.id.about_author),
+                    changeLanguage = menu.findItem(R.id.change_language);
+        showLog.setTitle(getString(R.string.back));
+        aboutAuthor.setVisible(false);
+        changeLanguage.setVisible(false);
         return true;
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.show_log) {
+        if (item.getItemId() == R.id.show_log) {
             finish();
-            return true;
         }
         return super.onOptionsItemSelected(item);
     }

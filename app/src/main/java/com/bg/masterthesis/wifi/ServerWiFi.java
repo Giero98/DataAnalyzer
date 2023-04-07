@@ -9,6 +9,7 @@ import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceInfo;
 
 import com.bg.masterthesis.Constants;
+import com.bg.masterthesis.R;
 import com.bg.masterthesis.ui.DeclarationOfUIVar;
 import com.bg.masterthesis.Logs;
 import com.bg.masterthesis.file.SavingData;
@@ -31,7 +32,7 @@ public class ServerWiFi extends Thread{
 
     @Override
     public void run() {
-        LOG.addLog("A server Wifi has started");
+        LOG.addLog(context.getString(R.string.server_wifi_on));
         generatePort();
     }
 
@@ -41,7 +42,7 @@ public class ServerWiFi extends Thread{
             i++;
             port = (int) (Math.random() * Constants.rangePossiblePortsToConnect +
                     Constants.smallestPortToConnect);
-            LOG.addLog("Port number "+i+" = "+port);
+            LOG.addLog(context.getString(R.string.port_number) +" "+i+" = "+ port);
         } while(!createServerSocket());
     }
 
@@ -59,19 +60,19 @@ public class ServerWiFi extends Thread{
 
     public void startRegistration() {
         HashMap<String,String> record = new HashMap<>();
-        record.put("PORT", String.valueOf(port));
+        record.put(context.getString(R.string.port), String.valueOf(port));
 
         WifiP2pDnsSdServiceInfo serviceInfo =
-                WifiP2pDnsSdServiceInfo.newInstance("Port", "WiFiDirect", record);
+                WifiP2pDnsSdServiceInfo.newInstance(context.getString(R.string.port), Constants.wifiDirect, record);
 
         wifiDirectManager.addLocalService(wifiDirectChannel, serviceInfo, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess() {
-                LOG.addLog("Added network service providing port");
+                LOG.addLog(context.getString(R.string.adding_port));
             }
             @Override
             public void onFailure(int arg0) {
-                LOG.addLog("Failed added network service providing port", String.valueOf(arg0));
+                LOG.addLog(context.getString(R.string.adding_port_error), String.valueOf(arg0));
             }
         });
     }
@@ -87,7 +88,7 @@ public class ServerWiFi extends Thread{
                 savingData();
             }
             catch (IOException e) {
-                LOG.addLog("Connection by Wifi Direct error", e.getMessage());
+                LOG.addLog(context.getString(R.string.connect_by_wifi_direct_error), e.getMessage());
             }
         } while(socket==null);
     }

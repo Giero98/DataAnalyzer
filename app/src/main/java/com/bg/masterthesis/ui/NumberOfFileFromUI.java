@@ -6,6 +6,7 @@ import android.widget.Toast;
 
 import com.bg.masterthesis.Constants;
 import com.bg.masterthesis.Logs;
+import com.bg.masterthesis.R;
 
 public class NumberOfFileFromUI {
 
@@ -15,14 +16,14 @@ public class NumberOfFileFromUI {
         try {
             int number = getNumberFromUI();
             if(getNumberFromUI() < Constants.minimumNumberOfUploadFiles || number > Constants.maximumNumberOfUploadFiles) {
-                Toast.makeText(context, "Enter a value between 1-100", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, context.getString(R.string.value_between_1_100), Toast.LENGTH_SHORT).show();
                 if(number > Constants.maximumNumberOfUploadFiles)
                     DeclarationOfUIVar.multiple_file.setText(Integer.toString(Constants.maximumNumberOfUploadFiles));
             }
         }
         catch(NumberFormatException e) {
-            Toast.makeText(context, "Enter a numeric value", Toast.LENGTH_SHORT).show();
-            LOG.addLog("Incorrect format loaded", e.getMessage());
+            Toast.makeText(context, context.getString(R.string.enter_value), Toast.LENGTH_SHORT).show();
+            LOG.addLog(context.getString(R.string.incorrect_format), e.getMessage());
         }
     }
 
