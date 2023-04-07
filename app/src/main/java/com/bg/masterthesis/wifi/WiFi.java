@@ -109,7 +109,7 @@ public class WiFi extends AppCompatActivity {
                         wifiDirectManager.requestConnectionInfo(wifiDirectChannel, connectionInfoListener);
                     }
                     else {
-                        declarationUI.textView_connected.setText("Not connected");
+                        declarationUI.textView_connected.setText(getString(R.string.not_connected));
                     }
                 }
             }
@@ -125,11 +125,10 @@ public class WiFi extends AppCompatActivity {
             }
         }
         else {
-            Toast.makeText(getApplicationContext(), "No Devices Found", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.no_devices_found), Toast.LENGTH_SHORT).show();
         }
     };
 
-    @SuppressLint("SetTextI18n")
     WifiP2pManager.ConnectionInfoListener connectionInfoListener = wifiDirectInfo -> {
         if(wifiDirectInfo.groupFormed && wifiDirectInfo.isGroupOwner) {
             ServerWiFi server = new ServerWiFi(this);
@@ -147,8 +146,8 @@ public class WiFi extends AppCompatActivity {
 
             String[] portNumberInfo = record.toString().split("=");
             String portNumber = portNumberInfo[1].replace("}","");
-            buddies.put(device.deviceAddress, record.get("Port"));
-            LOG.addLog("portNumber:  " + portNumber);
+            buddies.put(device.deviceAddress, record.get(getString(R.string.port)));
+            LOG.addLog(getString(R.string.port_number) + ":  " + portNumber);
 
             ClientWiFi client = new ClientWiFi(this, wifiDirectInfo, portNumber);
             client.start();
@@ -188,12 +187,12 @@ public class WiFi extends AppCompatActivity {
         wifiDirectManager.discoverPeers(wifiDirectChannel, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess() {
-                Toast.makeText(getApplicationContext(), "Discovery started", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), getString(R.string.discovery_started), Toast.LENGTH_SHORT).show();
             }
             @Override
             public void onFailure(int i) {
-                Toast.makeText(getApplicationContext(), "Discovery failed", Toast.LENGTH_SHORT).show();
-                LOG.addLog("Discovery failed:", String.valueOf(i));
+                Toast.makeText(getApplicationContext(), getString(R.string.discovery_failed), Toast.LENGTH_SHORT).show();
+                LOG.addLog(getString(R.string.discovery_failed), String.valueOf(i));
             }
         });
     }
@@ -209,9 +208,9 @@ public class WiFi extends AppCompatActivity {
         @SuppressLint("InflateParams")
         View titleView = getLayoutInflater().inflate(R.layout.window_device_selection, null);
         deviceSelection.setCustomTitle(titleView);
-        deviceSelection.setTitle(Constants.titleDialogToSelectDevice);
+        deviceSelection.setTitle(getString(R.string.select_device));
 
-        deviceSelection.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+        deviceSelection.setNegativeButton(getString(R.string.cancel), (dialog, which) -> dialog.dismiss());
 
         deviceSelection.setAdapter(listAdapter, (dialog, which) -> {
             String[] deviceInfo = listAdapter.getItem(which).split("\n");
@@ -231,12 +230,12 @@ public class WiFi extends AppCompatActivity {
             @SuppressLint("SetTextI18n")
             @Override
             public void onSuccess() {
-                LOG.addLog("Connection initialization successful");
+                LOG.addLog(getString(R.string.connect_initialization_success));
             }
             @Override
             public void onFailure(int reason) {
-                Toast.makeText(getApplicationContext(), "Connect failed. Retry.", Toast.LENGTH_SHORT).show();
-                LOG.addLog("Connection failed", String.valueOf(reason));
+                Toast.makeText(getApplicationContext(), getString(R.string.connect_failed), Toast.LENGTH_SHORT).show();
+                LOG.addLog(getString(R.string.connect_failed), String.valueOf(reason));
             }
         });
     }
@@ -260,7 +259,7 @@ public class WiFi extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == Constants.REQUEST_BT_SEND_DATA_FILE && resultCode == RESULT_OK) {
-            LOG.addLog("You have selected a file to upload");
+            LOG.addLog(getString(R.string.file_selected));
             declarationUI.button_sendData.setVisibility(View.VISIBLE);
             declarationUI.parameterLayoutForFileUpload.setVisibility(View.VISIBLE);
 
@@ -273,8 +272,8 @@ public class WiFi extends AppCompatActivity {
 
     @SuppressLint("SetTextI18n")
     void displayFileInformation(Double fileSize) {
-        declarationUI.textView_inf.setText("The name of the uploaded file: " + fileName +
-                "\nFile size: " + Constants.decimalFormat.format(fileSize).replace(",", ".") +
+        declarationUI.textView_inf.setText(getString(R.string.file_name) + ": " + fileName +
+                "\n" + getString(R.string.file_size) + ": " + Constants.decimalFormat.format(fileSize).replace(",", ".") +
                 " " + FileInformation.getFileSizeUnit(FileInformation.getFileSizeBytes()) + "\n");
     }
 
@@ -312,27 +311,27 @@ public class WiFi extends AppCompatActivity {
                     wifiDirectManager.removeGroup(wifiDirectChannel, new WifiP2pManager.ActionListener() {
                         @Override
                         public void onSuccess() {
-                            LOG.addLog("Disconnected successfully");
+                            LOG.addLog(getString(R.string.disconnect_success));
                         }
 
                         @Override
                         public void onFailure(int reasonCode) {
-                            Toast.makeText(getApplicationContext(), "Failed to disconnect", Toast.LENGTH_SHORT).show();
-                            LOG.addLog("Failed to disconnect", String.valueOf(reasonCode));
+                            Toast.makeText(getApplicationContext(), getString(R.string.disconnect_failed), Toast.LENGTH_SHORT).show();
+                            LOG.addLog(getString(R.string.disconnect_failed), String.valueOf(reasonCode));
                         }
                     });
                 }
             });
 
             wifiDirectManager.stopPeerDiscovery(wifiDirectChannel, null);
-            LOG.addLog("WiFi Direct has been disabled");
+            LOG.addLog(getString(R.string.wifi_direct_off));
         }
     }
 
     void endListening() {
         if(receiver.isOrderedBroadcast()) {
             unregisterReceiver(receiver);
-            LOG.addLog("Broadcast on Bt was closed");
+            LOG.addLog(getString(R.string.broadcast_wifi_off));
         }
     }
 
@@ -340,11 +339,11 @@ public class WiFi extends AppCompatActivity {
         if(ClientWiFi.getSocket() != null)
             if(ClientWiFi.getSocket().isConnected()) {
                 try {
-                    SendingData.closeStream(LOG);
+                    SendingData.closeStream(LOG, this);
                     ClientWiFi.getSocket().close();
-                    LOG.addLog("Socket client was closed");
+                    LOG.addLog(getString(R.string.socket_client_close));
                 } catch (IOException e) {
-                    LOG.addLog("Error closing socket client", e.getMessage());
+                    LOG.addLog(getString(R.string.socket_client_close_error), e.getMessage());
                 }
             }
     }
@@ -353,11 +352,11 @@ public class WiFi extends AppCompatActivity {
         if(ServerWiFi.getSocket() != null)
             if(ServerWiFi.getSocket().isConnected()) {
                 try {
-                    SavingData.closeStreams(LOG);
+                    SavingData.closeStreams(LOG, this);
                     ServerWiFi.getSocket().close();
-                    LOG.addLog("Socket server was closed");
+                    LOG.addLog(getString(R.string.socket_server_close));
                 } catch (IOException e) {
-                    LOG.addLog("Error closing socket server", e.getMessage());
+                    LOG.addLog(getString(R.string.socket_server_close_error), e.getMessage());
                 }
             }
     }
@@ -367,10 +366,10 @@ public class WiFi extends AppCompatActivity {
         if(ServerWiFi.getServerSocket() != null) {
             try {
                 ServerWiFi.getServerSocket().close();
-                LOG.addLog("ServerSocket server was closed");
+                LOG.addLog(getString(R.string.server_socket_server_close));
             }
             catch (IOException e) {
-                LOG.addLog("Error closing ServerSocket server", e.getMessage());
+                LOG.addLog(getString(R.string.server_socket_server_close_error), e.getMessage());
             }
         }
     }
@@ -384,18 +383,21 @@ public class WiFi extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
-        MenuItem showLog = menu.findItem(R.id.show_log);
-        showLog.setTitle(Constants.titleLog);
+        MenuItem    showLog = menu.findItem(R.id.show_log),
+                aboutAuthor = menu.findItem(R.id.about_author),
+                changeLanguage = menu.findItem(R.id.change_language);
+        showLog.setTitle(getString(R.string.title_log));
+        aboutAuthor.setVisible(false);
+        changeLanguage.setVisible(false);
         return true;
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.show_log) {
+        if (item.getItemId() == R.id.show_log) {
             Intent intent = new Intent(this, Logs.class);
             startActivity(intent);
-            return true;
         }
         return super.onOptionsItemSelected(item);
     }

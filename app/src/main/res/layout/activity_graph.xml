@@ -15,7 +15,7 @@
             android:id="@+id/button_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/button_back" />
+            android:text="@string/back" />
 
         <TextView
             android:id="@+id/textView_graph"
@@ -35,21 +35,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/graph_upload_time" />
+            android:text="@string/upload_time" />
 
         <RadioButton
             android:id="@+id/radioButton_qualitySignal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/graph_quality_signal" />
+            android:text="@string/signal_quality" />
 
         <RadioButton
             android:id="@+id/radioButton_uploadSpeed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/graph_upload_speed" />
+            android:text="@string/upload_speed" />
     </RadioGroup>
 
     <com.github.mikephil.charting.charts.BarChart

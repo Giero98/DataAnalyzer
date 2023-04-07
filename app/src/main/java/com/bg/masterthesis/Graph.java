@@ -40,7 +40,7 @@ public class Graph extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_graph);
-        setTitle(Constants.titleGraphActivity);
+        setTitle(getString(R.string.title_graph));
 
         declarationButtonsAndChart();
         buttonsResponse();
@@ -175,7 +175,7 @@ public class Graph extends AppCompatActivity {
     @SuppressLint("SetTextI18n")
     void drawGraph(List<BarEntry> graphData) {
         TextView textViewGraph = findViewById(R.id.textView_graph);
-        textViewGraph.setText("File details: " + fileName);
+        textViewGraph.setText(getString(R.string.file_details) + ": " + fileName);
         textViewGraph.setGravity(Gravity.CENTER);
 
         BarDataSet totalGraphData = formatDataSet(graphData);
@@ -214,17 +214,21 @@ public class Graph extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
-        MenuItem itemShowLog = menu.findItem(R.id.show_log);
-        itemShowLog.setTitle(Constants.titleLog);
+        MenuItem    showLog = menu.findItem(R.id.show_log),
+                    aboutAuthor = menu.findItem(R.id.about_author),
+                    changeLanguage = menu.findItem(R.id.change_language);
+        showLog.setTitle(getString(R.string.title_log));
+        aboutAuthor.setVisible(false);
+        changeLanguage.setVisible(false);
         return true;
     }
+
+    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.show_log) {
+        if (item.getItemId() == R.id.show_log) {
             Intent intent = new Intent(this, Logs.class);
             startActivity(intent);
-            return true;
         }
         return super.onOptionsItemSelected(item);
     }

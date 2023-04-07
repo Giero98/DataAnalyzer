@@ -90,7 +90,7 @@ public class Bluetooth extends AppCompatActivity {
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() != 0)
-                    Toast.makeText(this, "The device is discoverable", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.device_discoverable), Toast.LENGTH_SHORT).show();
             });
 
     //endregion
@@ -132,9 +132,9 @@ public class Bluetooth extends AppCompatActivity {
         @SuppressLint("InflateParams")
         View titleView = getLayoutInflater().inflate(R.layout.window_device_selection, null);
         deviceSelection.setCustomTitle(titleView);
-        deviceSelection.setTitle(Constants.titleDialogToSelectDevice);
+        deviceSelection.setTitle(getString(R.string.select_device));
 
-        deviceSelection.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+        deviceSelection.setNegativeButton(getString(R.string.cancel), (dialog, which) -> dialog.dismiss());
 
         deviceSelection.setAdapter(listAdapter, (dialog, which) -> {
             String deviceInfo = listAdapter.getItem(which);
@@ -175,7 +175,7 @@ public class Bluetooth extends AppCompatActivity {
                             Thread.sleep(Constants.delayReadingSignal);
                         }
                         catch (InterruptedException e) {
-                            LOG.addLog("RSSI read hold error", e.getMessage());
+                            LOG.addLog(getString(R.string.rssi_read_error), e.getMessage());
                             break;
                         }
                     } while(ClientBt.getSocket().isConnected());
@@ -198,7 +198,7 @@ public class Bluetooth extends AppCompatActivity {
                         DeclarationOfUIVar.textView_qualitySignal.setText(Integer.toString(percentQualitySignal)));
             }
             else {
-                LOG.addLog("There was an error reading the signal quality value");
+                LOG.addLog(getString(R.string.error_read_signal_quality));
             }
         }
     };
@@ -233,7 +233,7 @@ public class Bluetooth extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == Constants.REQUEST_BT_SEND_DATA_FILE && resultCode == RESULT_OK) {
-            LOG.addLog("Selected a file to upload");
+            LOG.addLog(getString(R.string.file_selected));
 
             fileToSend = data;
             Double fileSize = FileInformation.getFileSize(fileToSend.getData(),this);
@@ -247,8 +247,8 @@ public class Bluetooth extends AppCompatActivity {
 
     @SuppressLint("SetTextI18n")
     void displayFileInformation(Double fileSize, String  fileName, String  fileSizeUnit) {
-        declarationUI.textView_inf.setText("The name of the uploaded file: " + fileName +
-                "\nFile size: " + Constants.decimalFormat.format(fileSize).replace(",", ".") +
+        declarationUI.textView_inf.setText(getString(R.string.file_name) +": "+ fileName +
+                "\n"+ getString(R.string.file_size) +": " + Constants.decimalFormat.format(fileSize).replace(",", ".") +
                 " " + fileSizeUnit + "\n");
     }
 
@@ -287,14 +287,14 @@ public class Bluetooth extends AppCompatActivity {
     void endListening() {
         if(receiver.isOrderedBroadcast()) {
             unregisterReceiver(receiver);
-            LOG.addLog("Broadcast on Bt was closed");
+            LOG.addLog(getString(R.string.broadcast_bt_off));
         }
     }
     @SuppressLint("MissingPermission")
     void closeBtAdapter() {
         if(Constants.bluetoothAdapter.isDiscovering()) {
             Constants.bluetoothAdapter.cancelDiscovery();
-            LOG.addLog("bluetoothAdapter was closed");
+            LOG.addLog(getString(R.string.bt_adapter_close));
         }
     }
 
@@ -303,10 +303,10 @@ public class Bluetooth extends AppCompatActivity {
             if(ClientBt.getSocket().isConnected()) {
                 try {
                     ClientBt.getSocket().close();
-                    LOG.addLog("Socket client Bt was closed");
+                    LOG.addLog(getString(R.string.socket_bt_close));
                 }
                 catch (IOException e) {
-                    LOG.addLog("Error closing socket client Bt", e.getMessage());
+                    LOG.addLog(getString(R.string.socket_bt_close_error), e.getMessage());
                 }
             }
     }
@@ -315,10 +315,10 @@ public class Bluetooth extends AppCompatActivity {
             if(ServerBt.getSocket().isConnected()) {
                 try {
                     ServerBt.getSocket().close();
-                    LOG.addLog("Socket server Bt was closed");
+                    LOG.addLog(getString(R.string.socket_server_bt_close));
                 }
                 catch (IOException e) {
-                    LOG.addLog("Error closing socket server Bt", e.getMessage());
+                    LOG.addLog(getString(R.string.socket_server_bt_close_error), e.getMessage());
                 }
             }
     }
@@ -332,17 +332,21 @@ public class Bluetooth extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
-        MenuItem itemShowLog = menu.findItem(R.id.show_log);
-        itemShowLog.setTitle(Constants.titleLog);
+        MenuItem    showLog = menu.findItem(R.id.show_log),
+                aboutAuthor = menu.findItem(R.id.about_author),
+                changeLanguage = menu.findItem(R.id.change_language);
+        showLog.setTitle(getString(R.string.title_log));
+        aboutAuthor.setVisible(false);
+        changeLanguage.setVisible(false);
         return true;
     }
+
+    @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.show_log) {
+        if (item.getItemId() == R.id.show_log) {
             Intent intent = new Intent(this, Logs.class);
             startActivity(intent);
-            return true;
         }
         return super.onOptionsItemSelected(item);
     }

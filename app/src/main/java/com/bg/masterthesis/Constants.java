@@ -57,21 +57,17 @@ public interface Constants {
             minimumYAxisValue = 0f;
 
     String  NAME = "MASTER_THESIS",
-            titleLog = "Show LOG",
             titleLogActivity = "LOG",
-            titleGraphActivity = "Graph",
             titleBtActivity = "Bluetooth",
             titleWifiActivity = "Wi-Fi",
-            textBack = "Back",
+            wifiDirect = "Wi-Fi Direct",
             connectionBt = "BT",
             connectionWiFi = "WIFI",
             uploadTimeUnit = "[s]",
             qualitySignalUnit = "[%]",
             fileSizeUnitBytes = "Bytes",
             fileSizeUnitKB = "KB",
-            fileSizeUnitMB = "MB",
-            titleDialogToSaveData = "Enter the name of the measurement data file",
-            titleDialogToSelectDevice = "Select a device";
+            fileSizeUnitMB = "MB";
 
     //A unique UUID that will be used as a common identifier for both devices in Bluetooth
     //generated thanks to the website https://www.uuidgenerator.net/

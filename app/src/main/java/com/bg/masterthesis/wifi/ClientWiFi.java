@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.wifi.p2p.WifiP2pInfo;
 
+import com.bg.masterthesis.R;
 import com.bg.masterthesis.ui.DeclarationOfUIVar;
 import com.bg.masterthesis.Logs;
 
@@ -35,7 +36,7 @@ public class ClientWiFi extends Thread {
             declarationUI.updateViewWhenStartClientWifi();
         }
         catch(IOException e) {
-            LOG.addLog("Client socket creation error with host", e.getMessage());
+            LOG.addLog(context.getString(R.string.socket_client_close_error), e.getMessage());
         }
     }
 

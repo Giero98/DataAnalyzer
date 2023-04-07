@@ -8,6 +8,7 @@ import android.content.Context;
 import android.widget.Toast;
 
 import com.bg.masterthesis.Constants;
+import com.bg.masterthesis.R;
 import com.bg.masterthesis.ui.DeclarationOfUIVar;
 import com.bg.masterthesis.Logs;
 
@@ -27,19 +28,19 @@ public class ClientBt extends Thread {
 
     @SuppressLint("MissingPermission")
     public void run() {
-        LOG.addLog("A client Bt has started");
+        LOG.addLog(context.getString(R.string.bt_client_on));
         createSocket();
         Constants.bluetoothAdapter.cancelDiscovery();
         tryConnecting();
 
-        LOG.addLog("The connection attempt succeeded");
+        LOG.addLog(context.getString(R.string.connect_bt_success));
         declarationUI = new DeclarationOfUIVar(context);
         declarationUI.viewAfterSuccessConnectionOnClientBt();
 
         if(!socket.isConnected()) {
             closeSocketClient();
             ((Activity) context).runOnUiThread(() ->
-                    Toast.makeText(context, "Disconnected", Toast.LENGTH_SHORT).show());
+                    Toast.makeText(context, context.getString(R.string.disconnect), Toast.LENGTH_SHORT).show());
         }
     }
 
@@ -49,7 +50,7 @@ public class ClientBt extends Thread {
             socket = device.createRfcommSocketToServiceRecord(Constants.MY_UUID);
         }
         catch (IOException e) {
-            LOG.addLog("Socket's create() method failed", e.getMessage());
+            LOG.addLog(context.getString(R.string.failed_create_socket_bt), e.getMessage());
         }
     }
 
@@ -59,7 +60,7 @@ public class ClientBt extends Thread {
             socket.connect();
         }
         catch (IOException e) {
-            LOG.addLog("Unable to connect", e.getMessage());
+            LOG.addLog(context.getString(R.string.unable_connect), e.getMessage());
             closeSocketClient();
         }
     }
@@ -67,10 +68,10 @@ public class ClientBt extends Thread {
     void closeSocketClient() {
         try {
             socket.close();
-            LOG.addLog("Client socket closed");
+            LOG.addLog(context.getString(R.string.client_socket_close));
         }
         catch (IOException e) {
-            LOG.addLog("Could not close the client socket", e.getMessage());
+            LOG.addLog(context.getString(R.string.client_socket_close_error), e.getMessage());
         }
     }
 

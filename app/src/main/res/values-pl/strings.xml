@@ -1,0 +1,167 @@
+<resources>
+    <string name="about_app"> Aplikacja stworzona na potrzeby pracy magisterskiej, 
+	w której można przeprowadzić badania dotyczące: czasu transferu, prędkości transferu, 
+	jakości połączenia (moduł BT) wysyłając pliki podczas połączenia z innym urządzeniem za 
+	pośrednictwem tej samej aplikacji.</string>
+
+    <!-- Buttons -->
+    <string name="wifi_module">MODUŁ WI-FI</string>
+    <string name="bt_module">MODUŁ BLUETOOTH</string>
+    <string name="start_detect">ROZPOCZĘCIE WYKRYWANIA</string>
+    <string name="find_devices">ZNAJDŹ URZĄDZENIA</string>
+    <string name="show_available_devices">POKAŻ DOSTĘPNE URZĄDZENIA</string>
+    <string name="send">WYŚLIJ</string>
+    <string name="choose_file">WYBIERZ PLIK</string>
+    <string name="save_statistics">ZAPISZ DANE STATYSTYCZNE</string>
+    <string name="show_graphs">POKAŻ WYKRESY</string>
+    <string name="inf_log">LOG INFORMACYJNY</string>
+    <string name="error_log">LOG BŁĘDÓW</string>
+    <string name="cancel">Anuluj</string>
+
+    <!-- Connection -->
+    <string name="not_connected">Nie połączony</string>
+    <string name="port_number">Numer portu</string>
+    <string name="connect_initialization_success">Inicjalizacja połączenia powiodła się</string>
+    <string name="connect_failed">Połączenie nie powiodło się</string>
+    <string name="disconnect_success">Rozłączono pomyślnie</string>
+    <string name="disconnect_failed">Nie udało się rozłączyć</string>
+    <string name="socket_client_close">Gniazdo klienta zostało zamknięte</string>
+    <string name="socket_client_close_error">"Błąd podczas zamykania gniazda klienta "</string>
+    <string name="socket_server_close">Gniazdo serwera zostało zamknięte</string>
+    <string name="socket_server_close_error">"Błąd podczas zamykania gniazda serwera "</string>
+    <string name="server_socket_server_close">ServerSocket został zamknięty</string>
+    <string name="server_socket_server_close_error">Błąd podczas zamykania ServerSocket w serwerze</string>
+    <string name="adding_port">Dodano port zapewniający usługę sieciową</string>
+    <string name="adding_port_error">Dodanie portu dostarczającego usługę sieciową nie powiodło się</string>
+    <string name="connect_as_host">Połączono jako Host</string>
+    <string name="connect_as_client">Połączony jako Klient</string>
+    <string name="disconnect">Rozłącz</string>
+
+    <!-- About Files -->
+    <string name="file_details">Szczegóły pliku</string>
+    <string name="file_selected">Wybrano plik do przesłania</string>
+    <string name="file_name">Nazwa przesłanego pliku</string>
+    <string name="file_size">Rozmiar pliku</string>
+    <string name="file_sent">Plik wysłany</string>
+    <string name="close_stream_to_file">Strumień do pliku zamknięty</string>
+    <string name="close_stream_to_file_error">Nie udało się zamknąć strumienia do pliku</string>
+    <string name="close_output_stream_error">Błąd podczas zamykania strumienia wyjściowego</string>
+
+    <!-- About uploading -->
+
+    <string name="multiple_file">Ile razy przesłać plik?</string>
+    <string name="signal">Sygnał [%]:</string>
+    <string name="sending_file_inf">Wysyłanie informacji o pliku</string>
+    <string name="sending_file_inf_error">Błąd podczas wysyłania informacji o pliku</string>
+    <string name="failed_create_stream_to_sending_file_inf">Nie udało się utworzyć strumienia do odebrania wiadomości, czy informacje o pliku zostały dostarczone</string>
+    <string name="sent">Wysłano</string>
+    <string name="download">Pobrano</string>
+    <string name="download_file">Pobrano plik</string>
+    <string name="end_upload_file_number">Zakończono przesyłać plik numer</string>
+    <string name="end_download_file_number">Zakończono pobierać plik numer</string>
+    <string name="failed_save_on_server">Nie udało się zapisać na serwerze</string>
+    <string name="failed_create_stream_to_receive_message">Nie udało się utworzyć strumienia do odebrania wiadomości, czy plik został dostarczony</string>
+    <string name="failed_send_file">Nie udało się wysłać pliku</string>
+    <string name="open_stream_error">Błąd otwierania strumienia</string>
+    <string name="close_stream_error">Błąd zamykania strumienia</string>
+    <string name="file_inf_retrieved">Trwa pobieranie informacji o pliku</string>
+    <string name="file_name_set">Nazwa pliku została ustawiona</string>
+    <string name="file_downloaded_and_saved">Plik został pobrany i zapisany</string>
+    <string name="file_downloaded_and_saved_error">Błąd pobierania i zapisywania pliku</string>
+    <string name="sending_response_to_download_and_save">Wysyłanie odpowiedzi na pobranie i zapisanie pliku</string>
+
+
+    <!-- About Activity's -->
+    <string name="title_log">Pokaż Logi</string>
+    <string name="back">Wróć</string>
+    <string name="title_save_data">Wprowadź nazwę pliku danych pomiarowych</string>
+    <string name="select_device">Wybierz urządzenie</string>
+    <string name="value_between_1_100">Wpisz wartość z zakresu 1\-100</string>
+    <string name="enter_value">Wprowadź wartość liczbową</string>
+    <string name="incorrect_format">Załadowano nieprawidłowy format</string>
+    <string name="file_size_in">Rozmiar pliku w</string>
+    <string name="signal_quality">Jakość sygnału</string>
+    <string name="sending_time">Czas wysyłania [s]</string>
+    <string name="upload_speed">Prędkość wysyłania</string>
+    <string name="name_received_file">Nazwa otrzymanego pliku</string>
+    <string name="rssi_read_error">Błąd wstrzymania odczytu RSSI</string>
+    <string name="error_read_signal_quality">Wystąpił błąd podczas odczytu wartości jakości sygnału</string>
+
+
+    <!-- Measurement Data -->
+    <string name="file_upload_number">Numer przesłanego pliku</string>
+    <string name="file_size_bytes">Rozmiar pliku w bajtach</string>
+    <string name="size_set_buffer">Rozmiar ustawionego bufora:</string>
+    <string name="upload_time">Czas przesyłania</string>
+    <string name="upload_speed_is">Prędkość przesyłania jest</string>
+    <string name="data_saved">Dane zostały zapisane</string>
+    <string name="data_saved_error">Błąd zapisu danych pomiarowych do pliku</string>
+    <string name="name_of_file_to_save">Wprowadź nazwę pliku do zapisania</string>
+
+    <!-- Graph -->
+    <string name="title_graph">Wykres</string>
+    <string name="graph_text">Wybierz wykres, który chcesz wyświetlić</string>
+
+    <!-- Author -->
+    <string name="about_author">O Autorze</string>
+    <string name="text_about_author">Bartosz Gieras</string>
+
+    <!-- Languages -->
+    <string name="change_lang">Zmień język</string>
+    <string name="choose_language">Wybierz język</string>
+    <string name="polish">Polski</string>
+    <string name="english">Angielski</string>
+
+    <!-- Buffer -->
+    <string name="buffer_size">Rozmiar bufora:</string>
+    <string-array name="buffer_size_array">
+        <item>4KB</item>
+        <item>8KB</item>
+        <item>16KB</item>
+        <item>32KB</item>
+        <item>64KB</item>
+        <item>128KB</item>
+        <item>256KB</item>
+        <item>10% pliku</item>
+    </string-array>
+
+    <!-- Toast -->
+        <string name="turn_on_location">Proszę włączyć lokalizację</string>
+
+        <!-- Bluetooth -->
+        <string name="doesnt_support_bt">Urządzenie nie obsługuje Bluetooth</string>
+        <string name="bt_on">Uruchomiono Bluetooth</string>
+        <string name="bt_off">Bluetooth nie jest włączony</string>
+        <string name="bt_server_on">Serwer Bt został uruchomiony</string>
+        <string name="bt_server_off">Serwer Bt został zakończony</string>
+        <string name="connect_bt_success">Próba połączenia przez Bt powiodła się</string>
+        <string name="socket_bt_failed">Metoda Socket Bt Listen() nie powiodła się</string>
+        <string name="error_close_server_socket_bt">Błąd podczas zamykania strumienia wyjściowego na połączeniu Bt</string>
+        <string name="failed_socket_bt">Metoda Socket Bt accept() nie powiodła się</string>
+        <string name="failed_create_socket_bt">Metoda create() gniazda nie powiodła się</string>
+        <string name="error_close_socket_bt">Błąd podczas zamykania gniazda Bt</string>
+        <string name="bt_client_on">Klient Bt został uruchomiony</string>
+        <string name="unable_connect">Nie można połączyć</string>
+        <string name="client_socket_close">Gniazdo klienta zamknięte</string>
+        <string name="client_socket_close_error">Nie można zamknąć gniazda klienta</string>
+        <string name="device_discoverable">Urządzenie jest wykrywalne</string>
+        <string name="broadcast_bt_off">Transmisja na BT została zamknięta</string>
+        <string name="bt_adapter_close">BluetoothAdapter został zamknięty</string>
+        <string name="socket_bt_close">Gniazdo klienta Bt zostało zamknięte</string>
+        <string name="socket_bt_close_error">Błąd podczas zamykania gniazda klienta Bt</string>
+        <string name="socket_server_bt_close">Serwer gniazdo Bt zostało zamknięte</string>
+        <string name="socket_server_bt_close_error">Błąd podczas zamykania serwera gniazda Bt</string>
+
+        <!-- Wi-Fi -->
+        <string name="wifi_on">Wi-Fi zostało uruchomione</string>
+        <string name="wifi_off">Wi-Fi nie włączone</string>
+        <string name="wifi_direct_doesnt_support">Urządzenie nie obsługuje funkcji WiFi Direct</string>
+        <string name="no_devices_found">Nie znaleziono urządzeń</string>
+        <string name="discovery_started">Rozpoczęło się odkrywanie</string>
+        <string name="discovery_failed">Odkrycie nie powiodło się</string>
+        <string name="wifi_direct_off">Funkcja Wi-Fi Direct została wyłączona</string>
+        <string name="broadcast_wifi_off">Transmisja przez Wi-Fi została zamknięta</string>
+        <string name="server_wifi_on">Serwer Wifi został uruchomiony</string>
+        <string name="connect_by_wifi_direct_error">Wysyłanie odpowiedzi na pobranie i zapisanie pliku</string>
+
+</resources>

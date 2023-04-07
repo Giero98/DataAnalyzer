@@ -8,6 +8,7 @@ import android.os.Environment;
 import android.widget.Toast;
 
 import com.bg.masterthesis.Constants;
+import com.bg.masterthesis.R;
 import com.bg.masterthesis.ui.DeclarationOfUIVar;
 import com.bg.masterthesis.Logs;
 
@@ -55,7 +56,7 @@ public class SavingData {
                 String fileSizeString = dataArrayFileDetails[2];
                 String bufferSizeString = dataArrayFileDetails[3];
                 String multipleFileString = dataArrayFileDetails[4];
-                LOG.addLog("File information is being retrieved");
+                LOG.addLog(context.getString(R.string.file_inf_retrieved));
                 Arrays.fill(buffer, 0, buffer.length, (byte) 0);
 
                 long fileSizeBytes = Long.parseLong(fileSizeString);
@@ -71,7 +72,7 @@ public class SavingData {
                     long fullBytes = 0;
                     try {
                         fileToSave = new FileOutputStream(setFilePlace());
-                        LOG.addLog("The file name has been set");
+                        LOG.addLog(context.getString(R.string.file_name_set));
                         byte[] bufferData = new byte[bufferSize];
 
                         while ((bytes = inputStream.read(bufferData)) > 0) {
@@ -80,49 +81,49 @@ public class SavingData {
                             long percent = 100 * (fullBytes + fileSizeBytes * repeat) /
                                     (fileSizeBytes * multipleFile);
                             ((Activity) context).runOnUiThread(() -> {
-                                declarationUI.textView_percent.setText("Download: " + percent + " %");
+                                declarationUI.textView_percent.setText(context.getString(R.string.download) +": "+percent+" %");
                                 declarationUI.progressBar.setProgress((int) percent);
                             });
                             if (fullBytes == fileSizeBytes) {
-                                LOG.addLog("End of download file number " + (repeat + 1));
+                                LOG.addLog(context.getString(R.string.end_download_file_number) +" "+ (repeat + 1));
                                 Arrays.fill(bufferData, 0, bufferData.length, (byte) 0);
                                 break;
                             }
                         }
                         fileToSave.flush();
-                        LOG.addLog("The file has been downloaded and saved");
+                        LOG.addLog(context.getString(R.string.file_downloaded_and_saved));
                         confirmMessage = "Confirmed";
                     }
                     catch (IOException e) {
-                        LOG.addLog("Error downloaded and saving file", e.getMessage());
+                        LOG.addLog(context.getString(R.string.file_downloaded_and_saved_error), e.getMessage());
                         confirmMessage = "NoneConfirmed";
                     }
                     finally {
                         try {
                             if (fileToSave != null) {
                                 fileToSave.close();
-                                LOG.addLog("Stream to file closed");
+                                LOG.addLog(context.getString(R.string.close_stream_to_file));
                             }
                         }
                         catch (IOException e) {
-                            LOG.addLog("Error closing output stream:", e.getMessage());
+                            LOG.addLog(context.getString(R.string.close_output_stream_error), e.getMessage());
                         }
                     }
                     outputStream.write(confirmMessage.getBytes());
                     outputStream.flush();
-                    LOG.addLog("Sending response to download and save file");
+                    LOG.addLog(context.getString(R.string.sending_response_to_download_and_save));
 
                     if (confirmMessage.equals("Confirmed")) {
                         updateTextInf(fileName,fileSizeBytes,fileSizeUnit);
                     }
                     else {
                         ((Activity) context).runOnUiThread(() ->
-                                declarationUI.textView_inf.setText("Error downloaded and saving file"));
+                                declarationUI.textView_inf.setText(context.getString(R.string.file_downloaded_and_saved_error)));
                         break;
                     }
                 }
                 ((Activity) context).runOnUiThread(() ->
-                        Toast.makeText(context, "Downloaded file", Toast.LENGTH_SHORT).show());
+                        Toast.makeText(context, context.getString(R.string.download_file), Toast.LENGTH_SHORT).show());
             }
         }
         catch (Exception ignored) {
@@ -135,7 +136,7 @@ public class SavingData {
             outputStream = socket.getOutputStream();
         }
         catch (IOException e) {
-            LOG.addLog("Open streams error", e.getMessage());
+            LOG.addLog(context.getString(R.string.open_stream_error), e.getMessage());
         }
     }
 
@@ -145,7 +146,7 @@ public class SavingData {
             outputStream = socket.getOutputStream();
         }
         catch (IOException e) {
-            LOG.addLog("Open streams error", e.getMessage());
+            LOG.addLog(context.getString(R.string.open_stream_error), e.getMessage());
         }
     }
 
@@ -180,8 +181,8 @@ public class SavingData {
         double fileSize = conversionFileSize(fileSizeBytes, fileSizeUnit);
         ((Activity) context).runOnUiThread(() ->
                 declarationUI.textView_inf.setText(declarationUI.textView_inf.getText() +
-                        "The name of the received file: " + fileName +
-                        "\nFile size: " +
+                        context.getString(R.string.name_received_file) +": "+ fileName +
+                        "\n"+ context.getString(R.string.file_size) +": " +
                         Constants.decimalFormat.format(fileSize).replace(",", ".") +
                         " " + fileSizeUnit + "\n\n"));
     }
@@ -200,7 +201,7 @@ public class SavingData {
         return fileSize;
     }
 
-    public static void closeStreams(Logs LOG) {
+    public static void closeStreams(Logs LOG, Context context) {
         try{
             if(inputStream != null)
                 inputStream.close();
@@ -208,7 +209,7 @@ public class SavingData {
                 outputStream.close();
         }
         catch (IOException e) {
-            LOG.addLog("Error close streams", e.getMessage());
+            LOG.addLog(context.getString(R.string.close_stream_error), e.getMessage());
         }
     }
 }

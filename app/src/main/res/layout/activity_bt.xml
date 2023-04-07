@@ -17,7 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/textView_connected_first"
+            android:text="@string/not_connected"
             android:textSize="18sp"
             tools:ignore="InefficientWeight" />
 
@@ -25,7 +25,7 @@
             android:id="@+id/textView_qualitySignalText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/quality_signal"
+            android:text="@string/signal"
             android:visibility="invisible"
             tools:ignore="VisualLintBounds" />
 
@@ -43,8 +43,8 @@
         android:orientation="horizontal">
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <Button
@@ -52,7 +52,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="@string/button_back"
+                android:text="@string/back"
                 app:icon="@drawable/ic_bt_disconnect_back"
                 tools:ignore="TextSizeCheck" />
 
@@ -61,7 +61,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="@string/button_foundDevice"
+                android:text="@string/find_devices"
                 app:icon="@drawable/ic_search"
                 tools:ignore="TextSizeCheck" />
 
@@ -70,7 +70,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="@string/button_detect"
+                android:text="@string/start_detect"
                 app:icon="@drawable/ic_bt_detected"
                 tools:ignore="TextSizeCheck" />
 
@@ -78,7 +78,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingStart="10dp"
             tools:ignore="RtlSymmetry">
@@ -89,7 +89,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="2"
                 android:visibility="invisible"
-                android:text="@string/button_chooseFile"
+                android:text="@string/choose_file"
                 app:icon="@drawable/ic_choose_file" />
 
             <Button
@@ -97,7 +97,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
-                android:text="@string/button_sendData"
+                android:text="@string/send"
                 android:visibility="invisible"
                 app:icon="@drawable/ic_send_file" />
 
@@ -106,7 +106,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
-                android:text="@string/button_save_measurement_data"
+                android:text="@string/save_statistics"
                 app:icon="@drawable/ic_save_data"
                 android:visibility="invisible" />
 
@@ -115,7 +115,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
-                android:text="@string/button_graph"
+                android:text="@string/show_graphs"
                 app:icon="@drawable/ic_graph"
                 android:visibility="invisible" />
 

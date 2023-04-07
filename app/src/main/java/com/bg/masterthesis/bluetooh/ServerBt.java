@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 
 import com.bg.masterthesis.Constants;
+import com.bg.masterthesis.R;
 import com.bg.masterthesis.ui.DeclarationOfUIVar;
 import com.bg.masterthesis.Logs;
 import com.bg.masterthesis.file.SavingData;
@@ -26,17 +27,17 @@ public class ServerBt extends Thread {
 
     @SuppressLint("SetTextI18n")
     public void run() {
-        LOG.addLog("A server Bt has started");
+        LOG.addLog(context.getString(R.string.bt_server_on));
         startServerSocket();
         waitingForConnection();
         if (socket != null) {
-            LOG.addLog("The connection by Bt attempt succeeded");
+            LOG.addLog(context.getString(R.string.connect_bt_success));
             declarationUI = new DeclarationOfUIVar(context);
             declarationUI.viewAfterSuccessConnectionOnServerBt();
             savingData();
         }
         closeServerSocket();
-        LOG.addLog("The server Bt has ended");
+        LOG.addLog(context.getString(R.string.bt_server_off));
     }
 
     @SuppressLint("MissingPermission")
@@ -45,7 +46,7 @@ public class ServerBt extends Thread {
             serverSocket = Constants.bluetoothAdapter.listenUsingRfcommWithServiceRecord(Constants.NAME, Constants.MY_UUID);
         }
         catch (IOException e) {
-            LOG.addLog("Socket's Bt listen() method failed", e.getMessage());
+            LOG.addLog(context.getString(R.string.socket_bt_failed), e.getMessage());
         }
     }
 
@@ -54,7 +55,7 @@ public class ServerBt extends Thread {
             serverSocket.close();
         }
         catch (IOException e) {
-            LOG.addLog("Error closing output stream on Bt connection:", e.getMessage());
+            LOG.addLog(context.getString(R.string.error_close_server_socket_bt), e.getMessage());
         }
     }
 
@@ -63,7 +64,7 @@ public class ServerBt extends Thread {
             socket = serverSocket.accept();
         }
         catch (IOException e) {
-            LOG.addLog("Socket's Bt accept() method failed", e.getMessage());
+            LOG.addLog(context.getString(R.string.failed_socket_bt), e.getMessage());
         }
     }
 
@@ -73,7 +74,7 @@ public class ServerBt extends Thread {
             savingData.startSavingData();
         }
         declarationUI.updateViewWhenDisconnected();
-        SavingData.closeStreams(LOG);
+        SavingData.closeStreams(LOG, context);
         closeSocket();
     }
 
@@ -82,7 +83,7 @@ public class ServerBt extends Thread {
             socket.close();
         }
         catch (IOException ex) {
-            LOG.addLog("Error closing socket's Bt", ex.getMessage());
+            LOG.addLog(context.getString(R.string.error_close_socket_bt), ex.getMessage());
         }
     }
 
