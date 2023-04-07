@@ -199,7 +199,7 @@ public class SendingData {
                     context.getString(R.string.file_size_bytes) + "," +
                     context.getString(R.string.file_size_in) +" "+ fileSizeUnit + "," +
                     context.getString(R.string.sending_time) + "," +
-                    context.getString(R.string.upload_speed) +"["+ fileSizeUnit +"/s]");
+                    context.getString(R.string.upload_speed) +" ["+ fileSizeUnit +"/s]");
         }
     }
 
