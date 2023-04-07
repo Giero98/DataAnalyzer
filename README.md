@@ -64,12 +64,12 @@ The screenshots shown below are licensed [CC-BY-4.0][cc-by-4.0]
 [License][license] © Bartosz Gieras
 
 [app_logo]: https://github.com/Giero98/MasterThesis/blob/main/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
-[main_menu]:  https://github.com/Giero98/MasterThesis/blob/main/app_screens/main_menu.png
-[languages]: https://github.com/Giero98/MasterThesis/blob/main/app_screens/languages.png
-[bt_module]: https://github.com/Giero98/MasterThesis/blob/main/app_screens/bt_module.png
-[wifi_module]: https://github.com/Giero98/MasterThesis/blob/main/app_screens/wifi_module.png
-[after_send_file]: https://github.com/Giero98/MasterThesis/blob/main/app_screens/after_send_file.png
-[graph]: https://github.com/Giero98/MasterThesis/blob/main/app_screens/graph.png
+[main_menu]:  https://github.com/Giero98/MasterThesis/blob/main/app_screens/main_menu.pngx
+[languages]: https://github.com/Giero98/MasterThesis/blob/main/app_screens/languages.pngx
+[bt_module]: https://github.com/Giero98/MasterThesis/blob/main/app_screens/bt_module.pngx
+[wifi_module]: https://github.com/Giero98/MasterThesis/blob/main/app_screens/wifi_module.pngx
+[after_send_file]: https://github.com/Giero98/MasterThesis/blob/main/app_screens/after_send_file.pngx
+[graph]: https://github.com/Giero98/MasterThesis/blob/main/app_screens/graph.pngx
 
 [canva]: https://www.canva.com/
 [cc-by-4.0]: https://creativecommons.org/licenses/by/4.0/deed.en
