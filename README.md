@@ -3,14 +3,6 @@
 ![alt text][app_logo]\
 The ic_launcher.png image is an original image created on the [Canva][canva] platform under license [CC-BY-4.0][cc-by-4.0]
 
-## Screenshots
-![alt text][main_menu]
-![alt text][languages]
-![alt text][bt_module]
-![alt text][wifi_module]
-![alt text][after_send_file]
-![alt text][graph]
-
 ## Overview
 
 An application created for the needs of the master's thesis,
@@ -56,6 +48,17 @@ Other icons used in the project are used under the [Apache License, Version 2.0]
 The following were used to display the charts:
 - [MPAndroidChart v3.1.0][mpandroidchart] library by [PhilJay][philjay] licensed under
 [Apache License, Version 2.0][apache_license]
+
+## Screenshots
+
+The screenshots shown below are licensed [CC-BY-4.0][cc-by-4.0]
+
+![alt text][main_menu]
+![alt text][languages]
+![alt text][bt_module]
+![alt text][wifi_module]
+![alt text][after_send_file]
+![alt text][graph]
 
 ## License
 [License][license] © Bartosz Gieras
