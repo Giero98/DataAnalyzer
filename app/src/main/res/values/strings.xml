@@ -4,9 +4,9 @@
     <string name="default_multiple_file" translatable="false">1</string>
     <string name="port" translatable="false">Port</string>
 
-    <string name="about_app"> An application created for the needs of the master\'s thesis,
-        in which you can conduct research on: transfer time, transfer speed, connection quality (BT module) 
-        by sending files while connected to another device via the same app.</string>
+    <string name="about_app"> An application in which you can conduct research on: transfer time,
+        transfer speed, connection quality (BT module) by sending files while connected to another
+        device via the same app. Bluetooth and Wi-Fi Direct technologies are used.</string>
 
     <!-- Buttons -->
     <string name="wifi_module">Wi-Fi MODULE</string>
@@ -59,7 +59,6 @@
     <string name="failed_create_stream_to_sending_file_inf">Failed to create stream to receive message whether file information was delivered</string>
     <string name="failed_create_stream_to_receive_message">Failed to create stream to receive message whether file was delivered</string>
 
-
     <!-- About uploading -->
     <string name="multiple_file">How many times to upload the file?</string>
     <string name="signal">Signal [%]:</string>
@@ -110,7 +109,9 @@
 
     <!-- Author -->
     <string name="about_author">About Author</string>
-    <string name="text_about_author">Bartosz Gieras</string>
+    <string name="text_about_author">My name is Bartosz Gieras and I am the creator of this application. I am an engineer of Applied Mathematics and a Master of Computer Science by education.
+The given application was used for research included in my master\'s thesis entitled "Analysis of data transmission in Bluetooth and Wi-Fi technologies in communication between mobile devices".
+If you have any questions or comments about this application, below is my profile on GitHub:</string>
 
     <!-- Languages -->
     <string name="change_lang">Change Language</string>
@@ -169,5 +170,7 @@
         <string name="broadcast_wifi_off">Broadcast on Wi-Fi was closed"</string>
         <string name="server_wifi_on">A server Wifi has started</string>
         <string name="connect_by_wifi_direct_error">Connection by Wifi Direct error</string>
+        <string name="failed_connect_via_wifi_direct">Failed to connect via Wi-Fi Direct</string>
+        <string name="no_sevices_found">No services found</string>
 
 </resources>

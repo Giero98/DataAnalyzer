@@ -14,9 +14,13 @@ import android.location.LocationManager;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.bluetooth.BluetoothAdapter;
 
@@ -214,12 +218,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
                 break;
             case R.id.about_author:
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle(getString(R.string.about_author))
-                        .setMessage(getString(R.string.text_about_author))
-                        .setPositiveButton("OK", null);
-                AlertDialog dialog = builder.create();
-                dialog.show();
+                createAuthorWindow();
                 break;
             case R.id.change_language:
                 ChangeLanguage changeLanguage = new ChangeLanguage(this,this);
@@ -227,5 +226,22 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @SuppressLint("SetTextI18n")
+    void createAuthorWindow() {
+        TextView textView = new TextView(this);
+        textView.setTextSize(Constants.axisValueSize);
+        textView.setGravity(Gravity.CENTER);
+        textView.setText(getString(R.string.text_about_author)+"\n");
+        textView.append(Html.fromHtml(Constants.link_github));
+        textView.setMovementMethod(LinkMovementMethod.getInstance());
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.about_author))
+                .setView(textView)
+                .setPositiveButton("OK", null);
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }

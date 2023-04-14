@@ -37,7 +37,8 @@ public interface Constants {
             graphAnimationDuration = 1000, //s
             maximumNumberOfColumnsOnTheScreen = 4,
             rangePossiblePortsToConnect = 6000,
-            smallestPortToConnect = 1024;
+            smallestPortToConnect = 1024,
+            connectionTimeout = 5000;
 
     int[] bufferSizes = {
             size1Kb * 4,
@@ -50,7 +51,7 @@ public interface Constants {
             0
             };
 
-    float   axisValueSize = 16f,
+    float   axisValueSize = 18f,
             columnWidth = 0.7f,
             distanceBetweenXAxisData = 1f,
             distanceBetweenYAxisData = 0.001f,
@@ -67,7 +68,8 @@ public interface Constants {
             qualitySignalUnit = "[%]",
             fileSizeUnitBytes = "Bytes",
             fileSizeUnitKB = "KB",
-            fileSizeUnitMB = "MB";
+            fileSizeUnitMB = "MB",
+            link_github = "<a href=\"https://github.com/Giero98\">GitHub</a>";
 
     //A unique UUID that will be used as a common identifier for both devices in Bluetooth
     //generated thanks to the website https://www.uuidgenerator.net/

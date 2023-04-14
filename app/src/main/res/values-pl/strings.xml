@@ -1,8 +1,7 @@
 <resources>
-    <string name="about_app"> Aplikacja stworzona na potrzeby pracy magisterskiej, 
-	w której można przeprowadzić badania dotyczące: czasu transferu, prędkości transferu, 
+    <string name="about_app"> Aplikacja w której można przeprowadzić badania dotyczące: czasu transferu, prędkości transferu,
 	jakości połączenia (moduł BT) wysyłając pliki podczas połączenia z innym urządzeniem za 
-	pośrednictwem tej samej aplikacji.</string>
+	pośrednictwem tej samej aplikacji. Wykorzystywane są technologie Bluetooth oraz Wi-Fi Direct.</string>
 
     <!-- Buttons -->
     <string name="wifi_module">MODUŁ WI-FI</string>
@@ -104,7 +103,9 @@
 
     <!-- Author -->
     <string name="about_author">O Autorze</string>
-    <string name="text_about_author">Bartosz Gieras</string>
+    <string name="text_about_author">Nazywam się Bartosz Gieras i jestem twórcą tej aplikacji. Z wykształcenia jestem inżynierem Matematyki Stosowanej i magistrem Informatyki.
+Podana aplikacja służyła mi do badań zawartych w pracy magisterskiej pod tytułem "Analiza transmisji danych w technologiach Bluetooth i Wi-Fi w komunikacji pomiędzy urządzeniami mobilnymi".
+Jeśli masz jakieś pytania lub uwagi dotyczące tej aplikacji poniżej znajduje się mój profil na GitHub:</string>
 
     <!-- Languages -->
     <string name="change_lang">Zmień język</string>
@@ -163,5 +164,7 @@
         <string name="broadcast_wifi_off">Transmisja przez Wi-Fi została zamknięta</string>
         <string name="server_wifi_on">Serwer Wifi został uruchomiony</string>
         <string name="connect_by_wifi_direct_error">Wysyłanie odpowiedzi na pobranie i zapisanie pliku</string>
+    <string name="failed_connect_via_wifi_direct">Nie udało się nawiązać połączenia przez Wi-Fi Direct</string>
+    <string name="no_sevices_found">Nie udało się znaleźć żadnych usług</string>
 
 </resources>

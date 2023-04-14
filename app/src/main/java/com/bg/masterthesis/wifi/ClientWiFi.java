@@ -1,9 +1,11 @@
 package com.bg.masterthesis.wifi;
 
-import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.net.wifi.p2p.WifiP2pInfo;
+import android.widget.Toast;
 
+import com.bg.masterthesis.Constants;
 import com.bg.masterthesis.R;
 import com.bg.masterthesis.ui.DeclarationOfUIVar;
 import com.bg.masterthesis.Logs;
@@ -26,16 +28,17 @@ public class ClientWiFi extends Thread {
         port = Integer.parseInt(portNumber);
     }
 
-    @SuppressLint("SetTextI18n")
     @Override
     public void run() {
         try {
-            socket.connect(new InetSocketAddress(serverAddress,port),5000);
+            socket.connect(new InetSocketAddress(serverAddress,port), Constants.connectionTimeout);
 
             DeclarationOfUIVar declarationUI = new DeclarationOfUIVar(context);
             declarationUI.updateViewWhenStartClientWifi();
         }
         catch(IOException e) {
+            ((Activity) context).runOnUiThread(() ->
+                    Toast.makeText(context,context.getString(R.string.socket_client_close_error),Toast.LENGTH_SHORT).show());
             LOG.addLog(context.getString(R.string.socket_client_close_error), e.getMessage());
         }
     }

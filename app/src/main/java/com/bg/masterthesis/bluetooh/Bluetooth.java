@@ -175,6 +175,7 @@ public class Bluetooth extends AppCompatActivity {
                             Thread.sleep(Constants.delayReadingSignal);
                         }
                         catch (InterruptedException e) {
+                            Toast.makeText(getApplicationContext(),getString(R.string.rssi_read_error),Toast.LENGTH_SHORT).show();
                             LOG.addLog(getString(R.string.rssi_read_error), e.getMessage());
                             break;
                         }
@@ -198,6 +199,7 @@ public class Bluetooth extends AppCompatActivity {
                         DeclarationOfUIVar.textView_qualitySignal.setText(Integer.toString(percentQualitySignal)));
             }
             else {
+                Toast.makeText(getApplicationContext(),getString(R.string.error_read_signal_quality),Toast.LENGTH_SHORT).show();
                 LOG.addLog(getString(R.string.error_read_signal_quality));
             }
         }
@@ -306,6 +308,7 @@ public class Bluetooth extends AppCompatActivity {
                     LOG.addLog(getString(R.string.socket_bt_close));
                 }
                 catch (IOException e) {
+                    Toast.makeText(getApplicationContext(),getString(R.string.socket_bt_close_error),Toast.LENGTH_SHORT).show();
                     LOG.addLog(getString(R.string.socket_bt_close_error), e.getMessage());
                 }
             }
@@ -318,6 +321,7 @@ public class Bluetooth extends AppCompatActivity {
                     LOG.addLog(getString(R.string.socket_server_bt_close));
                 }
                 catch (IOException e) {
+                    Toast.makeText(getApplicationContext(),getString(R.string.socket_server_bt_close_error),Toast.LENGTH_SHORT).show();
                     LOG.addLog(getString(R.string.socket_server_bt_close_error), e.getMessage());
                 }
             }

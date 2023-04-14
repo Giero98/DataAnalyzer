@@ -1,9 +1,11 @@
 package com.bg.masterthesis.bluetooh;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
+import android.widget.Toast;
 
 import com.bg.masterthesis.Constants;
 import com.bg.masterthesis.R;
@@ -46,6 +48,8 @@ public class ServerBt extends Thread {
             serverSocket = Constants.bluetoothAdapter.listenUsingRfcommWithServiceRecord(Constants.NAME, Constants.MY_UUID);
         }
         catch (IOException e) {
+            ((Activity) context).runOnUiThread(() ->
+                    Toast.makeText(context,context.getString(R.string.socket_bt_failed),Toast.LENGTH_SHORT).show());
             LOG.addLog(context.getString(R.string.socket_bt_failed), e.getMessage());
         }
     }
@@ -55,6 +59,8 @@ public class ServerBt extends Thread {
             serverSocket.close();
         }
         catch (IOException e) {
+            ((Activity) context).runOnUiThread(() ->
+                    Toast.makeText(context,context.getString(R.string.error_close_server_socket_bt),Toast.LENGTH_SHORT).show());
             LOG.addLog(context.getString(R.string.error_close_server_socket_bt), e.getMessage());
         }
     }
@@ -64,6 +70,8 @@ public class ServerBt extends Thread {
             socket = serverSocket.accept();
         }
         catch (IOException e) {
+            ((Activity) context).runOnUiThread(() ->
+                    Toast.makeText(context,context.getString(R.string.failed_socket_bt),Toast.LENGTH_SHORT).show());
             LOG.addLog(context.getString(R.string.failed_socket_bt), e.getMessage());
         }
     }
@@ -83,6 +91,8 @@ public class ServerBt extends Thread {
             socket.close();
         }
         catch (IOException ex) {
+            ((Activity) context).runOnUiThread(() ->
+                    Toast.makeText(context,context.getString(R.string.error_close_socket_bt),Toast.LENGTH_SHORT).show());
             LOG.addLog(context.getString(R.string.error_close_socket_bt), ex.getMessage());
         }
     }
