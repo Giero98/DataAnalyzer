@@ -5,9 +5,11 @@ The ic_launcher.png image is an original image created on the [Canva][canva] pla
 
 ## Overview
 
-An application created for the needs of the master's thesis,
-in which you can conduct research on: transfer time, transfer speed, connection quality (BT module) 
-by sending files while connected to another device via the same app.
+An application in which you can conduct research on: transfer time,
+transfer speed, connection quality (BT module) by sending files while connected to another
+device via the same app. Bluetooth and Wi-Fi Direct technologies are used.\
+The given application was used for research included in my master's thesis entitled "Analysis of data 
+transmission in Bluetooth and Wi-Fi technologies in communication between mobile devices".
 
 ### Features
 
@@ -61,7 +63,7 @@ The screenshots shown below are licensed [CC-BY-4.0][cc-by-4.0]
 ![alt text][graph]
 
 ## License
-[License][license] © Bartosz Gieras
+[MIT][license] Copyright © 2023 Bartosz Gieras
 
 [app_logo]: https://github.com/Giero98/MasterThesis/blob/main/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
 [main_menu]:  https://github.com/Giero98/MasterThesis/blob/main/app_screens/main_menu.png

@@ -4,9 +4,11 @@ import static com.bg.masterthesis.wifi.WiFi.wifiDirectChannel;
 import static com.bg.masterthesis.wifi.WiFi.wifiDirectManager;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.nsd.WifiP2pDnsSdServiceInfo;
+import android.widget.Toast;
 
 import com.bg.masterthesis.Constants;
 import com.bg.masterthesis.R;
@@ -58,6 +60,7 @@ public class ServerWiFi extends Thread{
         }
     }
 
+    @SuppressLint("MissingPermission")
     public void startRegistration() {
         HashMap<String,String> record = new HashMap<>();
         record.put(context.getString(R.string.port), String.valueOf(port));
@@ -72,6 +75,8 @@ public class ServerWiFi extends Thread{
             }
             @Override
             public void onFailure(int arg0) {
+                ((Activity) context).runOnUiThread(() ->
+                        Toast.makeText(context,context.getString(R.string.adding_port_error),Toast.LENGTH_SHORT).show());
                 LOG.addLog(context.getString(R.string.adding_port_error), String.valueOf(arg0));
             }
         });
@@ -88,6 +93,8 @@ public class ServerWiFi extends Thread{
                 savingData();
             }
             catch (IOException e) {
+                ((Activity) context).runOnUiThread(() ->
+                        Toast.makeText(context,context.getString(R.string.connect_by_wifi_direct_error),Toast.LENGTH_SHORT).show());
                 LOG.addLog(context.getString(R.string.connect_by_wifi_direct_error), e.getMessage());
             }
         } while(socket==null);

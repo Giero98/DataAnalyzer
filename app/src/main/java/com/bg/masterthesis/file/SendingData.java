@@ -86,10 +86,14 @@ public class SendingData {
                     LOG.addLog(context.getString(R.string.sending_file_inf));
                 }
                 else {
+                    ((Activity) context).runOnUiThread(() ->
+                            Toast.makeText(context,context.getString(R.string.sending_file_inf_error),Toast.LENGTH_SHORT).show());
                     LOG.addLog(context.getString(R.string.sending_file_inf_error));
                 }
             }
             catch (IOException e) {
+                ((Activity) context).runOnUiThread(() ->
+                        Toast.makeText(context,context.getString(R.string.failed_create_stream_to_sending_file_inf),Toast.LENGTH_SHORT).show());
                 LOG.addLog(context.getString(R.string.failed_create_stream_to_sending_file_inf), e.getMessage());
             }
             Arrays.fill(confirmBuffer, 0, confirmBuffer.length, (byte) 0);
@@ -141,10 +145,14 @@ public class SendingData {
                         }
                     }
                     catch (IOException e) {
+                        ((Activity) context).runOnUiThread(() ->
+                                Toast.makeText(context,context.getString(R.string.failed_create_stream_to_receive_message),Toast.LENGTH_SHORT).show());
                         LOG.addLog(context.getString(R.string.failed_create_stream_to_receive_message), e.getMessage());
                     }
                 }
                 catch (IOException e) {
+                    ((Activity) context).runOnUiThread(() ->
+                            Toast.makeText(context,context.getString(R.string.failed_send_file),Toast.LENGTH_SHORT).show());
                     LOG.addLog(context.getString(R.string.failed_send_file), e.getMessage());
                 }
             }
@@ -157,10 +165,14 @@ public class SendingData {
                 }
             }
             catch (IOException e) {
+                ((Activity) context).runOnUiThread(() ->
+                        Toast.makeText(context,context.getString(R.string.close_stream_to_file_error),Toast.LENGTH_SHORT).show());
                 LOG.addLog(context.getString(R.string.close_stream_to_file_error), e.getMessage());
             }
         }
         catch (IOException e) {
+            ((Activity) context).runOnUiThread(() ->
+                    Toast.makeText(context,context.getString(R.string.sending_file_inf_error),Toast.LENGTH_SHORT).show());
             LOG.addLog(context.getString(R.string.sending_file_inf_error), e.getMessage());
         }
     }
@@ -171,6 +183,8 @@ public class SendingData {
             outputStream = socket.getOutputStream();
         }
         catch (IOException e) {
+            ((Activity) context).runOnUiThread(() ->
+                    Toast.makeText(context,context.getString(R.string.open_stream_error),Toast.LENGTH_SHORT).show());
             LOG.addLog(context.getString(R.string.open_stream_error), e.getMessage());
         }
     }
@@ -181,6 +195,8 @@ public class SendingData {
             outputStream = socket.getOutputStream();
         }
         catch (IOException e) {
+            ((Activity) context).runOnUiThread(() ->
+                    Toast.makeText(context,context.getString(R.string.open_stream_error),Toast.LENGTH_SHORT).show());
             LOG.addLog(context.getString(R.string.open_stream_error), e.getMessage());
         }
     }
@@ -270,6 +286,8 @@ public class SendingData {
                             Toast.makeText(context, context.getString(R.string.data_saved), Toast.LENGTH_SHORT).show());
                 }
                 catch (IOException e) {
+                    ((Activity) context).runOnUiThread(() ->
+                            Toast.makeText(context,context.getString(R.string.data_saved_error),Toast.LENGTH_SHORT).show());
                     LOG.addLog(context.getString(R.string.data_saved_error), e.getMessage());
                 }
             }
@@ -298,6 +316,8 @@ public class SendingData {
                 outputStream.close();
         }
         catch (IOException e) {
+            ((Activity) context).runOnUiThread(() ->
+                    Toast.makeText(context,context.getString(R.string.close_stream_error),Toast.LENGTH_SHORT).show());
             LOG.addLog(context.getString(R.string.close_stream_error), e.getMessage());
         }
     }

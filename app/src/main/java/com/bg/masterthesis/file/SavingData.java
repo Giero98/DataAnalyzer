@@ -95,6 +95,8 @@ public class SavingData {
                         confirmMessage = "Confirmed";
                     }
                     catch (IOException e) {
+                        ((Activity) context).runOnUiThread(() ->
+                                Toast.makeText(context,context.getString(R.string.file_downloaded_and_saved_error),Toast.LENGTH_SHORT).show());
                         LOG.addLog(context.getString(R.string.file_downloaded_and_saved_error), e.getMessage());
                         confirmMessage = "NoneConfirmed";
                     }
@@ -106,6 +108,8 @@ public class SavingData {
                             }
                         }
                         catch (IOException e) {
+                            ((Activity) context).runOnUiThread(() ->
+                                    Toast.makeText(context,context.getString(R.string.close_output_stream_error),Toast.LENGTH_SHORT).show());
                             LOG.addLog(context.getString(R.string.close_output_stream_error), e.getMessage());
                         }
                     }
@@ -136,6 +140,8 @@ public class SavingData {
             outputStream = socket.getOutputStream();
         }
         catch (IOException e) {
+            ((Activity) context).runOnUiThread(() ->
+                    Toast.makeText(context,context.getString(R.string.open_stream_error),Toast.LENGTH_SHORT).show());
             LOG.addLog(context.getString(R.string.open_stream_error), e.getMessage());
         }
     }
@@ -146,6 +152,8 @@ public class SavingData {
             outputStream = socket.getOutputStream();
         }
         catch (IOException e) {
+            ((Activity) context).runOnUiThread(() ->
+                    Toast.makeText(context,context.getString(R.string.open_stream_error),Toast.LENGTH_SHORT).show());
             LOG.addLog(context.getString(R.string.open_stream_error), e.getMessage());
         }
     }
@@ -209,6 +217,8 @@ public class SavingData {
                 outputStream.close();
         }
         catch (IOException e) {
+            ((Activity) context).runOnUiThread(() ->
+                    Toast.makeText(context,context.getString(R.string.close_stream_error),Toast.LENGTH_SHORT).show());
             LOG.addLog(context.getString(R.string.close_stream_error), e.getMessage());
         }
     }

@@ -95,7 +95,7 @@ public class WiFi extends AppCompatActivity {
     }
 
     BroadcastReceiver receiver = new BroadcastReceiver() {
-        @SuppressLint("SetTextI18n")
+        @SuppressLint({"SetTextI18n", "MissingPermission"})
         @Override
         public void onReceive(Context context, Intent intent) {
             if(wifiDirectManager!=null) {
@@ -139,6 +139,7 @@ public class WiFi extends AppCompatActivity {
         }
     };
 
+    @SuppressLint("MissingPermission")
     void discoverService(WifiP2pInfo wifiDirectInfo) {
         final HashMap<String, String> buddies = new HashMap<>();
 
@@ -167,7 +168,8 @@ public class WiFi extends AppCompatActivity {
                     }
                     @Override
                     public void onFailure(int code) {
-                        LOG.addLog("", String.valueOf(code));
+                        Toast.makeText(getApplicationContext(),getString(R.string.failed_connect_via_wifi_direct),Toast.LENGTH_SHORT).show();
+                        LOG.addLog(getString(R.string.failed_connect_via_wifi_direct), String.valueOf(code));
                     }
                 });
         wifiDirectManager.discoverServices(wifiDirectChannel, new WifiP2pManager.ActionListener() {
@@ -177,11 +179,13 @@ public class WiFi extends AppCompatActivity {
                 }
                 @Override
                 public void onFailure(int code) {
-                    LOG.addLog("", String.valueOf(code));
+                    Toast.makeText(getApplicationContext(),getString(R.string.no_sevices_found),Toast.LENGTH_SHORT).show();
+                    LOG.addLog(getString(R.string.no_sevices_found), String.valueOf(code));
                 }
             });
     }
 
+    @SuppressLint("MissingPermission")
     void startDiscoversDevices()
     {
         wifiDirectManager.discoverPeers(wifiDirectChannel, new WifiP2pManager.ActionListener() {
@@ -221,6 +225,7 @@ public class WiFi extends AppCompatActivity {
         showDeviceSelection(deviceSelection);
     }
 
+    @SuppressLint("MissingPermission")
     void initiateConnection(String selectedDeviceAddress) {
         WifiP2pConfig config = new WifiP2pConfig();
         config.deviceAddress = selectedDeviceAddress;
@@ -343,6 +348,7 @@ public class WiFi extends AppCompatActivity {
                     ClientWiFi.getSocket().close();
                     LOG.addLog(getString(R.string.socket_client_close));
                 } catch (IOException e) {
+                    Toast.makeText(this,getString(R.string.socket_client_close_error),Toast.LENGTH_SHORT).show();
                     LOG.addLog(getString(R.string.socket_client_close_error), e.getMessage());
                 }
             }
@@ -356,6 +362,7 @@ public class WiFi extends AppCompatActivity {
                     ServerWiFi.getSocket().close();
                     LOG.addLog(getString(R.string.socket_server_close));
                 } catch (IOException e) {
+                    Toast.makeText(this,getString(R.string.socket_server_close_error),Toast.LENGTH_SHORT).show();
                     LOG.addLog(getString(R.string.socket_server_close_error), e.getMessage());
                 }
             }
@@ -369,6 +376,7 @@ public class WiFi extends AppCompatActivity {
                 LOG.addLog(getString(R.string.server_socket_server_close));
             }
             catch (IOException e) {
+                Toast.makeText(this,getString(R.string.server_socket_server_close_error),Toast.LENGTH_SHORT).show();
                 LOG.addLog(getString(R.string.server_socket_server_close_error), e.getMessage());
             }
         }

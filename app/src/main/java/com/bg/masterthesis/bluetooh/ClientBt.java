@@ -50,6 +50,8 @@ public class ClientBt extends Thread {
             socket = device.createRfcommSocketToServiceRecord(Constants.MY_UUID);
         }
         catch (IOException e) {
+            ((Activity) context).runOnUiThread(() ->
+                    Toast.makeText(context,context.getString(R.string.failed_create_socket_bt),Toast.LENGTH_SHORT).show());
             LOG.addLog(context.getString(R.string.failed_create_socket_bt), e.getMessage());
         }
     }
@@ -60,6 +62,8 @@ public class ClientBt extends Thread {
             socket.connect();
         }
         catch (IOException e) {
+            ((Activity) context).runOnUiThread(() ->
+                    Toast.makeText(context,context.getString(R.string.unable_connect),Toast.LENGTH_SHORT).show());
             LOG.addLog(context.getString(R.string.unable_connect), e.getMessage());
             closeSocketClient();
         }
@@ -71,6 +75,8 @@ public class ClientBt extends Thread {
             LOG.addLog(context.getString(R.string.client_socket_close));
         }
         catch (IOException e) {
+            ((Activity) context).runOnUiThread(() ->
+                    Toast.makeText(context,context.getString(R.string.client_socket_close_error),Toast.LENGTH_SHORT).show());
             LOG.addLog(context.getString(R.string.client_socket_close_error), e.getMessage());
         }
     }
