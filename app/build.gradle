@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace 'com.bg.masterthesis'
+    namespace 'com.bg.dataanalyzer'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.bg.masterthesis"
+        applicationId "com.bg.dataanalyzer"
         minSdk 22
         targetSdk 33
         versionCode 1

@@ -1,4 +1,4 @@
-package com.bg.masterthesis.wifi;
+package com.bg.dataanalyzer.wifi;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,16 +21,16 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
-import com.bg.masterthesis.Buffer;
-import com.bg.masterthesis.Constants;
-import com.bg.masterthesis.file.SendingData;
-import com.bg.masterthesis.ui.DeclarationOfUIVar;
-import com.bg.masterthesis.file.FileInformation;
-import com.bg.masterthesis.Graph;
-import com.bg.masterthesis.Logs;
-import com.bg.masterthesis.ui.NumberOfFileFromUI;
-import com.bg.masterthesis.R;
-import com.bg.masterthesis.file.SavingData;
+import com.bg.dataanalyzer.Buffer;
+import com.bg.dataanalyzer.Constants;
+import com.bg.dataanalyzer.file.SendingData;
+import com.bg.dataanalyzer.ui.DeclarationOfUIVar;
+import com.bg.dataanalyzer.file.FileInformation;
+import com.bg.dataanalyzer.Graph;
+import com.bg.dataanalyzer.Logs;
+import com.bg.dataanalyzer.ui.NumberOfFileFromUI;
+import com.bg.dataanalyzer.R;
+import com.bg.dataanalyzer.file.SavingData;
 
 import java.io.IOException;
 import java.util.ArrayList;
