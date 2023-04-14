@@ -63,7 +63,7 @@ The screenshots shown below are licensed [CC-BY-4.0][cc-by-4.0]
 ![alt text][graph]
 
 ## License
-[MIT][license] Copyright © 2023 Bartosz Gieras
+[License MIT][license] Copyright © 2023 Bartosz Gieras
 
 [app_logo]: https://github.com/Giero98/MasterThesis/blob/main/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
 [main_menu]:  https://github.com/Giero98/MasterThesis/blob/main/app_screens/main_menu.png
