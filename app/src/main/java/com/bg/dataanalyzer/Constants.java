@@ -1,4 +1,4 @@
-package com.bg.masterthesis;
+package com.bg.dataanalyzer;
 
 import android.bluetooth.BluetoothAdapter;
 import android.graphics.DashPathEffect;

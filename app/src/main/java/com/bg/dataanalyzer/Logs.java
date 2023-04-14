@@ -1,4 +1,4 @@
-package com.bg.masterthesis;
+package com.bg.dataanalyzer;
 
 import androidx.appcompat.app.AppCompatActivity;
 

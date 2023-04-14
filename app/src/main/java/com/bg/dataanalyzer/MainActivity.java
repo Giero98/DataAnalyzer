@@ -1,4 +1,4 @@
-package com.bg.masterthesis;
+package com.bg.dataanalyzer;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -24,8 +24,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.bluetooth.BluetoothAdapter;
 
-import com.bg.masterthesis.bluetooh.Bluetooth;
-import com.bg.masterthesis.wifi.WiFi;
+import com.bg.dataanalyzer.bluetooh.Bluetooth;
+import com.bg.dataanalyzer.wifi.WiFi;
 
 public class MainActivity extends AppCompatActivity {
     Permissions permissions;

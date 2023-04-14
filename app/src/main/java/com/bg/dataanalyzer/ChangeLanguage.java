@@ -1,4 +1,4 @@
-package com.bg.masterthesis;
+package com.bg.dataanalyzer;
 
 import android.app.Activity;
 import android.content.Context;

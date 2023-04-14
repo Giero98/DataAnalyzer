@@ -1,4 +1,4 @@
-package com.bg.masterthesis;
+package com.bg.dataanalyzer;
 
 import  androidx.appcompat.app.AppCompatActivity;
 
@@ -14,8 +14,8 @@ import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
-import com.bg.masterthesis.file.FileInformation;
-import com.bg.masterthesis.file.SendingData;
+import com.bg.dataanalyzer.file.FileInformation;
+import com.bg.dataanalyzer.file.SendingData;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;

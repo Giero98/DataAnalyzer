@@ -1,12 +1,12 @@
-package com.bg.masterthesis.ui;
+package com.bg.dataanalyzer.ui;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.widget.Toast;
 
-import com.bg.masterthesis.Constants;
-import com.bg.masterthesis.Logs;
-import com.bg.masterthesis.R;
+import com.bg.dataanalyzer.Constants;
+import com.bg.dataanalyzer.Logs;
+import com.bg.dataanalyzer.R;
 
 public class NumberOfFileFromUI {
 

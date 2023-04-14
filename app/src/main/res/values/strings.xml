@@ -1,6 +1,6 @@
 <resources>
     <!-- Untranslatable -->
-    <string name="app_name" translatable="false">Master\'s thesis app</string>
+    <string name="app_name" translatable="false">Data analyzer</string>
     <string name="default_multiple_file" translatable="false">1</string>
     <string name="port" translatable="false">Port</string>
 

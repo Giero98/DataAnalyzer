@@ -1,14 +1,14 @@
-package com.bg.masterthesis.wifi;
+package com.bg.dataanalyzer.wifi;
 
 import android.app.Activity;
 import android.content.Context;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.widget.Toast;
 
-import com.bg.masterthesis.Constants;
-import com.bg.masterthesis.R;
-import com.bg.masterthesis.ui.DeclarationOfUIVar;
-import com.bg.masterthesis.Logs;
+import com.bg.dataanalyzer.Constants;
+import com.bg.dataanalyzer.R;
+import com.bg.dataanalyzer.ui.DeclarationOfUIVar;
+import com.bg.dataanalyzer.Logs;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;

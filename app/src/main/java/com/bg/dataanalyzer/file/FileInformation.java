@@ -1,4 +1,4 @@
-package com.bg.masterthesis.file;
+package com.bg.dataanalyzer.file;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.OpenableColumns;
 
-import com.bg.masterthesis.Constants;
+import com.bg.dataanalyzer.Constants;
 
 import java.io.File;
 

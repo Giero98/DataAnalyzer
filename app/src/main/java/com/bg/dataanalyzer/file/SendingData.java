@@ -1,4 +1,4 @@
-package com.bg.masterthesis.file;
+package com.bg.dataanalyzer.file;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -11,11 +11,11 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 
-import com.bg.masterthesis.Buffer;
-import com.bg.masterthesis.Constants;
-import com.bg.masterthesis.Logs;
-import com.bg.masterthesis.R;
-import com.bg.masterthesis.ui.DeclarationOfUIVar;
+import com.bg.dataanalyzer.Buffer;
+import com.bg.dataanalyzer.Constants;
+import com.bg.dataanalyzer.Logs;
+import com.bg.dataanalyzer.R;
+import com.bg.dataanalyzer.ui.DeclarationOfUIVar;
 
 import java.io.File;
 import java.io.FileInputStream;

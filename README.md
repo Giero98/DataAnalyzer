@@ -1,4 +1,4 @@
-# MasterThesis
+# Data analyzer
 
 ![alt text][app_logo]\
 The ic_launcher.png image is an original image created on the [Canva][canva] platform under license [CC-BY-4.0][cc-by-4.0]
