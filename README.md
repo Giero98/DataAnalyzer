@@ -77,7 +77,7 @@ The screenshots shown below are licensed [CC-BY-4.0][cc-by-4.0]
 [wifi_module]: https://github.com/Giero98/MasterThesis/blob/main/app_screens/wifi_module.png
 [after_send_file]: https://github.com/Giero98/MasterThesis/blob/main/app_screens/after_send_file.png
 [graph]: https://github.com/Giero98/MasterThesis/blob/main/app_screens/graph.png
-[installer]: https://github.com/Giero98/DataAnalyzer/raw/v1.0.0/app/release/DataAnalyzer-installer-v1.0.apk
+[installer]: https://github.com/Giero98/DataAnalyzer/raw/main/app/release/DataAnalyzer-installer.apk
 [canva]: https://www.canva.com/
 [cc-by-4.0]: https://creativecommons.org/licenses/by/4.0/deed.en
 [mpandroidchart]: https://github.com/PhilJay/MPAndroidChart
