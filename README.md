@@ -45,7 +45,8 @@ transmission in Bluetooth and Wi-Fi technologies in communication between mobile
 
 ## Install
 
-
+To install the software, download the APK installation package: [Installer][installer]
+ and then run it on the target device for installation.
 
 ## Used technologies/libraries
 
@@ -76,7 +77,7 @@ The screenshots shown below are licensed [CC-BY-4.0][cc-by-4.0]
 [wifi_module]: https://github.com/Giero98/MasterThesis/blob/main/app_screens/wifi_module.png
 [after_send_file]: https://github.com/Giero98/MasterThesis/blob/main/app_screens/after_send_file.png
 [graph]: https://github.com/Giero98/MasterThesis/blob/main/app_screens/graph.png
-
+[installer]: https://github.com/Giero98/DataAnalyzer/raw/v1.0.0/app/release/DataAnalyzer.apk
 [canva]: https://www.canva.com/
 [cc-by-4.0]: https://creativecommons.org/licenses/by/4.0/deed.en
 [mpandroidchart]: https://github.com/PhilJay/MPAndroidChart
