@@ -43,6 +43,10 @@ transmission in Bluetooth and Wi-Fi technologies in communication between mobile
 - Discoverability of the device by the Wi-Fi Direct module
 - Find discoverable Wi-Fi Direct devices
 
+## Install
+
+
+
 ## Used technologies/libraries
 
 Other icons used in the project are used under the [Apache License, Version 2.0][apache_license]

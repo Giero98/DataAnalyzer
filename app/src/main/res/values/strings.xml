@@ -110,7 +110,7 @@
     <!-- Author -->
     <string name="about_author">About Author</string>
     <string name="text_about_author">My name is Bartosz Gieras and I am the creator of this application. I am an engineer of Applied Mathematics and a Master of Computer Science by education.
-The given application was used for research included in my master\'s thesis entitled "Analysis of data transmission in Bluetooth and Wi-Fi technologies in communication between mobile devices".
+The given application was used for research included in my master\'s thesis entitled \"Analysis of data transmission in Bluetooth and Wi-Fi technologies in communication between mobile devices\".
 If you have any questions or comments about this application, below is my profile on GitHub:</string>
 
     <!-- Languages -->
