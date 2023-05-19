@@ -131,7 +131,7 @@ public class SendingData {
                                 double speedSend = fileSize / resultTime;
                                 String sizeUnit = FileInformation.getFileSizeUnit(FileInformation.getFileSizeBytes());
                                 updateTextInf(context,bufferSize,repeat,resultTime,speedSend,sizeUnit);
-                                saveMeasurementDataToList(fileSizeBytes,repeat,fileSize,resultTime,speedSend);
+                                saveMeasurementDataToList(fileSizeBytes,bufferSize,repeat,fileSize,resultTime,speedSend);
                                 break;
                             }
                             else if (confirmMessage.equals("NoneConfirmed")) {
@@ -204,6 +204,7 @@ public class SendingData {
     void setTitleOfDataColumns(String fileSizeUnit) {
         if(moduleSelect.equals(Constants.connectionBt)) {
             measurementDataList.add(context.getString(R.string.file_upload_number) + "," +
+                    context.getString(R.string.buffer_size) + "," +
                     context.getString(R.string.file_size_bytes) + "," +
                     context.getString(R.string.file_size_in) +" "+ fileSizeUnit + "," +
                     context.getString(R.string.signal_quality) + "," +
@@ -212,6 +213,7 @@ public class SendingData {
         }
         else {
             measurementDataList.add(context.getString(R.string.file_upload_number) + "," +
+                    context.getString(R.string.buffer_size) + "," +
                     context.getString(R.string.file_size_bytes) + "," +
                     context.getString(R.string.file_size_in) +" "+ fileSizeUnit + "," +
                     context.getString(R.string.sending_time) + "," +
@@ -232,10 +234,11 @@ public class SendingData {
                         " " + sizeUnit + "/s"));
     }
 
-    void saveMeasurementDataToList(long fileSizeBytes, int repeat, double fileSize, double resultTime, double speedSend) {
+    void saveMeasurementDataToList(long fileSizeBytes, int bufferSize, int repeat, double fileSize, double resultTime, double speedSend) {
         if(moduleSelect.equals(Constants.connectionBt)) {
             String qualitySignal = (String) DeclarationOfUIVar.textView_qualitySignal.getText();
             measurementDataList.add((repeat + 1) + "," +
+                    bufferSize + "," +
                     fileSizeBytes + "," +
                     Constants.decimalFormat.format(fileSize).replace(",", ".") + "," +
                     qualitySignal + "," +
@@ -244,6 +247,7 @@ public class SendingData {
         }
         else {
             measurementDataList.add((repeat + 1) + "," +
+                    bufferSize + "," +
                     fileSizeBytes + "," +
                     Constants.decimalFormat.format(fileSize).replace(",", ".") + "," +
                     Constants.decimalFormat.format(resultTime).replace(",", ".") + "," +
