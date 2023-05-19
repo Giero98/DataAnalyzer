@@ -166,5 +166,6 @@ Jeśli masz jakieś pytania lub uwagi dotyczące tej aplikacji poniżej znajduje
         <string name="connect_by_wifi_direct_error">Wysyłanie odpowiedzi na pobranie i zapisanie pliku</string>
     <string name="failed_connect_via_wifi_direct">Nie udało się nawiązać połączenia przez Wi-Fi Direct</string>
     <string name="no_sevices_found">Nie udało się znaleźć żadnych usług</string>
+    <string name="average">Średnia</string>
 
 </resources>
