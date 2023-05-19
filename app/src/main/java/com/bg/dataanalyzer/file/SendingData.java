@@ -30,6 +30,8 @@ import java.util.Arrays;
 
 public class SendingData {
     public static ArrayList<String> measurementDataList = new ArrayList<>();
+    ArrayList<Integer> qualitySignal = new ArrayList<>();
+    ArrayList<Float> fileUploadTime = new ArrayList<>(), uploadSpeed = new ArrayList<>();
     static String moduleSelect;
     Logs LOG;
     DeclarationOfUIVar declarationUI;
@@ -157,6 +159,7 @@ public class SendingData {
                 }
             }
             declarationUI.updateViewWhenFileSent();
+            averageValuesMeasurementData();
 
             try {
                 if (file != null) {
@@ -253,6 +256,66 @@ public class SendingData {
                     Constants.decimalFormat.format(resultTime).replace(",", ".") + "," +
                     Constants.decimalFormat.format(speedSend).replace(",", "."));
         }
+    }
+
+    void averageValuesMeasurementData() {
+        for(String measurementData : SendingData.getMeasurementDataList()) {
+            if(measurementData.contains(",")) {
+                String[] dataArrayFileMeasurement = measurementData.split(",");
+                String sentFileNumberTable = dataArrayFileMeasurement[0];
+                loadingIntoTheDataList(sentFileNumberTable, dataArrayFileMeasurement);
+            }
+        }
+
+        double  averageQualitySignal = calculationIntegerAverageValuesMeasurementData(qualitySignal),
+                averageFileUploadTime = calculationFloatAverageValuesMeasurementData(fileUploadTime),
+                averageUploadSpeed = calculationFloatAverageValuesMeasurementData(uploadSpeed);
+
+        if(SendingData.getModuleSelect().equals(Constants.connectionBt)) {
+            measurementDataList.add("-,-,-," + context.getString(R.string.average) + "," +
+                    Constants.decimalFormat.format(averageQualitySignal).replace(",", ".") + "," +
+                    Constants.decimalFormat.format(averageFileUploadTime).replace(",", ".") + "," +
+                    Constants.decimalFormat.format(averageUploadSpeed).replace(",", "."));
+        }
+        else {
+            measurementDataList.add("-,-,-," + context.getString(R.string.average) + "," +
+                    Constants.decimalFormat.format(averageFileUploadTime).replace(",", ".") + "," +
+                    Constants.decimalFormat.format(averageUploadSpeed).replace(",", "."));
+        }
+    }
+
+    void loadingIntoTheDataList (String sentFileNumberTable, String[] dataArrayFileMeasurement) {
+        try {
+            Integer.parseInt(sentFileNumberTable);
+
+            if(SendingData.getModuleSelect().equals(Constants.connectionBt)) {
+                qualitySignal.add(Integer.parseInt(dataArrayFileMeasurement[4]));
+                fileUploadTime.add(Float.parseFloat(dataArrayFileMeasurement[5]));
+                uploadSpeed.add(Float.parseFloat(dataArrayFileMeasurement[6]));
+            }
+            else {
+                fileUploadTime.add(Float.parseFloat(dataArrayFileMeasurement[4]));
+                uploadSpeed.add(Float.parseFloat(dataArrayFileMeasurement[5]));
+            }
+        }
+        catch (NumberFormatException ignored) {}
+    }
+
+    double calculationIntegerAverageValuesMeasurementData(ArrayList<Integer> list) {
+        double sum = 0;
+        for(int i = 0; i < list.size(); i++){
+            sum+= list.get(i);
+        }
+        return sum/list.size();
+    }
+
+    double calculationFloatAverageValuesMeasurementData(ArrayList<Float> list) {
+        double sum = 0;
+        for(int i = 0; i < list.size(); i++){
+            sum+= list.get(i);
+        }
+        sum/=list.size();
+        return sum;
     }
 
     public static void saveMeasurementData(Context context, Logs LOG) {

@@ -52,8 +52,8 @@
             android:text="@string/upload_speed" />
     </RadioGroup>
 
-    <com.github.mikephil.charting.charts.BarChart
-        android:id="@+id/barChart"
+    <com.github.mikephil.charting.charts.CombinedChart
+        android:id="@+id/combinedChart"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clickable="false" />
